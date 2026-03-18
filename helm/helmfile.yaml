@@ -5,5 +5,8 @@ repositories:
 releases:
   - name: longhorn
     namespace: longhorn-system
+    createNamespace: true
     chart: longhorn/longhorn
     version: 1.11.1
+    values:
+      - values/longhorn.yaml
