@@ -1,3 +1,3 @@
-NixOS and Helm Configuration
+Debian and Helm Configuration
 
 This repository contains my homelab declarative system configuration
