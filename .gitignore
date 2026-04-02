@@ -1,0 +1,68 @@
+# --- OS ---
+.DS_Store
+Thumbs.db
+*~
+*.swp
+*.swo
+
+# --- Secrets & credentials (never commit) ---
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+id_rsa
+id_rsa.pub
+id_ed25519
+*.p12
+*.pfx
+kubeconfig
+*.kubeconfig
+.age-key
+*.age
+
+# --- Kubernetes / Helm ---
+# Vendored or packaged chart archives (if you add chart dependencies locally)
+**/charts/*.tgz
+# Decrypted or raw secret material from tools like SOPS
+*.decrypted.*
+*.decrypted.yaml
+
+# --- Terraform (if you add it later) ---
+.terraform/
+.terraform.lock.hcl
+*.tfstate
+*.tfstate.*
+crash.log
+crash.*.log
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# --- Ansible ---
+*.retry
+
+# --- Python ---
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+
+# --- Node ---
+node_modules/
+
+# --- Build / temp ---
+*.bak
+*.tmp
+.cache/
+
+# --- Local agent / editor tooling (not pushed to GitHub) ---
+.clavix/
+.cursor/
+.github/
+.skills/
+AGENTS.md
+OCTO.md
