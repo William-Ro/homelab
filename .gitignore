@@ -5,7 +5,7 @@ Thumbs.db
 *.swp
 *.swo
 
-# --- Secrets & credentials (never commit) ---
+# --- Secrets & credentials ---
 .env
 .env.*
 !.env.example
@@ -22,13 +22,11 @@ kubeconfig
 *.age
 
 # --- Kubernetes / Helm ---
-# Vendored or packaged chart archives (if you add chart dependencies locally)
 **/charts/*.tgz
-# Decrypted or raw secret material from tools like SOPS
 *.decrypted.*
 *.decrypted.yaml
 
-# --- Terraform (if you add it later) ---
+# --- Terraform ---
 .terraform/
 .terraform.lock.hcl
 *.tfstate
@@ -66,3 +64,4 @@ node_modules/
 .skills/
 AGENTS.md
 OCTO.md
+docs
