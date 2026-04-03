@@ -1,6 +1,8 @@
 repositories:
   - name: longhorn
     url: https://charts.longhorn.io
+  - name: metallb
+    url: https://metallb.github.io/metallb
 
 releases:
   - name: longhorn
@@ -9,3 +11,8 @@ releases:
     version: 1.11.1
     values:
       - values/longhorn.values.yaml
+
+  - name: metallb
+    namespace: metallb-system
+    chart: metallb/metallb
+    version: 0.15.3
