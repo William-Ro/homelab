@@ -9,7 +9,8 @@ repositories:
     url: https://metallb.github.io/metallb
   - name: mojo2600
     url: https://mojo2600.github.io/pihole-kubernetes/
-
+  - name: external-dns
+    url: https://kubernetes-sigs.github.io/external-dns/
 releases:
   - name: longhorn
     namespace: longhorn-system
@@ -34,3 +35,11 @@ releases:
     version: 2.35.0
     values:
       - values/pihole.values.yaml
+
+  - name: external-dns
+    namespace: external-dns-system
+    createNamespace: true
+    chart: external-dns/external-dns
+    version: 1.20.0
+    values:
+      - values/external-dns.values.yaml
