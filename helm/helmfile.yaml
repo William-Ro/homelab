@@ -11,35 +11,39 @@ repositories:
     url: https://mojo2600.github.io/pihole-kubernetes/
   - name: external-dns
     url: https://kubernetes-sigs.github.io/external-dns/
+
+templates:
+  default: &default
+    createNamespace: true
+    missingFileHandler: Warn
+    values:
+      - values/{{ .Release.Name }}.values.yaml
+
 releases:
   - name: longhorn
     namespace: longhorn-system
-    createNamespace: true
     chart: longhorn/longhorn
     version: 1.11.1
-    values:
-      - values/longhorn.values.yaml
+    inherit:
+      - template: default
 
   - name: metallb
     namespace: metallb-system
-    createNamespace: true
     chart: metallb/metallb
     version: 0.15.3
-    values:
-      - values/metallb.values.yaml
+    inherit:
+      - template: default
 
   - name: pihole
-    namespace: pihole-system
-    createNamespace: true
+    namespace: pihole
     chart: mojo2600/pihole
     version: 2.35.0
-    values:
-      - values/pihole.values.yaml
+    inherit:
+      - template: default
 
   - name: external-dns
-    namespace: external-dns-system
-    createNamespace: true
+    namespace: external-dns
     chart: external-dns/external-dns
     version: 1.20.0
-    values:
-      - values/external-dns.values.yaml
+    inherit:
+      - template: default

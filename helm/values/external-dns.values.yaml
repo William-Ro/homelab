@@ -14,7 +14,7 @@ domainFilters:
   - home
 
 extraArgs:
-  pihole-server: http://pihole-web.pihole-system.svc.cluster.local
+  pihole-server: http://pihole-web.pihole.svc.cluster.local
   pihole-api-version: "6"
 
 env:
