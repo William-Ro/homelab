@@ -1,8 +1,0 @@
-defaultSettings:
-  defaultDataPath: /var/lib/longhorn-nvme
-
-persistence:
-  defaultClass: true
-
-defaultNodeSelector:
-  node-role.kubernetes.io/worker: worker

@@ -41,14 +41,6 @@ override.tf.json
 # --- Ansible ---
 *.retry
 
-# --- Python ---
-.venv/
-venv/
-__pycache__/
-*.py[cod]
-.pytest_cache/
-.mypy_cache/
-
 # --- Node ---
 node_modules/
 
