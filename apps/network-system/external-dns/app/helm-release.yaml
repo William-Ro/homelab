@@ -20,7 +20,8 @@ spec:
     triggerLoopOnEvent: true
 
     policy: upsert-only
-    registry: noop
+    registry: txt
+    txtOwnerId: homelab
 
     sources:
       - ingress
