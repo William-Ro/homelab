@@ -7,3 +7,4 @@ namespace: network-system
 resources:
   - ./namespace.yaml
   - ./metallb
+  - ./external-dns
