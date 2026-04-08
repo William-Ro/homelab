@@ -12,6 +12,8 @@ spec:
     name: pihole
 
   values:
+    replicas: 1
+
     pihole:
       web:
         service:
