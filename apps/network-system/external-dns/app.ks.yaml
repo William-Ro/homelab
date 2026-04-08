@@ -15,3 +15,7 @@ spec:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
+
+  dependsOn:
+    - name: pihole-config
+      namespace: dns-system # pi-hole must be up before external-dns starts registering records
