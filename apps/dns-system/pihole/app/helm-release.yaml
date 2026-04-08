@@ -1,0 +1,38 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2.json
+
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: pihole
+spec:
+  interval: 10m
+  chartRef:
+    kind: OCIRepository
+    name: pihole
+
+  values:
+    pihole:
+      web:
+        service:
+          type: LoadBalancer
+          loadBalancerIP: 192.168.1.220
+          externalTrafficPolicy: Cluster
+          annotations:
+            metallb.universe.tf/allow-shared-ip: pihole-svc
+
+      ftl:
+        dns:
+          upstreams:
+            - 192.168.1.1
+
+          service:
+            type: LoadBalancer
+            loadBalancerIP: 192.168.1.220
+            externalTrafficPolicy: Cluster
+            annotations:
+              metallb.universe.tf/allow-shared-ip: pihole-svc
+
+    persistence:
+      etcPihole:
+        enabled: true
