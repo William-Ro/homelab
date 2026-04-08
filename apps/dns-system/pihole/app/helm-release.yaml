@@ -25,6 +25,7 @@ spec:
 
       ftl:
         dns:
+          listeningMode: all
           upstreams:
             - 192.168.1.1
 
