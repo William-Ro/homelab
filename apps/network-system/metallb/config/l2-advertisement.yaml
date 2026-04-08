@@ -3,6 +3,11 @@ apiVersion: metallb.io/v1beta1
 kind: L2Advertisement
 metadata:
   name: l2-advertisement
+  labels:
+    app.kubernetes.io/name: l2-advertisement
+    app.kubernetes.io/component: l2-advertisement
+    app.kubernetes.io/part-of: metallb
+    app.kubernetes.io/managed-by: flux
 spec:
   ipAddressPools:
     - pool

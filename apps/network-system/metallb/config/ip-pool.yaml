@@ -3,6 +3,11 @@ apiVersion: metallb.io/v1beta1
 kind: IPAddressPool
 metadata:
   name: pool
+  labels:
+    app.kubernetes.io/name: metallb-pool
+    app.kubernetes.io/component: ip-address-pool
+    app.kubernetes.io/part-of: metallb
+    app.kubernetes.io/managed-by: flux
 spec:
   addresses:
     - 192.168.1.200-192.168.1.220

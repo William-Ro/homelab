@@ -5,6 +5,11 @@ apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: metallb
+  namespace: network-system
+  labels:
+    app.kubernetes.io/name: metallb
+    app.kubernetes.io/part-of: metallb
+    app.kubernetes.io/managed-by: flux
 spec:
   interval: 10m
   chartRef:
@@ -36,7 +41,7 @@ spec:
       logLevel: info # all, debug, info, warn, error
 
       tolerateMaster: false #? allow scheduling on master nodes
-      ignoreExcludeLB: true #? ignore the exclude-from-external-loadbalancer label
+      ignoreExcludeLB: true # Intentional: all nodes act as LB speakers regardless of the exclude-from-external-loadbalancer label
 
       resources:
         requests:
