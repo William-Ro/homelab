@@ -5,6 +5,11 @@ apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: longhorn
+  namespace: storage-system
+  labels:
+    app.kubernetes.io/name: longhorn
+    app.kubernetes.io/part-of: longhorn
+    app.kubernetes.io/managed-by: flux
 spec:
   interval: 10m
   chartRef:
