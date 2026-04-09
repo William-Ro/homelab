@@ -12,20 +12,22 @@ This repository manages core services for a home cluster from a single Git sourc
 
 The setup is split into two layers:
 
-- `bootstrap/` for the initial Flux installation using `Helmfile`
+- `bootstrap/` for the initial cluster bootstrap using `Helmfile`, including `coredns` and the Flux controllers
 - `apps/` for namespace-scoped services and supporting Kubernetes manifests reconciled by Flux
 
 ### Available systems
 
-| System           | Namespace        | Components                       | Purpose                                                       |
-| ---------------- | ---------------- | -------------------------------- | ------------------------------------------------------------- |
-| `flux-system`    | `flux-system`    | `flux-operator`, `flux-instance` | Installs and tunes the GitOps controllers that sync this repo |
-| `network-system` | `network-system` | `metallb`, `external-dns`        | Exposes `LoadBalancer` IPs on the LAN and manages DNS records |
-| `dns`            | `dns`            | `pihole`                         | Provides local DNS resolution and a web UI                    |
-| `storage-system` | `storage-system` | `longhorn`                       | Provides distributed persistent storage for cluster workloads |
+| System           | Namespace        | Components                       | Purpose                                                           |
+| ---------------- | ---------------- | -------------------------------- | ----------------------------------------------------------------- |
+| `kube-system`    | `kube-system`    | `coredns`                        | Provides cluster-internal DNS and service discovery for workloads |
+| `flux-system`    | `flux-system`    | `flux-operator`, `flux-instance` | Installs and tunes the GitOps controllers that sync this repo     |
+| `network-system` | `network-system` | `metallb`, `external-dns`        | Exposes `LoadBalancer` IPs on the LAN and manages DNS records     |
+| `dns`            | `dns`            | `pihole`                         | Provides local DNS resolution and a web UI                        |
+| `storage-system` | `storage-system` | `longhorn`                       | Provides distributed persistent storage for cluster workloads     |
 
 ## Included setup
 
+- CoreDNS managed declaratively in `kube-system` and exposed as `kube-dns` on `10.43.0.10`
 - Flux configured to sync the `apps/` directory from Git every `5m`
 - MetalLB with an L2 address pool at `192.168.1.200-192.168.1.220`
 - ExternalDNS configured to publish `.home` records through Pi-hole
@@ -33,7 +35,7 @@ The setup is split into two layers:
 - Longhorn using `/var/lib/longhorn-nvme` as the default data path on worker nodes
 
 > [!NOTE]
-> This is a personal homelab setup. If you want to reuse it, review the values under `apps/flux-system/`, `apps/network-system/`, `apps/dns/`, and `apps/storage-system/` first and adapt them to your cluster, LAN range, secrets, and domain.
+> This is a personal homelab setup. If you want to reuse it, review the values under `apps/kube-system/`, `apps/flux-system/`, `apps/network-system/`, `apps/dns/`, and `apps/storage-system/` first and adapt them to your cluster, LAN range, secrets, and domain.
 
 ## Repository layout
 
@@ -41,6 +43,7 @@ The setup is split into two layers:
 .
 ├── bootstrap/   # Helmfile bootstrap and shared values template
 ├── apps/        # Flux-managed platform services by namespace
+│   ├── kube-system/
 │   ├── flux-system/
 │   ├── network-system/
 │   ├── dns/
@@ -66,6 +69,7 @@ cd homelab
 
 Before bootstrapping, inspect these files first:
 
+- `apps/kube-system/coredns/app/helm-release.yaml`
 - `apps/flux-system/flux-instance/app/helm-release.yaml`
 - `apps/network-system/metallb/config/ip-pool.yaml`
 - `apps/dns/pihole/app/helm-release.yaml`
@@ -78,7 +82,18 @@ nix shell nixpkgs#helmfile nixpkgs#kubernetes-helm --command \
   helmfile -f bootstrap/helmfile.yaml apply
 ```
 
-This installs `flux-operator` and `flux-instance`. After that, Flux continuously reconciles the `apps/` directory from the tracked branch.
+This installs `coredns`, `flux-operator`, and `flux-instance`. `coredns` is bootstrapped first so the Flux controllers and workloads have cluster DNS available during reconciliation.
+
+If you are using `k3s`, disable the bundled components you replace declaratively in `/etc/rancher/k3s/config.yaml` before bootstrapping:
+
+```yaml
+disable:
+  - servicelb
+  - coredns
+  - local-storage
+```
+
+After that, Flux continuously reconciles the `apps/` directory from the tracked branch.
 
 ## Apply a configuration
 
