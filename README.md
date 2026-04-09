@@ -21,7 +21,7 @@ The setup is split into two layers:
 | ---------------- | ---------------- | -------------------------------- | ------------------------------------------------------------- |
 | `flux-system`    | `flux-system`    | `flux-operator`, `flux-instance` | Installs and tunes the GitOps controllers that sync this repo |
 | `network-system` | `network-system` | `metallb`, `external-dns`        | Exposes `LoadBalancer` IPs on the LAN and manages DNS records |
-| `dns-system`     | `dns-system`     | `pihole`                         | Provides local DNS resolution and a web UI                    |
+| `dns`            | `dns`            | `pihole`                         | Provides local DNS resolution and a web UI                    |
 | `storage-system` | `storage-system` | `longhorn`                       | Provides distributed persistent storage for cluster workloads |
 
 ## Included setup
@@ -33,7 +33,7 @@ The setup is split into two layers:
 - Longhorn using `/var/lib/longhorn-nvme` as the default data path on worker nodes
 
 > [!NOTE]
-> This is a personal homelab setup. If you want to reuse it, review the values under `apps/flux-system/`, `apps/network-system/`, `apps/dns-system/`, and `apps/storage-system/` first and adapt them to your cluster, LAN range, secrets, and domain.
+> This is a personal homelab setup. If you want to reuse it, review the values under `apps/flux-system/`, `apps/network-system/`, `apps/dns/`, and `apps/storage-system/` first and adapt them to your cluster, LAN range, secrets, and domain.
 
 ## Repository layout
 
@@ -43,7 +43,7 @@ The setup is split into two layers:
 ├── apps/        # Flux-managed platform services by namespace
 │   ├── flux-system/
 │   ├── network-system/
-│   ├── dns-system/
+│   ├── dns/
 │   └── storage-system/
 └── README.md
 ```
@@ -68,7 +68,7 @@ Before bootstrapping, inspect these files first:
 
 - `apps/flux-system/flux-instance/app/helm-release.yaml`
 - `apps/network-system/metallb/config/ip-pool.yaml`
-- `apps/dns-system/pihole/app/helm-release.yaml`
+- `apps/dns/pihole/app/helm-release.yaml`
 - `apps/storage-system/longhorn/app/helm-release.yaml`
 
 ### Bootstrap Flux

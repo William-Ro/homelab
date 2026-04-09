@@ -18,4 +18,4 @@ spec:
 
   dependsOn:
     - name: pihole-config
-      namespace: dns-system # pi-hole must be up before external-dns starts registering records
+      namespace: dns # pi-hole must be up before external-dns starts registering records

@@ -39,7 +39,7 @@ spec:
       name: pihole
 
     extraArgs:
-      pihole-server: http://pihole-web.dns-system.svc.cluster.local
+      pihole-server: http://pihole-web.dns.svc.cluster.local
       pihole-api-version: "6"
 
     ingressClassFilters:

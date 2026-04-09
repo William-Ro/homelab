@@ -2,9 +2,9 @@
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: dns-system
+  name: dns
   labels:
-    app.kubernetes.io/name: dns-system
+    app.kubernetes.io/name: dns
     app.kubernetes.io/managed-by: flux
   annotations:
     kustomize.toolkit.fluxcd.io/prune: disabled
