@@ -20,9 +20,6 @@ spec:
     crds: { enabled: true }
     networkpolicies: { enabled: false }
 
-    # =============================================================================================
-    # Component - Controller
-    # =============================================================================================
     controller:
       enabled: true
       logLevel: info # all, debug, info, warn, error
@@ -33,9 +30,6 @@ spec:
         limits:
           memory: 256Mi
 
-    # =============================================================================================
-    # Component - Speaker
-    # =============================================================================================
     speaker:
       enabled: true
       logLevel: info # all, debug, info, warn, error
