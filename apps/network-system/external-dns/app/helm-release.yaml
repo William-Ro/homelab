@@ -43,9 +43,6 @@ spec:
       pihole-server: http://pihole-web.dns.svc.cluster.local
       pihole-api-version: "6"
 
-    ingressClassFilters:
-      - traefik
-
     env:
       - name: EXTERNAL_DNS_PIHOLE_PASSWORD
         valueFrom:
