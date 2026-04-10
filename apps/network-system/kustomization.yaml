@@ -6,5 +6,6 @@ namespace: network-system
 
 resources:
   - ./namespace.yaml
+  - ./envoy-gateway
   - ./metallb
   - ./external-dns
