@@ -17,8 +17,6 @@ spec:
 
   decryption:
     provider: sops
-    secretRef:
-      name: sops-age
 
   dependsOn:
     - name: external-secrets-operator
