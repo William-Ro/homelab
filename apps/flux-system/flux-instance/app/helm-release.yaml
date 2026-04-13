@@ -145,4 +145,11 @@ spec:
               kind: Deployment
               name: kustomize-controller
 
-
+          - # Use RC image for kustomize-controller with global sops-age-secret support
+            patch: |-
+              - op: replace
+                path: /spec/template/spec/containers/0/image
+                value: ghcr.io/fluxcd/kustomize-controller:rc-203b42e7
+            target:
+              kind: Deployment
+              name: kustomize-controller
