@@ -4,4 +4,5 @@ kind: Kustomization
 
 resources:
   - ./external-secret.yaml
+  - ./cluster-issuer-selfsigned.yaml
   - ./cluster-issuer.yaml
