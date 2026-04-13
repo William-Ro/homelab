@@ -7,3 +7,4 @@ namespace: security-system
 resources:
   - ./namespace.yaml
   - ./external-secrets-operator
+  - ./bitwarden-sdk-server
