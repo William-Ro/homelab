@@ -1,0 +1,20 @@
+---
+apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: BackendTrafficPolicy
+metadata:
+  name: default-backend-policy
+spec:
+  compression:
+    - type: Zstd
+    - type: Brotli
+    - type: Gzip
+
+  targetSelectors:
+    - group: gateway.networking.k8s.io
+      kind: Gateway
+
+  tcpKeepalive: {}
+
+  timeout:
+    http:
+      requestTimeout: 0s

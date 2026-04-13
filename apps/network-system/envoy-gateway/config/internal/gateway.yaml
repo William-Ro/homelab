@@ -17,9 +17,13 @@ spec:
       protocol: HTTP
       port: 80
       allowedRoutes:
-        namespaces: { from: All } #? allow app namespaces to attach HTTPRoutes
+        namespaces: { from: Same }
     - name: https
       protocol: HTTPS
       port: 443
+      tls:
+        certificateRefs:
+          - kind: Secret
+            name: internal-tls
       allowedRoutes:
-        namespaces: { from: All } #? allow all namespaces for https
+        namespaces: { from: All }

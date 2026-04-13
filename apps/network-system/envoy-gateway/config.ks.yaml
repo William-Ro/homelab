@@ -19,3 +19,4 @@ spec:
   dependsOn:
     - name: metallb-config
     - name: envoy-gateway
+    - name: cert-manager-config

@@ -5,3 +5,6 @@ kind: Kustomization
 resources:
   - ./admin
   - ./internal
+  - ./https-redirect.http-route.yaml
+  - ./client-traffic-policy.yaml
+  - ./backend-traffic-policy.yaml
