@@ -1,0 +1,42 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2.json
+
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: bitwarden-sdk-server
+  namespace: security-system
+  labels:
+    app.kubernetes.io/name: bitwarden-sdk-server
+    app.kubernetes.io/part-of: bitwarden-sdk-server
+    app.kubernetes.io/managed-by: flux
+spec:
+  interval: 10m
+  chartRef:
+    kind: OCIRepository
+    name: bitwarden-sdk-server
+
+  values:
+    image:
+      tls:
+        enabled: true
+        volumeMounts:
+          - mountPath: "/certs"
+            name: "bitwarden-tls-certs"
+        volumes:
+          - name: "bitwarden-tls-certs"
+            secret:
+              secretName: "bitwarden-tls-certs"
+              items:
+                - key: "tls.crt"
+                  path: "cert.pem"
+                - key: "tls.key"
+                  path: "key.pem"
+                - key: "ca.crt"
+                  path: "ca.pem"
+
+    # Fix the DNS ndots issue described in the README troubleshooting section
+    podDnsConfig:
+      options:
+        - name: ndots
+          value: "2"

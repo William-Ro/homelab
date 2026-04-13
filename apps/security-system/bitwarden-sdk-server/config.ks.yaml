@@ -1,0 +1,23 @@
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: bitwarden-sdk-server-config
+  namespace: security-system
+spec:
+  interval: 10m
+  prune: true
+  wait: true
+  targetNamespace: security-system
+
+  path: ./apps/security-system/bitwarden-sdk-server/config
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+
+  decryption:
+    provider: sops
+
+  dependsOn:
+    - name: external-secrets-operator
