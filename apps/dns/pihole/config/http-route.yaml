@@ -12,9 +12,9 @@ spec:
   parentRefs:
     - name: envoy-internal
       namespace: network-system
-      sectionName: http
+      sectionName: https
   hostnames:
-    - pihole.home
+    - pihole.internal.reli.cc
   rules:
     - matches:
         - path:
