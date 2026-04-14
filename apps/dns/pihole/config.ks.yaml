@@ -18,3 +18,5 @@ spec:
 
   dependsOn:
     - name: pihole
+    - name: bitwarden-sdk-server-config
+      namespace: security-system
