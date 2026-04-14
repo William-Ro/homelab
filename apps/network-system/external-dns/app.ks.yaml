@@ -18,4 +18,6 @@ spec:
 
   dependsOn:
     - name: pihole-config
-      namespace: dns # pi-hole must be up before external-dns starts registering records
+      namespace: dns
+    - name: bitwarden-sdk-server-config
+      namespace: security-system
