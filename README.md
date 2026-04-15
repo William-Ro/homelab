@@ -26,19 +26,6 @@ The setup is split into two layers:
 | `storage-system`  | `storage-system`  | `longhorn`                                                 | Provides distributed persistent storage for cluster workloads      |
 | `security-system` | `security-system` | `external-secrets-operator`, `bitwarden-sdk-server`        | Manages secrets from Bitwarden Secrets Manager via ESO             |
 
-## Included setup
-
-- CoreDNS managed declaratively in `kube-system` and exposed as `kube-dns` on `10.43.0.10`
-- Flux configured to sync the `apps/` directory from Git every `5m`; Flux UI reachable at `https://flux.admin.reli.cc`
-- MetalLB with an L2 address pool at `192.168.1.200-192.168.1.220`
-- Envoy Gateway with two gateways — `envoy-internal` at `192.168.1.200` and `envoy-admin` at `192.168.1.201` — both with TLS termination and HTTP→HTTPS redirect
-- cert-manager with a Let's Encrypt DNS01 `ClusterIssuer` via Cloudflare for `reli.cc`
-- ExternalDNS publishing DNS records through Pi-hole, credentials sourced from Bitwarden
-- Pi-hole reachable at `https://pihole.internal.reli.cc` via `envoy-internal`
-- Longhorn using `/var/lib/longhorn-nvme` as the default data path on worker nodes
-- External Secrets Operator backed by `bitwarden-sdk-server` (`ClusterSecretStore: bitwarden`) for cluster-wide secret management
-- SOPS with age for encrypting secrets at rest in Git
-
 > [!NOTE]
 > This is a personal homelab setup. If you want to reuse it, review the values under `apps/kube-system/`, `apps/flux-system/`, `apps/network-system/`, `apps/dns/`, `apps/storage-system/`, and `apps/security-system/` first and adapt them to your cluster, LAN range, domain, and Bitwarden organization/project IDs.
 
@@ -60,23 +47,16 @@ The setup is split into two layers:
 
 ## Getting started
 
-### Prerequisites
-
-- A working Kubernetes cluster and configured `kubectl` context
-- [Nix](https://nixos.org/download/) or equivalent access to `helmfile`, `helm`, and `kubectl`
-- A Bitwarden Secrets Manager account with an access token, organization ID, and project ID
-- A Cloudflare API token scoped to DNS editing for your domain
-- An age key for SOPS secret decryption, loaded into the cluster as a `Secret` in `flux-system`
-- Network and DNS values updated to match your homelab
-
 ### Clone and inspect
 
-```bash
-nix shell nixpkgs#git --command git clone https://github.com/William-Ro/homelab.git
+Clone the repository and enter the directory:
+
+```sh
+git clone https://github.com/William-Ro/homelab.git
 cd homelab
 ```
 
-Before bootstrapping, inspect these files first:
+Before bootstrapping, review and adapt the following files for your environment:
 
 - `apps/kube-system/coredns/app/helm-release.yaml`
 - `apps/flux-system/flux-instance/app/helm-release.yaml`
@@ -88,54 +68,94 @@ Before bootstrapping, inspect these files first:
 - `apps/storage-system/longhorn/app/helm-release.yaml`
 - `apps/security-system/bitwarden-sdk-server/config/clustersecretstore.yaml`
 
-### Bootstrap CRDs
+### Bootstrap steps
 
-Before bootstrapping Flux, install the Envoy Gateway CRDs:
+#### 1. (Optional) Taint master node
 
-```bash
-nix shell nixpkgs#helmfile nixpkgs#kubernetes-helm nixpkgs#kubectl --command \
-  sh -c 'helmfile template -q -f bootstrap/crds/helmfile.yaml | \
-  kubectl apply --server-side --force-conflicts -f -'
+If you have multiple nodes and want to prevent workloads from scheduling on the master node:
+
+```sh
+kubectl taint nodes <master-node-name> node-role.kubernetes.io/master=:NoSchedule
 ```
 
-### Bootstrap Flux
+#### 2. Disable bundled defaults (for k3s or similar distros)
 
-```bash
-nix shell nixpkgs#helmfile nixpkgs#kubernetes-helm --command \
-  helmfile -f bootstrap/helmfile.yaml apply
-```
-
-This installs `coredns`, `flux-operator`, and `flux-instance`. `coredns` is bootstrapped first so the Flux controllers and workloads have cluster DNS available during reconciliation.
-
-If you are using `k3s`, disable the bundled components you replace declaratively in `/etc/rancher/k3s/config.yaml` before bootstrapping:
+If using k3s or any Kubernetes distribution with bundled defaults, disable the following in your cluster config (e.g., `/etc/rancher/k3s/config.yaml`):
 
 ```yaml
 disable:
   - servicelb
   - coredns
   - local-storage
+  - traefik
 ```
 
-After that, Flux continuously reconciles the `apps/` directory from the tracked branch.
+#### 3. Longhorn requirement
+
+Longhorn requires `open-iscsi` to be installed on all nodes. Install it using your OS package manager, e.g.:
+
+```sh
+# Ubuntu/Debian
+sudo apt-get install open-iscsi
+# CentOS/RHEL
+sudo yum install iscsi-initiator-utils
+```
+
+#### 4. Create SOPS secret for Flux
+
+If you use SOPS for secret management, create the secret in the `flux-system` namespace:
+
+```sh
+kubectl -n flux-system create secret generic sops-age \
+  --from-file=age.agekey=$HOME/.config/sops/age/keys.txt
+```
+
+#### 5. Install CRDs (Envoy Gateway, etc)
+
+Before bootstrapping Flux, install the required CRDs:
+
+```sh
+helmfile -f bootstrap/crds/helmfile.yaml template -q | \
+  yq ea 'select(.kind == "CustomResourceDefinition")' - | \
+  kubectl apply --server-side --force-conflicts -f -
+```
+
+#### 6. Bootstrap Flux controllers and core apps
+
+On the first install, use `helmfile sync` (not `apply`) to avoid dependency issues:
+
+```sh
+helmfile -f bootstrap/helmfile.yaml sync
+```
+
+After the initial install, you can use `helmfile apply` for subsequent updates:
+
+```sh
+helmfile -f bootstrap/helmfile.yaml apply
+```
+
+This installs `coredns`, `flux-operator`, and `flux-instance`. `coredns` is bootstrapped first so the Flux controllers and workloads have cluster DNS available during reconciliation.
+
+Once bootstrapped, Flux will continuously reconcile the `apps/` directory from the tracked branch.
 
 ## Apply a configuration
 
 Most day-to-day changes happen by editing manifests under `apps/` and pushing them to the Git branch watched by Flux.
 
-```bash
-nix shell nixpkgs#kubectl --command kubectl get kustomizations -A
-nix shell nixpkgs#kubectl --command kubectl get helmreleases -A
-nix shell nixpkgs#kubectl --command kubectl get pods -A
+```sh
+kubectl get kustomizations -A
+kubectl get helmreleases -A
+kubectl get pods -A
 ```
 
 ## Validation and maintenance
 
-```bash
-nix shell nixpkgs#kubectl --command kubectl get svc -A
-nix shell nixpkgs#kubectl --command kubectl get httproutes -A
-nix shell nixpkgs#kubectl --command kubectl get certificates -A
-nix shell nixpkgs#kubectl --command kubectl get externalsecrets -A
-nix shell nixpkgs#kubectl --command kubectl get all -n flux-system
+```sh
+kubectl get svc -A
+kubectl get httproutes -A
+kubectl get certificates -A
+kubectl get externalsecrets -A
+kubectl get all -n flux-system
 ```
 
 Main user-facing endpoints:
