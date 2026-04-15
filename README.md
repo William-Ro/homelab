@@ -157,10 +157,3 @@ kubectl get certificates -A
 kubectl get externalsecrets -A
 kubectl get all -n flux-system
 ```
-
-Main user-facing endpoints:
-
-| Endpoint                          | Gateway                            |
-| --------------------------------- | ---------------------------------- |
-| `https://pihole.internal.reli.cc` | `envoy-internal` (`192.168.1.200`) |
-| `https://flux.admin.reli.cc`      | `envoy-admin` (`192.168.1.201`)    |
