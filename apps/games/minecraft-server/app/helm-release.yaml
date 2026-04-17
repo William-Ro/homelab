@@ -58,7 +58,7 @@ spec:
     minecraftServer:
       eula: true
       # renovate: datasource=custom.minecraft-release
-      version: "26.1"
+      version: "1.21.1"
       type: "PAPER"
       overrideServerProperties: true
       jvmXXOpts: "-XX:MaxRAMPercentage=75"
