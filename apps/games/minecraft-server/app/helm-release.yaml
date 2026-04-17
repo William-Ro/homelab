@@ -73,8 +73,7 @@ spec:
       motd: "Minecraft Server"
       worldSaveName: "world"
       viewDistance: 16
-
-    rcon:
-      enabled: true
-      existingSecret: minecraft-server
-      secretKey: RCON_PASSWORD
+      rcon:
+        enabled: true
+        existingSecret: minecraft-server
+        secretKey: RCON_PASSWORD
