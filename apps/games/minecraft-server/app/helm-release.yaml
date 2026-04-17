@@ -61,13 +61,15 @@ spec:
       version: "1.21.1"
       type: "PAPER"
       overrideServerProperties: true
+      jvmOpts: "--enable-native-access=ALL-UNNAMED"
       jvmXXOpts: "-XX:MaxRAMPercentage=75"
-      difficulty: normal #? peaceful, easy, normal, hard
+      difficulty: normal
+      levelType: normal
       spawnProtection: 0
-      gameMode: survival #? creative, survival, adventure, spectator
+      gameMode: survival
       pvp: false
       onlineMode: true
-      ops: "Rataconthiner666" #? comma separated list of operators
+      ops: "Rataconthiner666"
       motd: "Minecraft Server"
       worldSaveName: "world"
       viewDistance: 16
