@@ -50,10 +50,9 @@ node_modules/
 .cache/
 
 # --- Local agent / editor tooling (not pushed to GitHub) ---
-.clavix/
-.cursor/
-.github/
-.skills/
+.github/agents
+.github/instructions
+.github/skills
+.github/copilot-instructions.md
 AGENTS.md
-OCTO.md
 docs
