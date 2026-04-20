@@ -10,3 +10,4 @@ resources:
   - ./metallb
   - ./external-dns
   - ./cert-manager
+  - ./pihole

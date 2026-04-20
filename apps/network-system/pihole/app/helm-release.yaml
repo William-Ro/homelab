@@ -1,0 +1,46 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2.json
+
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: pihole
+  namespace: network-system
+  labels:
+    app.kubernetes.io/name: pihole
+    app.kubernetes.io/part-of: pihole
+    app.kubernetes.io/managed-by: flux
+spec:
+  interval: 10m
+  chartRef:
+    kind: OCIRepository
+    name: pihole
+
+  valuesFrom:
+    - kind: Secret
+      name: pihole-password
+      valuesKey: password
+      targetPath: pihole.web.password
+
+  values:
+    replicas: 1
+
+    pihole:
+      web:
+        service:
+          type: LoadBalancer
+          loadBalancerIP: 192.168.1.220
+          externalTrafficPolicy: Local
+          annotations:
+            metallb.universe.tf/allow-shared-ip: pihole-svc
+
+          service:
+            type: LoadBalancer
+            loadBalancerIP: 192.168.1.220
+            externalTrafficPolicy: Local
+            annotations:
+              metallb.universe.tf/allow-shared-ip: pihole-svc
+
+    persistence:
+      etcPihole:
+        enabled: true
