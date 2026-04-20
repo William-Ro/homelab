@@ -1,0 +1,47 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:recommended",
+    ":dependencyDashboard",
+    ":disableRateLimiting",
+    ":semanticCommits"
+  ],
+  "dependencyDashboard": true,
+  "dependencyDashboardTitle": "Renovate Dashboard 🤖",
+  "ignorePaths": ["**/*.secret.sops.yaml", "**/*.secret.yaml"],
+  "flux": {
+    "managerFilePatterns": ["/\\.yaml$/"]
+  },
+  "helm-values": {
+    "managerFilePatterns": ["/\\.yaml$/"]
+  },
+  "kubernetes": {
+    "managerFilePatterns": ["/\\.yaml$/"]
+  },
+  "packageRules": [
+    {
+      "matchUpdateTypes": ["major"],
+      "labels": ["type/major"]
+    },
+    {
+      "matchUpdateTypes": ["minor"],
+      "labels": ["type/minor"]
+    },
+    {
+      "matchUpdateTypes": ["patch"],
+      "labels": ["type/patch"]
+    },
+    {
+      "matchDatasources": ["docker"],
+      "addLabels": ["renovate/container"],
+      "semanticCommitScope": "container",
+      "commitMessageTopic": "image {{depName}}"
+    },
+    {
+      "matchDatasources": ["helm"],
+      "addLabels": ["renovate/helm"],
+      "semanticCommitScope": "helm",
+      "commitMessageTopic": "chart {{depName}}"
+    }
+  ]
+}
