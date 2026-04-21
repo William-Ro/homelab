@@ -21,15 +21,19 @@
   "packageRules": [
     {
       "matchUpdateTypes": ["major"],
-      "labels": ["type/major"]
+      "labels": ["type/major"],
+      "automerge": false
     },
     {
       "matchUpdateTypes": ["minor"],
-      "labels": ["type/minor"]
+      "labels": ["type/minor"],
+      "automerge": false
     },
     {
       "matchUpdateTypes": ["patch"],
-      "labels": ["type/patch"]
+      "labels": ["type/patch"],
+      "automerge": true,
+      "automergeType": "branch"
     },
     {
       "matchDatasources": ["docker"],
