@@ -27,7 +27,8 @@
     {
       "matchUpdateTypes": ["minor"],
       "labels": ["type/minor"],
-      "automerge": false
+      "automerge": true,
+      "automergeType": "branch"
     },
     {
       "matchUpdateTypes": ["patch"],
