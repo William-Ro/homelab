@@ -17,9 +17,9 @@ spec:
     namespace: flux-system
 
   dependsOn:
-    #? wait for the CRDs to be installed
+    # wait for the CRDs to be installed
     - name: cert-manager
 
-    #? wait for the bitwarden-sdk-server secret store to be ready
+    # wait for the bitwarden-sdk-server secret store to be ready
     - name: bitwarden-sdk-server-config
       namespace: security-system

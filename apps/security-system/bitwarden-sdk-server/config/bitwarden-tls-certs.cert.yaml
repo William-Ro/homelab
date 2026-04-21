@@ -5,8 +5,8 @@ metadata:
   name: bitwarden-tls-certs
 spec:
   secretName: bitwarden-tls-certs
-  duration: 2160h # 90 days
-  renewBefore: 360h # 15 days
+  duration: 2160h  # 90 days
+  renewBefore: 360h  # 15 days
   isCA: false
   privateKey:
     algorithm: RSA

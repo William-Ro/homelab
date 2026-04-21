@@ -18,4 +18,4 @@ spec:
 
   dependsOn:
     - name: metallb-config
-      namespace: network-system # LoadBalancer IP pool must exist before Longhorn management UI is exposed
+      namespace: network-system  # LoadBalancer IP pool must exist before Longhorn management UI is exposed

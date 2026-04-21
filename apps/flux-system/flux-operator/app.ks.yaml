@@ -6,7 +6,7 @@ metadata:
   namespace: flux-system
 spec:
   interval: 1h
-  prune: false # Never delete this
+  prune: false  # Never delete this
   wait: false
   targetNamespace: flux-system
 
