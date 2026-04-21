@@ -1,0 +1,44 @@
+---
+# Areas
+- name: area/apps
+  color: "0e8a16"
+  description: "Changes to apps/"
+- name: area/bootstrap
+  color: "0e8a16"
+  description: "Changes to bootstrap/"
+- name: area/docs
+  color: "0e8a16"
+  description: "Changes to docs/"
+- name: area/github
+  color: "0e8a16"
+  description: "Changes to .github/"
+- name: area/renovate
+  color: "0e8a16"
+  description: "Changes to Renovate config"
+
+# Renovate types
+- name: renovate/container
+  color: "027fa0"
+  description: "Renovate container image update"
+- name: renovate/helm
+  color: "027fa0"
+  description: "Renovate Helm chart update"
+- name: renovate/github-action
+  color: "027fa0"
+  description: "Renovate GitHub Actions update"
+
+# Semantic types
+- name: type/patch
+  color: "ffeC19"
+  description: "Patch version update"
+- name: type/minor
+  color: "ff9800"
+  description: "Minor version update"
+- name: type/major
+  color: "f6412d"
+  description: "Major version update"
+
+# Misc
+- name: hold
+  color: "ee0701"
+  description: "Do not merge"

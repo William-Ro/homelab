@@ -1,0 +1,27 @@
+---
+area/apps:
+  - changed-files:
+      - any-glob-to-any-file:
+          - apps/**/*
+
+area/bootstrap:
+  - changed-files:
+      - any-glob-to-any-file:
+          - bootstrap/**/*
+
+area/docs:
+  - changed-files:
+      - any-glob-to-any-file:
+          - docs/**/*
+          - README.md
+
+area/github:
+  - changed-files:
+      - any-glob-to-any-file:
+          - .github/**/*
+
+area/renovate:
+  - changed-files:
+      - any-glob-to-any-file:
+          - .renovaterc.json
+          - .github/workflows/renovate.yaml
