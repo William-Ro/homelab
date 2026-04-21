@@ -1,0 +1,193 @@
+# yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
+name: CI PR
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - apps/**
+      - bootstrap/**
+      - .github/flux-local/**
+
+concurrency:
+  group: ci-pr-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  syntax:
+    name: Syntax & Lint
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+
+      - name: yamllint
+        run: |
+          pip install yamllint --quiet
+          yamllint --strict \
+            --config-data "{extends: default, rules: {line-length: disable, truthy: disable, document-start: disable}}" \
+            apps/ bootstrap/
+
+  security:
+    name: Security Scan
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      security-events: write
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+
+      - name: Gitleaks
+        continue-on-error: true
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Trivy misconfiguration scan
+        continue-on-error: true
+        uses: aquasecurity/trivy-action@0.28.0
+        with:
+          scan-type: config
+          scan-ref: .
+          severity: CRITICAL,HIGH
+          exit-code: 0
+
+  validate:
+    name: Validate Manifests
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+
+      - name: flux-local test
+        uses: docker://ghcr.io/allenporter/flux-local:v8.2.0
+        with:
+          args: >-
+            test
+            --all-namespaces
+            --path /github/workspace/.github/flux-local
+            --skip-secrets
+            --kustomize-build-flags=--load-restrictor=LoadRestrictionsNone
+            -v
+
+  diff:
+    name: Manifest Diff
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+      pull-requests: write
+    strategy:
+      matrix:
+        resources: [helmrelease, kustomization]
+      fail-fast: false
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          path: pull
+          persist-credentials: false
+
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          ref: ${{ github.event.repository.default_branch }}
+          path: default
+          persist-credentials: false
+
+      - name: Initialize diff output
+        run: touch diff.patch
+
+      - name: flux-local diff
+        continue-on-error: true
+        uses: docker://ghcr.io/allenporter/flux-local:v8.2.0
+        with:
+          args: >-
+            diff ${{ matrix.resources }}
+            --unified 6
+            --path /github/workspace/pull/.github/flux-local
+            --path-orig /github/workspace/default/.github/flux-local
+            --strip-attrs "helm.sh/chart,checksum/config,app.kubernetes.io/version,chart"
+            --limit-bytes 10000
+            --all-namespaces
+            --skip-secrets
+            --kustomize-build-flags=--load-restrictor=LoadRestrictionsNone
+            --output-file diff.patch
+
+      - name: Post diff to summary
+        run: |
+          {
+            echo "## Flux ${{ matrix.resources }} diff"
+            echo '```diff'
+            cat diff.patch
+            echo '```'
+          } >> "${GITHUB_STEP_SUMMARY}"
+
+  summary:
+    name: Summary
+    runs-on: ubuntu-latest
+    needs: [syntax, security, validate, diff]
+    if: always()
+    permissions:
+      pull-requests: write
+    steps:
+      - name: Check required jobs
+        run: |
+          if [ "${{ needs.syntax.result }}" != "success" ]; then
+            echo "Syntax validation failed"
+            exit 1
+          fi
+          if [ "${{ needs.validate.result }}" != "success" ]; then
+            echo "Manifest validation failed"
+            exit 1
+          fi
+
+      - name: Post PR comment
+        uses: actions/github-script@v7
+        if: always() && github.event_name == 'pull_request'
+        env:
+          SYNTAX_RESULT: ${{ needs.syntax.result }}
+          SECURITY_RESULT: ${{ needs.security.result }}
+          VALIDATE_RESULT: ${{ needs.validate.result }}
+          DIFF_RESULT: ${{ needs.diff.result }}
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const syntaxOk = process.env.SYNTAX_RESULT === 'success';
+            const securityOk = process.env.SECURITY_RESULT === 'success';
+            const validateOk = process.env.VALIDATE_RESULT === 'success';
+            const diffOk = process.env.DIFF_RESULT === 'success';
+
+            const runUrl = `https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
+            const check = (ok, pass, fail) => ok ? `**Pass** - ${pass}` : `**Fail** - ${fail}`;
+
+            const body = [
+              '## Kubernetes GitOps CI Report',
+              '',
+              '### Pipeline Status',
+              `- **Syntax & Lint:** ${check(syntaxOk, 'YAML is valid, manifests conform to schema.', 'Check yamllint or kubeconform output.')}`,
+              `- **Security Scan:** ${check(securityOk, 'No secrets or critical misconfigurations found.', 'Review gitleaks or trivy findings.')}`,
+              `- **Manifest Validation:** ${check(validateOk, 'All Kustomizations build successfully.', 'flux-local test failed. Check the logs.')}`,
+              `- **Manifest Diff:** ${check(diffOk, 'Diff computed. See the run summary for details.', 'Diff step had issues.')}`,
+              '',
+              '### Conclusion',
+              `**Ready to Merge:** ${syntaxOk && validateOk ? 'Yes. All required checks passed.' : 'No. Fix the failing jobs before merging.'}`,
+              '',
+              `[View full workflow run details](${runUrl})`
+            ].join('\n');
+
+            await github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body
+            }).catch(err => console.log('Comment failed:', err.message));
