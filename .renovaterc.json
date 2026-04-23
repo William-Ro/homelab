@@ -28,13 +28,13 @@
       "matchUpdateTypes": ["minor"],
       "labels": ["type/minor"],
       "automerge": true,
-      "automergeType": "branch"
+      "automergeType": "pr"
     },
     {
       "matchUpdateTypes": ["patch"],
       "labels": ["type/patch"],
       "automerge": true,
-      "automergeType": "branch"
+      "automergeType": "pr"
     },
     {
       "matchDatasources": ["docker"],
