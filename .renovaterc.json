@@ -4,10 +4,13 @@
     "config:recommended",
     ":dependencyDashboard",
     ":disableRateLimiting",
-    ":semanticCommits"
+    ":semanticCommits",
+    "helpers:pinGitHubActionDigests"
   ],
   "dependencyDashboard": true,
   "dependencyDashboardTitle": "Renovate Dashboard 🤖",
+  "platformAutomerge": true,
+  "rebaseStalePrs": true,
   "ignorePaths": ["**/*.secret.sops.yaml", "**/*.secret.yaml"],
   "flux": {
     "managerFilePatterns": ["/\\.yaml$/"]
@@ -20,6 +23,24 @@
   },
   "packageRules": [
     {
+      "description": "Automerge GitHub Actions (CI does not run on workflow changes)",
+      "matchManagers": ["github-actions"],
+      "automerge": true,
+      "automergeType": "branch",
+      "ignoreTests": true,
+      "minimumReleaseAge": "3 days"
+    },
+    {
+      "description": "Group Flux operator and instance updates",
+      "groupName": "flux",
+      "matchDatasources": ["docker"],
+      "matchPackageNames": ["/flux-operator/", "/flux-instance/"],
+      "group": {
+        "commitMessageTopic": "{{{groupName}}} group"
+      },
+      "minimumGroupSize": 2
+    },
+    {
       "matchUpdateTypes": ["major"],
       "labels": ["type/major"],
       "automerge": false
@@ -27,14 +48,25 @@
     {
       "matchUpdateTypes": ["minor"],
       "labels": ["type/minor"],
+      "semanticCommitType": "feat",
       "automerge": true,
-      "automergeType": "pr"
+      "automergeType": "pr",
+      "minimumReleaseAge": "3 days"
     },
     {
       "matchUpdateTypes": ["patch"],
       "labels": ["type/patch"],
+      "semanticCommitType": "fix",
       "automerge": true,
-      "automergeType": "pr"
+      "automergeType": "pr",
+      "minimumReleaseAge": "3 days"
+    },
+    {
+      "matchUpdateTypes": ["digest"],
+      "labels": ["type/digest"],
+      "automerge": true,
+      "automergeType": "pr",
+      "minimumReleaseAge": "3 days"
     },
     {
       "matchDatasources": ["docker"],
@@ -47,6 +79,13 @@
       "addLabels": ["renovate/helm"],
       "semanticCommitScope": "helm",
       "commitMessageTopic": "chart {{depName}}"
+    },
+    {
+      "matchManagers": ["github-actions"],
+      "addLabels": ["renovate/github-action"],
+      "semanticCommitType": "ci",
+      "semanticCommitScope": "github-action",
+      "commitMessageTopic": "action {{depName}}"
     }
   ]
 }
