@@ -1,0 +1,17 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+
+  "packageRules": [
+    {
+      "description": "Group Flux operator and instance updates together",
+      "groupName": "flux-operator",
+      "matchDatasources": ["docker"],
+      "matchPackageNames": [
+        "/flux-operator/",
+        "/flux-instance/",
+        "/flux-operator-manifests/"
+      ],
+      "minimumGroupSize": 2
+    }
+  ]
+}
