@@ -52,7 +52,7 @@
     {
       "matchUpdateTypes": ["minor", "patch", "pin", "digest", "pinDigest"],
       "automerge": true,
-      "automergeType": "branch"
+      "automergeType": "pr"
     },
     {
       "matchUpdateTypes": ["major"],
@@ -63,10 +63,16 @@
     { "matchUpdateTypes": ["minor"], "labels": ["type/minor"] },
     { "matchUpdateTypes": ["patch"], "labels": ["type/patch"] },
     { "matchUpdateTypes": ["digest"], "labels": ["type/digest"] },
-    { "matchDatasources": ["github-releases", "github-tags"], "addLabels": ["renovate/github-release"] },
+    {
+      "matchDatasources": ["github-releases", "github-tags"],
+      "addLabels": ["renovate/github-release"]
+    },
     { "matchDatasources": ["docker"], "addLabels": ["renovate/container"] },
     { "matchDatasources": ["helm"], "addLabels": ["renovate/helm"] },
-    { "matchManagers": ["github-actions"], "addLabels": ["renovate/github-action"] },
+    {
+      "matchManagers": ["github-actions"],
+      "addLabels": ["renovate/github-action"]
+    },
     {
       "matchUpdateTypes": ["major"],
       "semanticCommitType": "feat",
@@ -96,9 +102,21 @@
       "commitMessageExtra": "( {{currentDigestShort}} → {{newDigestShort}} )",
       "commitMessageSuffix": ""
     },
-    { "matchDatasources": ["docker"], "semanticCommitType": "fix", "semanticCommitScope": "container" },
-    { "matchDatasources": ["helm"], "semanticCommitType": "fix", "semanticCommitScope": "helm" },
-    { "matchManagers": ["github-actions"], "semanticCommitType": "ci", "semanticCommitScope": "github-action" },
+    {
+      "matchDatasources": ["docker"],
+      "semanticCommitType": "fix",
+      "semanticCommitScope": "container"
+    },
+    {
+      "matchDatasources": ["helm"],
+      "semanticCommitType": "fix",
+      "semanticCommitScope": "helm"
+    },
+    {
+      "matchManagers": ["github-actions"],
+      "semanticCommitType": "ci",
+      "semanticCommitScope": "github-action"
+    },
     {
       "matchManagers": ["github-actions"],
       "matchUpdateTypes": ["major"],
