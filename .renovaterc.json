@@ -1,7 +1,7 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "dependencyDashboard": true,
-  "dependencyDashboardTitle": "Renovate Dashboard 🤖",
+  "dependencyDashboardTitle": "Renovate Dashboard",
   "rebaseWhen": "behind-base-branch",
   "rebaseStalePrs": true,
   "semanticCommits": "enabled",
