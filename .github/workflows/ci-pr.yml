@@ -8,6 +8,7 @@ on:
       - apps/**
       - bootstrap/**
       - .github/flux-local/**
+      - .github/workflows/**
 
 concurrency:
   group: ci-pr-${{ github.ref }}
