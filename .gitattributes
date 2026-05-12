@@ -1,7 +1,10 @@
 # Override GitHub Linguist language detection
-# Exclude Go templates from language stats (used only for Helmfile bootstrap)
-bootstrap/templates/*.gotmpl linguist-detectable=false
-
-# Force YAML to appear in language stats (it's classified as "data" by default)
-*.yaml linguist-detectable=true
-*.yml linguist-detectable=true
+* text=auto eol=lf
+*.json linguist-detectable linguist-language=JSON
+*.json5 linguist-detectable linguist-language=JSON5
+*.md linguist-detectable linguist-language=MARKDOWN
+*.sh linguist-detectable linguist-language=SHELL
+*.toml linguist-detectable linguist-language=TOML
+*.yml linguist-detectable linguist-language=YAML
+*.yaml linguist-detectable linguist-language=YAML
+*.yaml.j2 linguist-detectable linguist-language=YAML
