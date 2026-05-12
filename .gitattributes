@@ -2,6 +2,6 @@
 # Exclude Go templates from language stats (used only for Helmfile bootstrap)
 bootstrap/templates/*.gotmpl linguist-detectable=false
 
-# Classify all YAML as the primary language
-*.yaml linguist-language=YAML
-*.yml linguist-language=YAML
+# Force YAML to appear in language stats (it's classified as "data" by default)
+*.yaml linguist-detectable=true
+*.yml linguist-detectable=true
