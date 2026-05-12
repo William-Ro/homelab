@@ -2,8 +2,8 @@
 
 # homelab
 
-Declarative Kubernetes platform configuration built with `Flux CD`, `Kustomize`, `HelmRelease`, and `Helmfile`.
+Declarative Kubernetes infrastructure and service configuration managed from a single Git source.
 
-This repository manages core services for a home cluster from a single Git source, with separate app folders for GitOps bootstrap, networking, DNS, storage, and security.
+This repository contains platform resources, infrastructure components, and self-hosted services organized into reusable and modular configurations for cluster operations, networking, storage, security, and applications.
 
 </div>
