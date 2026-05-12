@@ -20,7 +20,7 @@ on:
 
 jobs:
   renovate:
-    uses: William-Ro/github-workflows/.github/workflows/renovate.yaml@main # main
+    uses: William-Ro/github-workflows/.github/workflows/renovate.yaml@94028364b1121ec287d043b84ae419771f8244dd # main
     with:
       dry-run: ${{ inputs.dry-run || false }}
       log-level: ${{ inputs.log-level || 'debug' }}
