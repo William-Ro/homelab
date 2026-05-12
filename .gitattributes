@@ -1,0 +1,7 @@
+# Override GitHub Linguist language detection
+# Exclude Go templates from language stats (used only for Helmfile bootstrap)
+bootstrap/templates/*.gotmpl linguist-detectable=false
+
+# Classify all YAML as the primary language
+*.yaml linguist-language=YAML
+*.yml linguist-language=YAML
