@@ -18,30 +18,12 @@ on:
         options: [debug, info]
         required: true
 
-concurrency:
-  group: ${{ github.workflow }}-${{ github.event.number || github.ref }}
-  cancel-in-progress: true
-
 jobs:
   renovate:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-
-      - name: Generate Token
-        uses: actions/create-github-app-token@1b10c78c7865c340bc4f6099eb2f838309f1e8c3 # v3.1.1
-        id: app-token
-        with:
-          client-id: "${{ secrets.BOT_APP_ID }}"
-          private-key: "${{ secrets.BOT_APP_PRIVATE_KEY }}"
-
-      - name: Run Renovate
-        uses: renovatebot/github-action@693b9ef15eec82123529a37c782242f091365961 # v46.1.14
-        env:
-          LOG_LEVEL: "${{ inputs.log-level || 'debug' }}"
-          RENOVATE_AUTODISCOVER: true
-          RENOVATE_AUTODISCOVER_FILTER: "${{ github.repository }}"
-          RENOVATE_DRY_RUN: "${{ inputs.dry-run == true }}"
-        with:
-          token: "${{ steps.app-token.outputs.token }}"
+    uses: William-Ro/github-workflows/.github/workflows/renovate.yaml@94028364b1121ec287d043b84ae419771f8244dd # main
+    with:
+      dry-run: ${{ inputs.dry-run || false }}
+      log-level: ${{ inputs.log-level || 'debug' }}
+    secrets:
+      BOT_APP_ID: ${{ secrets.BOT_APP_ID }}
+      BOT_APP_PRIVATE_KEY: ${{ secrets.BOT_APP_PRIVATE_KEY }}
