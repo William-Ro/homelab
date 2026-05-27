@@ -9,7 +9,7 @@ spec:
   interval: 15m
   url: oci://quay.io/metallb/chart/metallb
   ref:
-    tag: 0.16.0
+    tag: 0.16.1
 
   layerSelector:
     mediaType: application/vnd.cncf.helm.chart.content.v1.tar+gzip
