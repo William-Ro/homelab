@@ -1,0 +1,20 @@
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: grafana
+  namespace: observability-system
+spec:
+  interval: 10m
+  prune: true
+  wait: true
+  targetNamespace: observability-system
+
+  path: ./apps/observability-system/grafana/app
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+
+  dependsOn:
+    - name: grafana-config
