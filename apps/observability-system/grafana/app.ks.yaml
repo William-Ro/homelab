@@ -15,6 +15,3 @@ spec:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
-
-  dependsOn:
-    - name: grafana-config

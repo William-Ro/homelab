@@ -1,5 +1,6 @@
 ---
 # yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2.json
+
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
@@ -16,28 +17,5 @@ spec:
     name: grafana
 
   values:
-    fullnameOverride: grafana
-
-    admin:
-      existingSecret: grafana-admin-credentials
-      userKey: admin-user
-      passwordKey: admin-password
-
-    service:
-      type: ClusterIP
-      port: 80
-
-    persistence:
+    dashboard:
       enabled: true
-      storageClassName: longhorn
-      size: 5Gi
-
-    ingress:
-      enabled: false
-
-    grafana.ini:
-      server:
-        domain: grafana.internal.reli.cc
-        root_url: https://grafana.internal.reli.cc
-      log:
-        level: warn
