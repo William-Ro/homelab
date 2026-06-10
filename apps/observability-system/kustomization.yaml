@@ -6,4 +6,4 @@ namespace: observability-system
 
 resources:
   - ./namespace.yaml
-  - ./grafana.yaml
+  - ./grafana
