@@ -2,7 +2,7 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: minio-config
+  name: garage
   namespace: storage-system
 spec:
   interval: 10m
@@ -10,12 +10,11 @@ spec:
   wait: true
   targetNamespace: storage-system
 
-  path: ./apps/storage-system/minio/config
+  path: ./apps/storage-system/garage/app
   sourceRef:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
 
   dependsOn:
-    - name: bitwarden-sdk-server-config
-      namespace: security-system
+    - name: garage-config

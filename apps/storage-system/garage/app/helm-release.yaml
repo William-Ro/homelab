@@ -1,0 +1,68 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2.json
+
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: garage
+  namespace: storage-system
+  labels:
+    app.kubernetes.io/name: garage
+    app.kubernetes.io/part-of: garage
+    app.kubernetes.io/managed-by: flux
+spec:
+  interval: 10m
+  chart:
+    spec:
+      chart: garage
+      version: 0.6.0
+      sourceRef:
+        kind: HelmRepository
+        name: garage
+        namespace: storage-system
+
+  values:
+    garage:
+      replicationFactor: "3"
+      s3:
+        api:
+          region: "garage"
+
+    persistence:
+      meta:
+        storageClass: longhorn
+        size: 256Mi
+      data:
+        storageClass: longhorn
+        size: 20Gi
+
+    webui:
+      enabled: true
+
+    clusterConfig:
+      enabled: true
+      layout:
+        enabled: true
+        zone: homelab
+      buckets:
+        - name: mimir
+        - name: loki
+      keys:
+        mimir-key:
+          secretName: garage-mimir-key
+          keyId: keyId
+          secretKey: secretKey
+          buckets:
+            - name: mimir
+              read: true
+              write: true
+              owner: true
+        loki-key:
+          secretName: garage-loki-key
+          keyId: keyId
+          secretKey: secretKey
+          buckets:
+            - name: loki
+              read: true
+              write: true
+              owner: true
