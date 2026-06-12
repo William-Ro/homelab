@@ -1,0 +1,33 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/collectors.grafana.com/alloy_v1alpha1.json
+
+apiVersion: collectors.grafana.com/v1alpha1
+kind: Alloy
+metadata:
+  name: alloy-metrics
+  labels:
+    app.kubernetes.io/name: alloy
+    app.kubernetes.io/part-of: alloy
+    app.kubernetes.io/managed-by: flux
+spec:
+  alloy:
+    configMap:
+      create: false
+      name: alloy-metrics-config
+      key: config.alloy
+
+  podAnnotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "12345"
+    prometheus.io/path: "/metrics"
+
+  controller:
+    type: deployment
+    replicas: 1
+
+  rbac:
+    create: true
+
+  serviceAccount:
+    create: true
+    name: alloy-metrics

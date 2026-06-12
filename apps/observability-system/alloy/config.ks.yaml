@@ -2,7 +2,7 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: alloy
+  name: alloy-config
   namespace: observability-system
 spec:
   interval: 10m
@@ -10,8 +10,13 @@ spec:
   wait: true
   targetNamespace: observability-system
 
-  path: ./apps/observability-system/alloy/app
+  path: ./apps/observability-system/alloy/config
   sourceRef:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
+
+  dependsOn:
+    - name: alloy
+    - name: mimir
+    - name: kube-state-metrics
