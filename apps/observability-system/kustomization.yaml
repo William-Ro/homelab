@@ -6,6 +6,7 @@ namespace: observability-system
 
 resources:
   - ./namespace.yaml
+  - ./alloy
   - ./grafana
   - ./kube-state-metrics
   - ./mimir
