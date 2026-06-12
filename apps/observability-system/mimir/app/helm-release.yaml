@@ -48,14 +48,23 @@ spec:
               secret_access_key: ${MIMIR_S3_SECRET_ACCESS_KEY}
 
         blocks_storage:
+          s3:
+            bucket_name: mimir
+          storage_prefix: blocks
           tsdb:
             dir: /data/tsdb
             head_compaction_interval: 15m
             wal_replay_concurrency: 3
 
-        alertmanager_storage: {}
+        alertmanager_storage:
+          s3:
+            bucket_name: mimir
+          storage_prefix: alertmanager
 
-        ruler_storage: {}
+        ruler_storage:
+          s3:
+            bucket_name: mimir
+          storage_prefix: ruler
 
     # Single-zone homelab: disable zone-aware replication
     ingester:
