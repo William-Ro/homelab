@@ -21,8 +21,7 @@ spec:
 
     prometheus:
       monitor:
-        enabled: true
-        honorLabels: true
+        enabled: false
 
     # Grant access to Flux CRDs so Flux resource states are exposed as metrics
     rbac:
