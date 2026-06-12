@@ -7,3 +7,4 @@ namespace: observability-system
 resources:
   - ./namespace.yaml
   - ./grafana
+  - ./kube-state-metrics
