@@ -12,6 +12,13 @@ metadata:
     app.kubernetes.io/managed-by: flux
 spec:
   interval: 10m
+  timeout: 15m
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    remediation:
+      retries: 3
   chart:
     spec:
       chart: garage
