@@ -19,7 +19,7 @@ spec:
     name: Mimir
     access: proxy
     isDefault: true
-    url: http://mimir-nginx.observability-system.svc.cluster.local:80/prometheus
+    url: http://mimir-gateway.observability-system.svc.cluster.local:80/prometheus
     jsonData:
       httpMethod: POST
       httpHeaderName1: "X-Scope-OrgID"
