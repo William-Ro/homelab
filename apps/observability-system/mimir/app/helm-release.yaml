@@ -1,0 +1,102 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2.json
+
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: mimir
+  namespace: observability-system
+  labels:
+    app.kubernetes.io/name: mimir
+    app.kubernetes.io/part-of: mimir
+    app.kubernetes.io/managed-by: flux
+spec:
+  interval: 10m
+  timeout: 15m
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    remediation:
+      retries: 3
+  chartRef:
+    kind: OCIRepository
+    name: mimir
+    namespace: observability-system
+
+  values:
+    # Disable built-in minio — we use Garage
+    minio:
+      enabled: false
+
+    # Inject S3 credentials from ExternalSecret into all pods
+    global:
+      extraEnvFrom:
+        - secretRef:
+            name: mimir-s3-credentials
+
+    mimir:
+      structuredConfig:
+        common:
+          storage:
+            backend: s3
+            s3:
+              endpoint: garage.storage-system.svc.cluster.local:3900
+              region: garage
+              insecure: true
+              access_key_id: ${MIMIR_S3_ACCESS_KEY_ID}
+              secret_access_key: ${MIMIR_S3_SECRET_ACCESS_KEY}
+
+        blocks_storage:
+          s3:
+            bucket_name: mimir
+          tsdb:
+            dir: /data/tsdb
+            head_compaction_interval: 15m
+            wal_replay_concurrency: 3
+
+        alertmanager_storage:
+          s3:
+            bucket_name: mimir
+
+        ruler_storage:
+          s3:
+            bucket_name: mimir
+
+    # Single-zone homelab: disable zone-aware replication
+    ingester:
+      replicas: 2
+      zoneAwareReplication:
+        enabled: false
+      persistentVolume:
+        storageClass: longhorn
+        size: 5Gi
+
+    store_gateway:
+      replicas: 1
+      zoneAwareReplication:
+        enabled: false
+      persistentVolume:
+        storageClass: longhorn
+        size: 5Gi
+
+    compactor:
+      persistentVolume:
+        storageClass: longhorn
+        size: 5Gi
+
+    alertmanager:
+      persistentVolume:
+        storageClass: longhorn
+        size: 1Gi
+      fallbackConfig: ""
+
+    # Disable optional components not needed for basic homelab setup
+    "chunks-cache":
+      enabled: false
+    "index-cache":
+      enabled: false
+    "metadata-cache":
+      enabled: false
+    "results-cache":
+      enabled: false

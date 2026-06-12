@@ -8,3 +8,4 @@ resources:
   - ./namespace.yaml
   - ./grafana
   - ./kube-state-metrics
+  - ./mimir

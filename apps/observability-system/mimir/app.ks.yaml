@@ -1,0 +1,22 @@
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: mimir
+  namespace: observability-system
+spec:
+  interval: 10m
+  prune: true
+  wait: true
+  targetNamespace: observability-system
+
+  path: ./apps/observability-system/mimir/app
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+
+  dependsOn:
+    - name: mimir-config
+    - name: garage
+      namespace: storage-system
