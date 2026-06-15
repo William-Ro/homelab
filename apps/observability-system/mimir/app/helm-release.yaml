@@ -37,6 +37,8 @@ spec:
 
     mimir:
       structuredConfig:
+        multitenancy_enabled: false
+
         common:
           storage:
             backend: s3
