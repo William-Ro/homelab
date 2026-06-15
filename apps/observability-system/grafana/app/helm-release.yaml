@@ -17,19 +17,12 @@ spec:
     name: grafana
 
   values:
-    grafana.ini:
-      date_formats:
-        default_timezone: America/Costa_Rica
-
-    env:
-      TZ: America/Costa_Rica
-
     resources:
       requests:
-        cpu: 50m
-        memory: 320Mi
+        cpu: 5m
+        memory: 32Mi
       limits:
-        memory: 512Mi
+        memory: 128Mi
 
     dashboard:
       enabled: true
