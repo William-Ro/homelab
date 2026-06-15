@@ -5,3 +5,6 @@ kind: Kustomization
 resources:
   - config.yaml
   - alloy.yaml
+  - alloy-rules-config.yaml
+  - alloy-rules.yaml
+  - alloy-rules-rbac.yaml

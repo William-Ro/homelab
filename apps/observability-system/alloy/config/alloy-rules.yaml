@@ -1,0 +1,33 @@
+---
+apiVersion: collectors.grafana.com/v1alpha1
+kind: Alloy
+metadata:
+  name: alloy-rules
+  labels:
+    app.kubernetes.io/name: alloy
+    app.kubernetes.io/component: rules
+    app.kubernetes.io/part-of: alloy
+    app.kubernetes.io/managed-by: flux
+spec:
+  alloy:
+    configMap:
+      create: false
+      name: alloy-rules-config
+      key: config.alloy
+    resources:
+      requests:
+        cpu: 10m
+        memory: 64Mi
+      limits:
+        memory: 128Mi
+
+  controller:
+    type: deployment
+    replicas: 1
+
+  rbac:
+    create: true
+
+  serviceAccount:
+    create: true
+    name: alloy-rules

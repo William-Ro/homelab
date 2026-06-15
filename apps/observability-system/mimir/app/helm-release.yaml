@@ -53,6 +53,10 @@ spec:
               access_key_id: ${MIMIR_S3_ACCESS_KEY_ID}
               secret_access_key: ${MIMIR_S3_SECRET_ACCESS_KEY}
 
+        ruler:
+          alertmanager_url: http://alertmanager.observability-system.svc.cluster.local:9093
+          enable_api: true
+
         blocks_storage:
           s3:
             bucket_name: mimir

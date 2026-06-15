@@ -1,0 +1,65 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/monitoring.coreos.com/prometheusrule_v1.json
+
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: kubernetes-alerts
+  labels:
+    app.kubernetes.io/name: alertmanager
+    app.kubernetes.io/part-of: alertmanager
+    app.kubernetes.io/managed-by: flux
+spec:
+  groups:
+    - name: kubernetes.nodes
+      rules:
+        - alert: KubernetesNodeNotReady
+          expr: kube_node_status_condition{condition="Ready",status="true"} == 0
+          for: 5m
+          labels:
+            severity: critical
+          annotations:
+            summary: Node {{ $labels.node }} is not ready
+
+    - name: kubernetes.pods
+      rules:
+        - alert: KubernetesPodCrashLooping
+          expr: rate(kube_pod_container_status_restarts_total[15m]) > 0.2
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: >-
+              Pod {{ $labels.namespace }}/{{ $labels.pod }} is crash-looping
+
+        - alert: KubernetesPodNotReady
+          expr: >-
+            kube_pod_status_ready{condition="false"} == 1
+            AND on(pod, namespace)
+            kube_pod_status_phase{phase="Running"} == 1
+          for: 15m
+          labels:
+            severity: warning
+          annotations:
+            summary: >-
+              Pod {{ $labels.namespace }}/{{ $labels.pod }} is not ready
+
+        - alert: KubernetesPVCPending
+          expr: kube_persistentvolumeclaim_status_phase{phase="Pending"} == 1
+          for: 10m
+          labels:
+            severity: warning
+          annotations:
+            summary: >-
+              PVC {{ $labels.namespace }}/{{ $labels.persistentvolumeclaim }} is stuck in Pending
+
+    - name: flux.reconciliation
+      rules:
+        - alert: FluxReconciliationFailed
+          expr: gotk_reconcile_condition{type="Ready",status="False"} == 1
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: >-
+              Flux {{ $labels.kind }}/{{ $labels.name }} reconciliation failed in {{ $labels.namespace }}
