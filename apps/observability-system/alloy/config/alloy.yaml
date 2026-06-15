@@ -26,7 +26,7 @@ spec:
   hostNetwork: true
   dnsPolicy: ClusterFirstWithHostNet
 
-  volumeMounts:
+  extraVolumeMounts:
     - name: proc
       mountPath: /host/proc
       readOnly: true
@@ -37,7 +37,7 @@ spec:
       mountPath: /run/udev/data
       readOnly: true
 
-  volumes:
+  extraVolumes:
     - name: proc
       hostPath:
         path: /proc
