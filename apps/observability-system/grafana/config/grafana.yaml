@@ -22,6 +22,14 @@ spec:
       default_timezone: America/Costa_Rica
     log:
       level: warn
+    dashboards:
+      min_refresh_interval: 1s
+    metrics:
+      enabled: "true"
+    news:
+      news_feed_enabled: "false"
+    plugins:
+      plugin_admin_enabled: "false"
     server:
       enable_gzip: "true"
       domain: grafana.internal.reli.cc
@@ -32,6 +40,11 @@ spec:
       strategy:
         type: Recreate
       template:
+        metadata:
+          annotations:
+            prometheus.io/scrape: "true"
+            prometheus.io/port: "3000"
+            prometheus.io/path: /metrics
         spec:
           containers:
             - name: grafana
