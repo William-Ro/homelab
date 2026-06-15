@@ -78,7 +78,7 @@ spec:
         size: 5Gi
       extraInitContainers:
         - name: wait-for-kafka
-          image: busybox:1.36
+          image: busybox:1.38
           command:
             - sh
             - -c
