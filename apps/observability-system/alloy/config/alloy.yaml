@@ -53,3 +53,11 @@ spec:
   serviceAccount:
     create: true
     name: alloy-metrics
+
+  resources:
+    requests:
+      cpu: 20m
+      memory: 640Mi
+    limits:
+      cpu: null
+      memory: 900Mi

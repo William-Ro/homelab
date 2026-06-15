@@ -73,6 +73,13 @@ spec:
       replicas: 2
       zoneAwareReplication:
         enabled: false
+      resources:
+        requests:
+          cpu: 100m
+          memory: 512Mi
+        limits:
+          cpu: null
+          memory: 1Gi
       persistentVolume:
         storageClass: longhorn
         size: 5Gi
@@ -91,11 +98,25 @@ spec:
       replicas: 1
       zoneAwareReplication:
         enabled: false
+      resources:
+        requests:
+          cpu: 50m
+          memory: 256Mi
+        limits:
+          cpu: null
+          memory: 512Mi
       persistentVolume:
         storageClass: longhorn
         size: 5Gi
 
     compactor:
+      resources:
+        requests:
+          cpu: 50m
+          memory: 256Mi
+        limits:
+          cpu: null
+          memory: 512Mi
       persistentVolume:
         storageClass: longhorn
         size: 5Gi

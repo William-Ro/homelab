@@ -24,5 +24,13 @@ spec:
     env:
       TZ: America/Costa_Rica
 
+    resources:
+      requests:
+        cpu: 50m
+        memory: 256Mi
+      limits:
+        cpu: null
+        memory: 512Mi
+
     dashboard:
       enabled: true

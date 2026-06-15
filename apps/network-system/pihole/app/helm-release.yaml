@@ -52,3 +52,11 @@ spec:
     persistence:
       etcPihole:
         enabled: true
+
+    resources:
+      requests:
+        cpu: 50m
+        memory: 128Mi
+      limits:
+        cpu: null
+        memory: 256Mi

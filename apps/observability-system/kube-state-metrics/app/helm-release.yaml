@@ -19,6 +19,14 @@ spec:
   values:
     fullnameOverride: kube-state-metrics
 
+    resources:
+      requests:
+        cpu: 10m
+        memory: 64Mi
+      limits:
+        cpu: null
+        memory: 128Mi
+
     prometheus:
       monitor:
         enabled: false

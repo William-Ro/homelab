@@ -18,6 +18,14 @@ spec:
   values:
     fullnameOverride: external-dns
 
+    resources:
+      requests:
+        cpu: 10m
+        memory: 64Mi
+      limits:
+        cpu: null
+        memory: 128Mi
+
     logLevel: info
     logFormat: text
 
