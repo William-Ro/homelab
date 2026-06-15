@@ -29,7 +29,6 @@ spec:
         cpu: 50m
         memory: 320Mi
       limits:
-        cpu: null
         memory: 512Mi
 
     dashboard:

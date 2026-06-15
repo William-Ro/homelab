@@ -82,7 +82,6 @@ spec:
           cpu: 100m
           memory: 512Mi
         limits:
-          cpu: null
           memory: 1500Mi
       persistentVolume:
         storageClass: longhorn
@@ -107,7 +106,6 @@ spec:
           cpu: 50m
           memory: 256Mi
         limits:
-          cpu: null
           memory: 512Mi
       persistentVolume:
         storageClass: longhorn
@@ -119,7 +117,6 @@ spec:
           cpu: 50m
           memory: 256Mi
         limits:
-          cpu: null
           memory: 512Mi
       persistentVolume:
         storageClass: longhorn
@@ -131,7 +128,6 @@ spec:
           cpu: 10m
           memory: 64Mi
         limits:
-          cpu: null
           memory: 128Mi
       persistentVolume:
         storageClass: longhorn
@@ -144,7 +140,6 @@ spec:
           cpu: 50m
           memory: 256Mi
         limits:
-          cpu: null
           memory: 512Mi
 
     distributor:
@@ -153,7 +148,6 @@ spec:
           cpu: 30m
           memory: 128Mi
         limits:
-          cpu: null
           memory: 256Mi
 
     querier:
@@ -162,7 +156,6 @@ spec:
           cpu: 50m
           memory: 128Mi
         limits:
-          cpu: null
           memory: 256Mi
 
     query_frontend:
@@ -171,7 +164,6 @@ spec:
           cpu: 50m
           memory: 128Mi
         limits:
-          cpu: null
           memory: 256Mi
 
     query_scheduler:
@@ -180,7 +172,6 @@ spec:
           cpu: 20m
           memory: 64Mi
         limits:
-          cpu: null
           memory: 128Mi
 
     ruler:
@@ -189,7 +180,6 @@ spec:
           cpu: 10m
           memory: 64Mi
         limits:
-          cpu: null
           memory: 128Mi
 
     gateway:
@@ -198,7 +188,6 @@ spec:
           cpu: 10m
           memory: 32Mi
         limits:
-          cpu: null
           memory: 64Mi
 
     overrides_exporter:
@@ -207,7 +196,6 @@ spec:
           cpu: 5m
           memory: 32Mi
         limits:
-          cpu: null
           memory: 64Mi
 
     rollout_operator:
@@ -216,7 +204,6 @@ spec:
           cpu: 5m
           memory: 32Mi
         limits:
-          cpu: null
           memory: 64Mi
 
     # Disable optional components not needed for basic homelab setup
