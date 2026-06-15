@@ -27,6 +27,4 @@ jobs:
       - name: yamllint
         run: |
           pip install yamllint --quiet
-          yamllint --strict \
-            --config-data "{extends: default, rules: {line-length: disable, truthy: disable, document-start: disable}}" \
-            apps/ bootstrap/
+          yamllint --strict -c .yamllint.yaml apps/ bootstrap/
