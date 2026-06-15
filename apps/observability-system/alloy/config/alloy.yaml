@@ -13,6 +13,12 @@ spec:
       create: false
       name: alloy-metrics-config
       key: config.alloy
+    resources:
+      requests:
+        cpu: 20m
+        memory: 640Mi
+      limits:
+        memory: 900Mi
     mounts:
       extra:
         - name: proc
@@ -35,12 +41,6 @@ spec:
     hostPID: true
     hostNetwork: true
     dnsPolicy: ClusterFirstWithHostNet
-    resources:
-      requests:
-        cpu: 20m
-        memory: 640Mi
-      limits:
-        memory: 900Mi
     volumes:
       extra:
         - name: proc
