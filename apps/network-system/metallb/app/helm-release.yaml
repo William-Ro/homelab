@@ -24,7 +24,7 @@ spec:
 
     controller:
       enabled: true
-      logLevel: info  # all, debug, info, warn, error
+      logLevel: info # all, debug, info, warn, error
       resources:
         requests:
           cpu: 20m
@@ -34,10 +34,10 @@ spec:
 
     speaker:
       enabled: true
-      logLevel: info  # all, debug, info, warn, error
+      logLevel: info # all, debug, info, warn, error
 
-      tolerateMaster: false  # allow scheduling on master nodes
-      ignoreExcludeLB: true  # Intentional: all nodes act as LB speakers regardless of the exclude-from-external-loadbalancer label
+      tolerateMaster: false # allow scheduling on master nodes
+      ignoreExcludeLB: true # Intentional: all nodes act as LB speakers regardless of the exclude-from-external-loadbalancer label
 
       resources:
         requests:
