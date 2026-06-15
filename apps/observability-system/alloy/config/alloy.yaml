@@ -35,6 +35,12 @@ spec:
     hostPID: true
     hostNetwork: true
     dnsPolicy: ClusterFirstWithHostNet
+    resources:
+      requests:
+        cpu: 20m
+        memory: 640Mi
+      limits:
+        memory: 900Mi
     volumes:
       extra:
         - name: proc
@@ -53,10 +59,3 @@ spec:
   serviceAccount:
     create: true
     name: alloy-metrics
-
-  resources:
-    requests:
-      cpu: 20m
-      memory: 640Mi
-    limits:
-      memory: 900Mi
