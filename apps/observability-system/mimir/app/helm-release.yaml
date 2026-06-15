@@ -39,6 +39,10 @@ spec:
       structuredConfig:
         multitenancy_enabled: false
 
+        limits:
+          # Default is 150000 — increase for homelab with many scraped series
+          max_global_series_per_user: 500000
+
         common:
           storage:
             backend: s3
