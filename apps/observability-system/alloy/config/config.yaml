@@ -90,6 +90,19 @@ data:
       forward_to = [prometheus.remote_write.mimir.receiver]
     }
 
+    // ─── Node metrics via built-in unix exporter (replaces node-exporter) ────────
+    prometheus.exporter.unix "node" {
+      procfs_path = "/host/proc"
+      sysfs_path  = "/host/sys"
+      udev_data_path = "/run/udev/data"
+    }
+
+    prometheus.scrape "node" {
+      targets    = prometheus.exporter.unix.node.targets
+      job_name   = "node-exporter"
+      forward_to = [prometheus.remote_write.mimir.receiver]
+    }
+
     // ─── Pods with prometheus.io/scrape=true annotation ─────────────────────────
     discovery.kubernetes "pods" {
       role = "pod"

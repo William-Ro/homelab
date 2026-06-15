@@ -20,8 +20,33 @@ spec:
     prometheus.io/path: "/metrics"
 
   controller:
-    type: deployment
-    replicas: 1
+    type: daemonset
+
+  hostPID: true
+  hostNetwork: true
+  dnsPolicy: ClusterFirstWithHostNet
+
+  volumeMounts:
+    - name: proc
+      mountPath: /host/proc
+      readOnly: true
+    - name: sys
+      mountPath: /host/sys
+      readOnly: true
+    - name: udev
+      mountPath: /run/udev/data
+      readOnly: true
+
+  volumes:
+    - name: proc
+      hostPath:
+        path: /proc
+    - name: sys
+      hostPath:
+        path: /sys
+    - name: udev
+      hostPath:
+        path: /run/udev/data
 
   rbac:
     create: true
