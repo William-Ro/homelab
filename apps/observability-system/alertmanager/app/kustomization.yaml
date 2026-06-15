@@ -6,3 +6,4 @@ resources:
   - helm-repository.yaml
   - prometheus-operator-crds.yaml
   - helm-release.yaml
+  - rules.yaml
