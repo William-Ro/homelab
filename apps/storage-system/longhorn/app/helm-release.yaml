@@ -39,19 +39,5 @@ spec:
           memory: 128Mi
         limits:
           memory: 512Mi
-
-    longhornUI:
-      resources:
-        requests:
-          cpu: 5m
-          memory: 8Mi
-        limits:
-          memory: 64Mi
-
-    longhornDriver:
-      resources:
-        requests:
-          cpu: 5m
-          memory: 16Mi
-        limits:
-          memory: 64Mi
+    # Note: longhornUI and longhornDriver sections do not expose a `resources`
+    # key in chart v1.12.0 — those pods have no limits (chart limitation).
