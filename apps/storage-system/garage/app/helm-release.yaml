@@ -52,6 +52,12 @@ spec:
 
     webui:
       enabled: true
+      resources:
+        requests:
+          cpu: 5m
+          memory: 8Mi
+        limits:
+          memory: 32Mi
 
     clusterConfig:
       enabled: true
