@@ -37,6 +37,8 @@ spec:
                 secretKeyRef:
                   name: alertmanager-discord-credentials
                   key: webhookUrl
+            - name: DISCORD_USERNAME
+              value: "Alertmanager"
             - name: LISTEN_ADDRESS
               value: ":9094"
           securityContext:
