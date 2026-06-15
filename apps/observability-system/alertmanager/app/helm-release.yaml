@@ -52,7 +52,6 @@ spec:
           target_matchers:
             - severity="warning"
           equal: [alertname, namespace]
-      receivers: [] # merged via valuesFrom from alertmanager-credentials secret
 
     resources:
       requests:
