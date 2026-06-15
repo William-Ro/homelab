@@ -18,22 +18,41 @@ spec:
   upgrade:
     remediation:
       retries: 3
-  chart:
-    spec:
-      chart: alertmanager
-      version: "1.14.0"
-      sourceRef:
-        kind: HelmRepository
-        name: prometheus-community
-        namespace: observability-system
+  chartRef:
+    kind: OCIRepository
+    name: alertmanager-chart
+    namespace: observability-system
+
+  # Merge webhook URL from ExternalSecret-managed secret into config values
+  valuesFrom:
+    - kind: Secret
+      name: alertmanager-credentials
+      valuesKey: values.yaml
 
   values:
     fullnameOverride: alertmanager
     replicaCount: 1
 
-    # Use ExternalSecret-managed secret for config — no config: block here
-    # so the chart does not generate a conflicting ConfigMap
-    configSecret: alertmanager-credentials
+    config:
+      global:
+        resolve_timeout: 5m
+      route:
+        receiver: default
+        group_by: [alertname, namespace]
+        group_wait: 30s
+        group_interval: 5m
+        repeat_interval: 12h
+        routes:
+          - receiver: "null"
+            matchers:
+              - alertname=~"Watchdog|InfoInhibitor"
+      inhibit_rules:
+        - source_matchers:
+            - severity="critical"
+          target_matchers:
+            - severity="warning"
+          equal: [alertname, namespace]
+      receivers: []  # merged via valuesFrom from alertmanager-credentials secret
 
     resources:
       requests:
