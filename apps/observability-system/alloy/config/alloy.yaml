@@ -13,6 +13,17 @@ spec:
       create: false
       name: alloy-metrics-config
       key: config.alloy
+    mounts:
+      extra:
+        - name: proc
+          mountPath: /host/proc
+          readOnly: true
+        - name: sys
+          mountPath: /host/sys
+          readOnly: true
+        - name: udev
+          mountPath: /run/udev/data
+          readOnly: true
 
   podAnnotations:
     prometheus.io/scrape: "true"
@@ -21,32 +32,19 @@ spec:
 
   controller:
     type: daemonset
-
-  hostPID: true
-  hostNetwork: true
-  dnsPolicy: ClusterFirstWithHostNet
-
-  extraVolumeMounts:
-    - name: proc
-      mountPath: /host/proc
-      readOnly: true
-    - name: sys
-      mountPath: /host/sys
-      readOnly: true
-    - name: udev
-      mountPath: /run/udev/data
-      readOnly: true
-
-  extraVolumes:
-    - name: proc
-      hostPath:
-        path: /proc
-    - name: sys
-      hostPath:
-        path: /sys
-    - name: udev
-      hostPath:
-        path: /run/udev/data
+    hostPID: true
+    hostNetwork: true
+    dnsPolicy: ClusterFirstWithHostNet
+    volumes:
+      - name: proc
+        hostPath:
+          path: /proc
+      - name: sys
+        hostPath:
+          path: /sys
+      - name: udev
+        hostPath:
+          path: /run/udev/data
 
   rbac:
     create: true
