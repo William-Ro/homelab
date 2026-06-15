@@ -36,15 +36,16 @@ spec:
     hostNetwork: true
     dnsPolicy: ClusterFirstWithHostNet
     volumes:
-      - name: proc
-        hostPath:
-          path: /proc
-      - name: sys
-        hostPath:
-          path: /sys
-      - name: udev
-        hostPath:
-          path: /run/udev/data
+      extra:
+        - name: proc
+          hostPath:
+            path: /proc
+        - name: sys
+          hostPath:
+            path: /sys
+        - name: udev
+          hostPath:
+            path: /run/udev/data
 
   rbac:
     create: true
