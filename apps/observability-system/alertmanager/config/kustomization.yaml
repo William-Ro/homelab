@@ -4,4 +4,7 @@ kind: Kustomization
 
 resources:
   - external-secret.yaml
+  - alertmanager-discord-deployment.yaml
+  - alertmanager-discord-service.yaml
+  - rules.yaml
   - http-route.yaml

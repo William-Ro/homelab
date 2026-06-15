@@ -17,5 +17,6 @@ spec:
     namespace: flux-system
 
   dependsOn:
+    - name: alertmanager
     - name: bitwarden-sdk-server-config
       namespace: security-system
