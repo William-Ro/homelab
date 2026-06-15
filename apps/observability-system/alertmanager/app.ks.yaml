@@ -10,6 +10,9 @@ spec:
   wait: true
   targetNamespace: observability-system
 
+  dependsOn:
+    - name: alertmanager-config
+
   path: ./apps/observability-system/alertmanager/app
   sourceRef:
     kind: GitRepository
