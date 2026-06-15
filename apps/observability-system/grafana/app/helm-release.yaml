@@ -17,5 +17,12 @@ spec:
     name: grafana
 
   values:
+    grafana.ini:
+      date_formats:
+        default_timezone: America/Costa_Rica
+
+    env:
+      TZ: America/Costa_Rica
+
     dashboard:
       enabled: true
