@@ -21,6 +21,7 @@ spec:
       defaultDataPath: /var/lib/longhorn-nvme
       defaultReplicaCount: 2
       replicaSoftAntiAffinity: true
+      replicaAutoBalance: best-effort
 
     global:
       nodeSelector:
