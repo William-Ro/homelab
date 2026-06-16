@@ -148,6 +148,10 @@ spec:
           memory: 256Mi
         limits:
           memory: 512Mi
+      extraConfig: |
+        log.retention.hours=2
+        log.retention.check.interval.ms=300000
+        log.segment.bytes=268435456
 
     distributor:
       resources:
