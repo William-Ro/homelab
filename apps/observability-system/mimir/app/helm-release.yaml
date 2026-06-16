@@ -88,6 +88,9 @@ spec:
       replicas: 2
       zoneAwareReplication:
         enabled: false
+      readinessProbe:
+        initialDelaySeconds: 60
+        failureThreshold: 10
       resources:
         requests:
           cpu: 100m
