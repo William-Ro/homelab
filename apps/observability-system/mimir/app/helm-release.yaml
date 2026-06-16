@@ -46,8 +46,8 @@ spec:
           # Retain metrics for 90 days; compactor will delete blocks older than this
           compactor_blocks_retention_period: 90d
           # Raise ingestion rate to handle alloy WAL replay bursts after restarts
-          ingestion_rate: 50000
-          ingestion_burst_size: 200000
+          ingestion_rate: 200000
+          ingestion_burst_size: 800000
 
         common:
           storage:
