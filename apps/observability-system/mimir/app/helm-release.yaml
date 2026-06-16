@@ -45,9 +45,11 @@ spec:
           max_global_series_per_user: 500000
           # Retain metrics for 90 days; compactor will delete blocks older than this
           compactor_blocks_retention_period: 90d
-          # Raise ingestion rate to handle alloy WAL replay bursts after restarts
-          ingestion_rate: 200000
-          ingestion_burst_size: 800000
+          # Raised from 50k — 3 Alloy instances need more headroom; burst handles WAL replays
+          ingestion_rate: 100000
+          ingestion_burst_size: 400000
+          # Accept out-of-order samples up to 6h — prevents data loss during WAL replay after outages
+          out_of_order_time_window: 6h
 
         common:
           storage:
@@ -94,9 +96,9 @@ spec:
       resources:
         requests:
           cpu: 100m
-          memory: 1Gi
+          memory: 512Mi
         limits:
-          memory: 4Gi
+          memory: 2Gi
       persistentVolume:
         storageClass: longhorn
         size: 5Gi
