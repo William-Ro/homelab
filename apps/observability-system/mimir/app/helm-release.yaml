@@ -51,6 +51,14 @@ spec:
           # Accept out-of-order samples up to 6h — prevents data loss during WAL replay after outages
           out_of_order_time_window: 6h
 
+        # Hard per-ingester ceilings — reject new series/traffic rather than OOMing.
+        # With 2 ingesters and max_global_series_per_user=500k, each holds ~250k series.
+        # Set ceiling at 400k (~60% headroom) so cardinality spikes get rejected gracefully.
+        ingester:
+          instance_limits:
+            max_series: 400000
+            max_ingestion_rate: 150000
+
         common:
           storage:
             backend: s3
