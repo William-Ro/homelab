@@ -151,7 +151,7 @@ spec:
     kafka:
       persistentVolume:
         storageClass: longhorn
-        size: 10Gi
+        size: 20Gi
       resources:
         requests:
           cpu: 50m
@@ -160,6 +160,7 @@ spec:
           memory: 512Mi
       extraConfig: |
         log.retention.hours=2
+        log.retention.bytes=8589934592
         log.retention.check.interval.ms=300000
         log.segment.bytes=268435456
 
