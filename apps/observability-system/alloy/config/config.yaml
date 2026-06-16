@@ -13,6 +13,12 @@ data:
     prometheus.remote_write "mimir" {
       endpoint {
         url = "http://mimir-gateway.observability-system.svc.cluster.local:80/api/v1/push"
+
+        queue_config {
+          max_shards         = 4
+          max_samples_per_send = 2000
+          batch_send_deadline  = "5s"
+        }
       }
       external_labels = {
         cluster = "homelab",
