@@ -71,7 +71,7 @@ spec:
             dir: /data/tsdb
             head_compaction_interval: 15m
             wal_replay_concurrency: 3
-            ship_interval: 1m # ship completed blocks to S3 quickly so local disk stays small
+            ship_interval: 1m  # ship completed blocks to S3 quickly so local disk stays small
 
         alertmanager_storage:
           s3:
