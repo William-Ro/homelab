@@ -72,6 +72,10 @@ spec:
             runAsGroup: 10001
             fsGroup: 10001
             fsGroupChangePolicy: OnRootMismatch
+          volumes:
+            - name: grafana-data
+              persistentVolumeClaim:
+                claimName: grafana-pvc
 
   persistentVolumeClaim:
     spec:
