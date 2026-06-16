@@ -90,7 +90,6 @@ spec:
             dir: /data/tsdb
             head_compaction_interval: 15m
             wal_replay_concurrency: 3
-            ship_interval: 1m
 
         alertmanager_storage:
           s3:
