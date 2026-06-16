@@ -94,9 +94,9 @@ spec:
       resources:
         requests:
           cpu: 100m
-          memory: 512Mi
+          memory: 1Gi
         limits:
-          memory: 1500Mi
+          memory: 4Gi
       persistentVolume:
         storageClass: longhorn
         size: 5Gi
