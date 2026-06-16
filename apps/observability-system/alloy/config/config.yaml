@@ -157,6 +157,67 @@ data:
       forward_to = [prometheus.remote_write.mimir.receiver]
     }
 
+    // ─── Mimir component metrics ────────────────────────────────────────────────
+    // Discovers Mimir pods and sets job=namespace/component so the Mimir mixin
+    // dashboards can match queries (e.g. job=~"observability-system/distributor").
+    discovery.kubernetes "mimir_pods" {
+      role = "pod"
+      namespaces {
+        names = ["observability-system"]
+      }
+      selectors {
+        role  = "pod"
+        label = "app.kubernetes.io/name=mimir"
+      }
+    }
+
+    discovery.relabel "mimir_pods" {
+      targets = discovery.kubernetes.mimir_pods.targets
+
+      // Only running pods
+      rule {
+        source_labels = ["__meta_kubernetes_pod_phase"]
+        action        = "keep"
+        regex         = "Running"
+      }
+
+      // Only the HTTP port (8080 carries /metrics)
+      rule {
+        source_labels = ["__meta_kubernetes_pod_container_port_number"]
+        action        = "keep"
+        regex         = "8080"
+      }
+
+      // Build scrape address from pod IP
+      rule {
+        source_labels = ["__meta_kubernetes_pod_ip"]
+        target_label  = "__address__"
+        replacement   = "$1:8080"
+      }
+
+      // job = namespace/component — matches Mimir mixin dashboard job matchers
+      rule {
+        source_labels = ["__meta_kubernetes_namespace", "__meta_kubernetes_pod_label_app_kubernetes_io_component"]
+        separator     = "/"
+        target_label  = "job"
+      }
+
+      rule {
+        source_labels = ["__meta_kubernetes_namespace"]
+        target_label  = "namespace"
+      }
+
+      rule {
+        source_labels = ["__meta_kubernetes_pod_name"]
+        target_label  = "pod"
+      }
+    }
+
+    prometheus.scrape "mimir_pods" {
+      targets    = discovery.relabel.mimir_pods.output
+      forward_to = [prometheus.remote_write.mimir.receiver]
+    }
+
     // ─── Blackbox HTTP probes ────────────────────────────────────────────────────
     discovery.relabel "blackbox_http" {
       targets = [
