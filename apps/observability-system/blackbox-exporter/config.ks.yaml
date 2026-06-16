@@ -1,0 +1,21 @@
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: blackbox-exporter-config
+  namespace: observability-system
+spec:
+  interval: 10m
+  prune: true
+  wait: true
+  targetNamespace: observability-system
+
+  path: ./apps/observability-system/blackbox-exporter/config
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+
+  dependsOn:
+    - name: blackbox-exporter
+    - name: alertmanager

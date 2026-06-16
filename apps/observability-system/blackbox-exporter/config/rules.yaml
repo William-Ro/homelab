@@ -1,0 +1,36 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/monitoring.coreos.com/prometheusrule_v1.json
+
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: blackbox-alerts
+  labels:
+    app.kubernetes.io/name: blackbox-exporter
+    app.kubernetes.io/part-of: blackbox-exporter
+    app.kubernetes.io/managed-by: flux
+spec:
+  groups:
+    - name: blackbox.availability
+      rules:
+        - alert: BlackboxProbeFailed
+          expr: probe_success == 0
+          for: 5m
+          labels:
+            severity: critical
+          annotations:
+            summary: >-
+              {{ $labels.instance }} is unreachable
+            description: >-
+              The {{ $labels.module }} probe against {{ $labels.instance }} has been failing for more than 5 minutes.
+
+        - alert: BlackboxProbeSlowResponse
+          expr: probe_http_duration_seconds{phase="processing"} > 2
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: >-
+              {{ $labels.instance }} is responding slowly
+            description: >-
+              HTTP response time for {{ $labels.instance }} exceeds 2 seconds.

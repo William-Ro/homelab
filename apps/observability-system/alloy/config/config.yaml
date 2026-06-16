@@ -156,3 +156,47 @@ data:
       job_name   = "kubernetes-pods"
       forward_to = [prometheus.remote_write.mimir.receiver]
     }
+
+    // ─── Blackbox HTTP probes ────────────────────────────────────────────────────
+    discovery.relabel "blackbox_http" {
+      targets = [
+        {"__address__" = "https://grafana.internal.reli.cc",       "__tmp_name" = "grafana"},
+        {"__address__" = "https://alertmanager.internal.reli.cc",  "__tmp_name" = "alertmanager"},
+        {"__address__" = "https://longhorn.internal.reli.cc",      "__tmp_name" = "longhorn"},
+        {"__address__" = "https://garage.internal.reli.cc",        "__tmp_name" = "garage"},
+        {"__address__" = "https://pihole.internal.reli.cc",        "__tmp_name" = "pihole"},
+        {"__address__" = "https://flux.admin.reli.cc",             "__tmp_name" = "flux"},
+      ]
+
+      rule {
+        source_labels = ["__address__"]
+        target_label  = "__param_target"
+      }
+
+      rule {
+        replacement  = "http_2xx"
+        target_label = "__param_module"
+      }
+
+      rule {
+        replacement  = "blackbox-exporter.observability-system.svc.cluster.local:9115"
+        target_label = "__address__"
+      }
+
+      rule {
+        source_labels = ["__param_target"]
+        target_label  = "instance"
+      }
+
+      rule {
+        source_labels = ["__tmp_name"]
+        target_label  = "service"
+      }
+    }
+
+    prometheus.scrape "blackbox_http" {
+      targets      = discovery.relabel.blackbox_http.output
+      job_name     = "blackbox-http"
+      metrics_path = "/probe"
+      forward_to   = [prometheus.remote_write.mimir.receiver]
+    }

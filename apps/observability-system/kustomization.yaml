@@ -8,6 +8,7 @@ resources:
   - ./namespace.yaml
   - ./alloy
   - ./alertmanager
+  - ./blackbox-exporter
   - ./grafana
   - ./kube-state-metrics
   - ./mimir
