@@ -221,11 +221,11 @@ data:
     // ─── Blackbox HTTP probes ────────────────────────────────────────────────────
     discovery.relabel "blackbox_http" {
       targets = [
-        {"__address__" = "https://grafana.internal.reli.cc",       "__tmp_name" = "grafana"},
+        {"__address__" = "https://grafana.internal.reli.cc",        "__tmp_name" = "grafana"},
         {"__address__" = "https://alertmanager.internal.reli.cc",  "__tmp_name" = "alertmanager"},
         {"__address__" = "https://longhorn.internal.reli.cc",      "__tmp_name" = "longhorn"},
         {"__address__" = "https://garage.internal.reli.cc",        "__tmp_name" = "garage"},
-        {"__address__" = "https://pihole.internal.reli.cc",        "__tmp_name" = "pihole"},
+        {"__address__" = "https://pihole.internal.reli.cc/admin",  "__tmp_name" = "pihole"},
         {"__address__" = "https://flux.admin.reli.cc",             "__tmp_name" = "flux"},
       ]
 
