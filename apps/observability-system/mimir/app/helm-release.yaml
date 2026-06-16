@@ -98,7 +98,7 @@ spec:
           cpu: 100m
           memory: 512Mi
         limits:
-          memory: 2Gi
+          memory: 3Gi
       persistentVolume:
         storageClass: longhorn
         size: 5Gi
