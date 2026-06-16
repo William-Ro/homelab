@@ -59,6 +59,15 @@ spec:
             max_series: 400000
             max_ingestion_rate: 150000
 
+        # Distributor-level protections:
+        # - remote_timeout: increase from 2s default — ingesters can be temporarily
+        #   slow during WAL replay or head compaction on a small homelab cluster.
+        # - instance_limits: reject at the distributor before traffic reaches ingesters.
+        distributor:
+          remote_timeout: 5s
+          instance_limits:
+            max_ingestion_rate: 200000
+
         common:
           storage:
             backend: s3
