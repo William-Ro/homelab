@@ -139,6 +139,9 @@ spec:
       fallbackConfig: ""
 
     kafka:
+      persistentVolume:
+        storageClass: longhorn
+        size: 10Gi
       resources:
         requests:
           cpu: 50m
