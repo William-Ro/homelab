@@ -263,7 +263,7 @@ data:
 
     prometheus.scrape "blackbox_http" {
       targets      = discovery.relabel.blackbox_http.output
-      job_name     = "blackbox-http"
+      job_name     = "blackbox"
       metrics_path = "/probe"
       forward_to   = [prometheus.remote_write.mimir.receiver]
     }
