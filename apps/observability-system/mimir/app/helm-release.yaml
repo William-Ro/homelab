@@ -82,6 +82,9 @@ spec:
           alertmanager_url: http://alertmanager.observability-system.svc.cluster.local:9093
           enable_api: true
 
+        compactor:
+          blocks_deletion_enabled: true
+
         blocks_storage:
           s3:
             bucket_name: mimir
