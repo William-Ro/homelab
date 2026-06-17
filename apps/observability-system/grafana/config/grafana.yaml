@@ -17,7 +17,9 @@ spec:
     auth:
       disable_login_form: "false"
     auth.anonymous:
-      enabled: "false"
+      enabled: "true"
+      org_name: Main Org.
+      org_role: Viewer
     date_formats:
       default_timezone: America/Costa_Rica
     log:
