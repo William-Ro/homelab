@@ -8,3 +8,4 @@ resources:
   - alloy-rules-config.yaml
   - alloy-rules.yaml
   - alloy-rules-rbac.yaml
+  - http-route.yaml
