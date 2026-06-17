@@ -262,6 +262,11 @@ data:
 
       rule {
         source_labels = ["__tmp_name"]
+        target_label  = "target"
+      }
+
+      rule {
+        source_labels = ["__tmp_name"]
         target_label  = "service"
       }
     }
