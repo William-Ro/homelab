@@ -169,7 +169,9 @@ spec:
     kafka:
       persistence:
         storageClassName: longhorn
-        size: 20Gi
+        # 10Gi is sufficient: 2 partitions × 1GiB retention cap + overhead + alert buffer.
+        # Kafka is only a durability buffer for the ingest path — long-term storage is S3.
+        size: 10Gi
       resources:
         requests:
           cpu: 50m
@@ -177,10 +179,10 @@ spec:
         limits:
           memory: 512Mi
       extraConfig: |
-        log.retention.hours=2
-        log.retention.bytes=8589934592
-        log.retention.check.interval.ms=300000
-        log.segment.bytes=268435456
+        log.segment.bytes=134217728
+        log.retention.bytes=1073741824
+        log.retention.hours=1
+        log.retention.check.interval.ms=60000
 
     distributor:
       resources:
