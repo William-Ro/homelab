@@ -176,11 +176,15 @@ spec:
           memory: 256Mi
         limits:
           memory: 512Mi
-      extraConfig: |
-        log.segment.bytes=134217728
-        log.retention.bytes=1073741824
-        log.retention.hours=1
-        log.retention.check.interval.ms=60000
+      extraEnvVars:
+        - name: KAFKA_LOG_RETENTION_HOURS
+          value: "1"
+        - name: KAFKA_LOG_RETENTION_BYTES
+          value: "1073741824"
+        - name: KAFKA_LOG_SEGMENT_BYTES
+          value: "134217728"
+        - name: KAFKA_LOG_RETENTION_CHECK_INTERVAL_MS
+          value: "60000"
 
     distributor:
       resources:
