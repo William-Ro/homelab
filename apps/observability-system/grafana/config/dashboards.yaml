@@ -4,6 +4,42 @@
 apiVersion: grafana.integreatly.org/v1beta1
 kind: GrafanaFolder
 metadata:
+  name: observability
+spec:
+  title: Observability
+  allowCrossNamespaceImport: true
+  instanceSelector:
+    matchLabels:
+      grafana.internal/instance: grafana
+
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/grafana.integreatly.org/grafanadashboard_v1beta1.json
+
+# Blackbox Exporter (HTTP) — grafana.com/grafana/dashboards/7587
+# Shows probe_success, HTTP status codes, and response times per endpoint.
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: blackbox-http-status
+spec:
+  folderRef: observability
+  grafanaCom:
+    id: 7587
+    revision: 3
+  allowCrossNamespaceImport: true
+  instanceSelector:
+    matchLabels:
+      grafana.internal/instance: grafana
+  datasources:
+    - datasourceName: Mimir
+      inputName: DS_PROMETHEUS
+
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/grafana.integreatly.org/grafanafolder_v1beta1.json
+
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaFolder
+metadata:
   name: kubernetes
 spec:
   title: Kubernetes
