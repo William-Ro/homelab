@@ -176,9 +176,9 @@ spec:
           memory: 256Mi
         limits:
           memory: 512Mi
-      extraEnvVars:
-        - name: KAFKA_LOG_RETENTION_HOURS
-          value: "1"
+      extraEnv:
+        - name: KAFKA_LOG_RETENTION_MS
+          value: "3600000"
         - name: KAFKA_LOG_RETENTION_BYTES
           value: "1073741824"
         - name: KAFKA_LOG_SEGMENT_BYTES
