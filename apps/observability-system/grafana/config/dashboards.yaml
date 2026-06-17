@@ -16,7 +16,6 @@ spec:
 # yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/grafana.integreatly.org/grafanadashboard_v1beta1.json
 
 # Blackbox Exporter Overview -- grafana.com/grafana/dashboards/14928
-# Compact stat-panel grid showing all probe targets at a glance.
 apiVersion: grafana.integreatly.org/v1beta1
 kind: GrafanaDashboard
 metadata:
@@ -26,6 +25,27 @@ spec:
   grafanaCom:
     id: 14928
     revision: 6
+  allowCrossNamespaceImport: true
+  instanceSelector:
+    matchLabels:
+      grafana.internal/instance: grafana
+  datasources:
+    - datasourceName: Mimir
+      inputName: DS_PROMETHEUS
+
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/grafana.integreatly.org/grafanadashboard_v1beta1.json
+
+# 9115 Blackbox Exporter -- grafana.com/grafana/dashboards/13587
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: blackbox-9115
+spec:
+  folderRef: observability
+  grafanaCom:
+    id: 13587
+    revision: 1
   allowCrossNamespaceImport: true
   instanceSelector:
     matchLabels:
