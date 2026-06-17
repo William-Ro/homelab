@@ -52,7 +52,7 @@ spec:
       grafana.internal/instance: grafana
   datasources:
     - datasourceName: Mimir
-      inputName: DS_PROMETHEUS
+      inputName: DS_PROMETHEUS-SYS-01
 
 ---
 # yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/grafana.integreatly.org/grafanafolder_v1beta1.json
