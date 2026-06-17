@@ -15,8 +15,8 @@ spec:
 ---
 # yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/grafana.integreatly.org/grafanadashboard_v1beta1.json
 
-# Blackbox Exporter (HTTP) — grafana.com/grafana/dashboards/7587
-# Shows probe_success, HTTP status codes, and response times per endpoint.
+# Blackbox Exporter Overview -- grafana.com/grafana/dashboards/14928
+# Compact stat-panel grid showing all probe targets at a glance.
 apiVersion: grafana.integreatly.org/v1beta1
 kind: GrafanaDashboard
 metadata:
@@ -24,15 +24,15 @@ metadata:
 spec:
   folderRef: observability
   grafanaCom:
-    id: 7587
-    revision: 3
+    id: 14928
+    revision: 8
   allowCrossNamespaceImport: true
   instanceSelector:
     matchLabels:
       grafana.internal/instance: grafana
   datasources:
     - datasourceName: Mimir
-      inputName: DS_SIGNCL-PROMETHEUS
+      inputName: DS_PROMETHEUS
 
 ---
 # yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/grafana.integreatly.org/grafanafolder_v1beta1.json
