@@ -176,6 +176,8 @@ spec:
           memory: 256Mi
         limits:
           memory: 512Mi
+      # Give Kafka time to flush cleanly on shutdown (e.g. node drain, pod eviction)
+      terminationGracePeriodSeconds: 120
       extraEnv:
         - name: KAFKA_LOG_RETENTION_MS
           value: "3600000"
@@ -185,8 +187,27 @@ spec:
           value: "134217728"
         - name: KAFKA_LOG_RETENTION_CHECK_INTERVAL_MS
           value: "60000"
+        # Flush to disk every 5s or 10k messages to reduce checkpoint corruption risk
+        # on unclean shutdowns (e.g. power outages). Default is OS-buffered (never).
+        - name: KAFKA_LOG_FLUSH_INTERVAL_MS
+          value: "5000"
+        - name: KAFKA_LOG_FLUSH_INTERVAL_MESSAGES
+          value: "10000"
+        # Speed up log recovery after an unclean shutdown
+        - name: KAFKA_NUM_RECOVERY_THREADS_PER_DATA_DIR
+          value: "2"
 
     distributor:
+      extraInitContainers:
+        - name: wait-for-kafka
+          image: busybox:1.38
+          command:
+            - sh
+            - -c
+            - |
+              until nc -z mimir-kafka.observability-system.svc.cluster.local 9092; do
+                echo "waiting for kafka..."; sleep 2
+              done
       resources:
         requests:
           cpu: 30m
@@ -195,6 +216,16 @@ spec:
           memory: 1Gi
 
     querier:
+      extraInitContainers:
+        - name: wait-for-kafka
+          image: busybox:1.38
+          command:
+            - sh
+            - -c
+            - |
+              until nc -z mimir-kafka.observability-system.svc.cluster.local 9092; do
+                echo "waiting for kafka..."; sleep 2
+              done
       resources:
         requests:
           cpu: 50m
@@ -219,6 +250,16 @@ spec:
           memory: 128Mi
 
     ruler:
+      extraInitContainers:
+        - name: wait-for-kafka
+          image: busybox:1.38
+          command:
+            - sh
+            - -c
+            - |
+              until nc -z mimir-kafka.observability-system.svc.cluster.local 9092; do
+                echo "waiting for kafka..."; sleep 2
+              done
       resources:
         requests:
           cpu: 10m
