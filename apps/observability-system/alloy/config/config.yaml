@@ -219,14 +219,14 @@ data:
     discovery.relabel "blackbox_http" {
       targets = [
         {"__address__" = "https://grafana.internal.reli.cc",               "__tmp_name" = "grafana"},
-        {"__address__" = "https://alertmanager.internal.reli.cc",          "__tmp_name" = "alertmanager"},
-        {"__address__" = "https://longhorn.internal.reli.cc",              "__tmp_name" = "longhorn"},
+        {"__address__" = "https://alertmanager.admin.reli.cc",             "__tmp_name" = "alertmanager"},
+        {"__address__" = "https://longhorn.admin.reli.cc",                 "__tmp_name" = "longhorn"},
         {"__address__" = "https://garage.internal.reli.cc",                "__tmp_name" = "garage"},
-        {"__address__" = "https://pihole.internal.reli.cc/admin",          "__tmp_name" = "pihole"},
+        {"__address__" = "https://pihole.admin.reli.cc/admin",             "__tmp_name" = "pihole"},
         {"__address__" = "https://flux.admin.reli.cc",                     "__tmp_name" = "flux"},
-        {"__address__" = "https://mimir.internal.reli.cc",                 "__tmp_name" = "mimir"},
-        {"__address__" = "https://alloy.internal.reli.cc",                 "__tmp_name" = "alloy"},
-        {"__address__" = "https://blackbox-exporter.internal.reli.cc",     "__tmp_name" = "blackbox-exporter"},
+        {"__address__" = "https://mimir.admin.reli.cc",                    "__tmp_name" = "mimir"},
+        {"__address__" = "https://alloy.admin.reli.cc",                    "__tmp_name" = "alloy"},
+        {"__address__" = "https://blackbox-exporter.admin.reli.cc",        "__tmp_name" = "blackbox-exporter"},
       ]
 
       rule {
