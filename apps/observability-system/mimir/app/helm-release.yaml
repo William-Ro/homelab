@@ -118,7 +118,7 @@ spec:
       persistentVolume:
         storageClass: longhorn
         size: 5Gi
-      extraInitContainers:
+      initContainers:
         - name: wait-for-kafka
           image: busybox:1.38
           command:
@@ -198,7 +198,7 @@ spec:
           value: "2"
 
     distributor:
-      extraInitContainers:
+      initContainers:
         - name: wait-for-kafka
           image: busybox:1.38
           command:
@@ -216,7 +216,7 @@ spec:
           memory: 1Gi
 
     querier:
-      extraInitContainers:
+      initContainers:
         - name: wait-for-kafka
           image: busybox:1.38
           command:
@@ -250,7 +250,7 @@ spec:
           memory: 128Mi
 
     ruler:
-      extraInitContainers:
+      initContainers:
         - name: wait-for-kafka
           image: busybox:1.38
           command:
