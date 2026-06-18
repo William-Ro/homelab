@@ -12,11 +12,11 @@ metadata:
     app.kubernetes.io/managed-by: flux
 spec:
   parentRefs:
-    - name: envoy-internal
+    - name: envoy-admin
       namespace: network-system
       sectionName: https
   hostnames:
-    - alloy.internal.reli.cc
+    - alloy.admin.reli.cc
   rules:
     - matches:
         - path:
