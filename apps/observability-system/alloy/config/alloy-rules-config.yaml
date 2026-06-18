@@ -10,7 +10,6 @@ metadata:
     app.kubernetes.io/managed-by: flux
 data:
   config.alloy: |
-    // Syncs PrometheusRule CRDs from the cluster to Mimir's ruler API
     mimir.rules.kubernetes "default" {
       address = "http://mimir-gateway.observability-system.svc.cluster.local:80"
     }

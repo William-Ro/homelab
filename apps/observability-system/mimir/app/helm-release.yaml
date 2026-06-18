@@ -26,11 +26,9 @@ spec:
     namespace: observability-system
 
   values:
-    # Disable built-in minio — we use Garage
     minio:
       enabled: false
 
-    # Inject S3 credentials from ExternalSecret into all pods
     global:
       extraEnvFrom:
         - secretRef:
@@ -41,28 +39,17 @@ spec:
         multitenancy_enabled: false
 
         limits:
-          # Default is 150000 — increase for homelab with many scraped series
           max_global_series_per_user: 500000
-          # Retain metrics for 90 days; compactor will delete blocks older than this
           compactor_blocks_retention_period: 90d
-          # Raised from 50k — 3 Alloy instances need more headroom; burst handles WAL replays
           ingestion_rate: 100000
           ingestion_burst_size: 400000
-          # Accept out-of-order samples up to 6h — prevents data loss during WAL replay after outages
           out_of_order_time_window: 6h
 
-        # Hard per-ingester ceilings — reject new series/traffic rather than OOMing.
-        # With 2 ingesters and max_global_series_per_user=500k, each holds ~250k series.
-        # Set ceiling at 400k (~60% headroom) so cardinality spikes get rejected gracefully.
         ingester:
           instance_limits:
             max_series: 400000
             max_ingestion_rate: 150000
 
-        # Distributor-level protections:
-        # - remote_timeout: increase from 2s default — ingesters can be temporarily
-        #   slow during WAL replay or head compaction on a small homelab cluster.
-        # - instance_limits: reject at the distributor before traffic reaches ingesters.
         distributor:
           remote_timeout: 5s
           instance_limits:
@@ -101,7 +88,6 @@ spec:
             bucket_name: mimir
           storage_prefix: ruler
 
-    # Single-zone homelab: disable zone-aware replication
     ingester:
       replicas: 2
       zoneAwareReplication:
@@ -176,7 +162,6 @@ spec:
           memory: 256Mi
         limits:
           memory: 512Mi
-      # Give Kafka time to flush cleanly on shutdown (e.g. node drain, pod eviction)
       terminationGracePeriodSeconds: 120
       extraEnv:
         - name: KAFKA_LOG_RETENTION_MS
@@ -187,21 +172,12 @@ spec:
           value: "134217728"
         - name: KAFKA_LOG_RETENTION_CHECK_INTERVAL_MS
           value: "60000"
-        # Flush to disk every 5s or 10k messages to reduce checkpoint corruption risk
-        # on unclean shutdowns (e.g. power outages). Default is OS-buffered (never).
         - name: KAFKA_LOG_FLUSH_INTERVAL_MS
           value: "5000"
         - name: KAFKA_LOG_FLUSH_INTERVAL_MESSAGES
           value: "10000"
-        # Speed up log recovery after an unclean shutdown
         - name: KAFKA_NUM_RECOVERY_THREADS_PER_DATA_DIR
           value: "2"
-      # Automatically detect and wipe corrupt data before Kafka starts.
-      # .swap files are left when Kafka crashes mid-write (log segment rotation);
-      # their presence at startup is a reliable indicator of unrecoverable corruption.
-      # Runs as root (uid 0) to delete files owned by the Kafka process user (uid 1001).
-      # Volume name and mountPath match the chart's StatefulSet template (kafka-data → /var/lib/kafka).
-      # KAFKA_LOG_DIRS is /var/lib/kafka/data per the chart defaults.
       initContainers:
         - name: kafka-recovery
           image: busybox:1.38
@@ -318,7 +294,6 @@ spec:
         limits:
           memory: 64Mi
 
-    # Disable optional components not needed for basic homelab setup
     "chunks-cache":
       enabled: false
     "index-cache":

@@ -15,7 +15,6 @@ spec:
 ---
 # yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/grafana.integreatly.org/grafanadashboard_v1beta1.json
 
-# Blackbox Exporter Overview -- grafana.com/grafana/dashboards/14928
 apiVersion: grafana.integreatly.org/v1beta1
 kind: GrafanaDashboard
 metadata:
@@ -62,7 +61,6 @@ spec:
       grafana.internal/instance: grafana
 
 ---
-# ─── Kubernetes dashboards (from grafana.com) ───────────────────────────────
 
 # yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/grafana.integreatly.org/grafanadashboard_v1beta1.json
 
@@ -144,7 +142,6 @@ spec:
       inputName: DS_PROMETHEUS
 
 ---
-# ─── Flux dashboards (from fluxcd GitHub) ───────────────────────────────────
 
 # yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/grafana.integreatly.org/grafanadashboard_v1beta1.json
 
@@ -182,7 +179,6 @@ spec:
       inputName: DS_PROMETHEUS
 
 ---
-# ─── Mimir dashboards (from Grafana Mimir mixin) ────────────────────────────
 
 # yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/grafana.integreatly.org/grafanafolder_v1beta1.json
 

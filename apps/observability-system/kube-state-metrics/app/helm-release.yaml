@@ -30,7 +30,6 @@ spec:
       monitor:
         enabled: false
 
-    # Grant access to Flux CRDs so Flux resource states are exposed as metrics
     rbac:
       extraRules:
         - verbs: [list, watch]
@@ -46,7 +45,6 @@ spec:
             - kustomizations
             - helmreleases
 
-    # Expose Flux Kustomization and HelmRelease ready/suspended state as metrics
     customResourceState:
       enabled: true
       config:

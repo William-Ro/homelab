@@ -1,5 +1,4 @@
 ---
-# Additional ClusterRole to allow alloy-rules to read PrometheusRule CRDs
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
