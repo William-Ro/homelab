@@ -196,6 +196,33 @@ spec:
         # Speed up log recovery after an unclean shutdown
         - name: KAFKA_NUM_RECOVERY_THREADS_PER_DATA_DIR
           value: "2"
+      # Automatically detect and wipe corrupt data before Kafka starts.
+      # .swap files are left when Kafka crashes mid-write (log segment rotation);
+      # their presence at startup is a reliable indicator of unrecoverable corruption.
+      # Runs as root (uid 0) to delete files owned by the Kafka process user (uid 1001).
+      # Volume name and mountPath match the chart's StatefulSet template (kafka-data → /var/lib/kafka).
+      # KAFKA_LOG_DIRS is /var/lib/kafka/data per the chart defaults.
+      initContainers:
+        - name: kafka-recovery
+          image: busybox:1.38
+          securityContext:
+            runAsUser: 0
+          command:
+            - sh
+            - -c
+            - |
+              DATA_DIR="/var/lib/kafka/data"
+              echo "Checking Kafka data directory for corruption..."
+              if find "${DATA_DIR}" -name "*.swap" 2>/dev/null | grep -q .; then
+                echo "Corruption detected (.swap files present) — wiping data directory"
+                rm -rf "${DATA_DIR:?}"/*
+                echo "Done. Kafka will initialize fresh."
+              else
+                echo "No corruption found — Kafka will attempt normal recovery."
+              fi
+          volumeMounts:
+            - name: kafka-data
+              mountPath: /var/lib/kafka
 
     distributor:
       initContainers:
