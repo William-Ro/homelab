@@ -227,6 +227,12 @@ data:
         {"__address__" = "https://mimir.admin.reli.cc",                    "__tmp_name" = "mimir"},
         {"__address__" = "https://alloy.admin.reli.cc",                    "__tmp_name" = "alloy"},
         {"__address__" = "https://blackbox-exporter.admin.reli.cc",        "__tmp_name" = "blackbox-exporter"},
+        {"__address__" = "https://prowlarr.internal.reli.cc",              "__tmp_name" = "prowlarr"},
+        {"__address__" = "https://sonarr.internal.reli.cc",                "__tmp_name" = "sonarr"},
+        {"__address__" = "https://radarr.internal.reli.cc",                "__tmp_name" = "radarr"},
+        {"__address__" = "https://qbittorrent.internal.reli.cc",           "__tmp_name" = "qbittorrent"},
+        {"__address__" = "https://bazarr.internal.reli.cc",                "__tmp_name" = "bazarr"},
+        {"__address__" = "https://jellyfin.internal.reli.cc",              "__tmp_name" = "jellyfin"},
       ]
 
       rule {
