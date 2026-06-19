@@ -17,4 +17,5 @@ spec:
     namespace: flux-system
 
   dependsOn:
-    - name: qbittorrent
+    - name: longhorn
+      namespace: storage-system

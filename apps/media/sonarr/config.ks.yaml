@@ -17,6 +17,5 @@ spec:
     namespace: flux-system
 
   dependsOn:
-    - name: sonarr
     - name: bitwarden-sdk-server-config
       namespace: security-system
