@@ -1,0 +1,20 @@
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: qbittorrent-config
+  namespace: media
+spec:
+  interval: 10m
+  prune: true
+  wait: true
+  targetNamespace: media
+
+  path: ./apps/media/qbittorrent/config
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+
+  dependsOn:
+    - name: qbittorrent

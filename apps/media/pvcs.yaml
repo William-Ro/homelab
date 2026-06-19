@@ -1,0 +1,26 @@
+---
+# Shared PVC for torrent downloads (qbittorrent, sonarr, radarr)
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: media-downloads
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: longhorn
+  resources:
+    requests:
+      storage: 200Gi
+---
+# Shared PVC for the media library (sonarr, radarr, bazarr, jellyfin)
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: media-library
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: longhorn
+  resources:
+    requests:
+      storage: 500Gi
