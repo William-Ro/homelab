@@ -1,0 +1,31 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: flux-mcp
+  namespace: flux-system
+  labels:
+    app.kubernetes.io/name: flux-mcp
+    app.kubernetes.io/part-of: flux
+    app.kubernetes.io/managed-by: flux
+spec:
+  interval: 30m
+  chartRef:
+    kind: OCIRepository
+    name: flux-mcp-chart
+
+  values:
+    fullnameOverride: flux-mcp
+    transport: http
+    readonly: false
+
+    networkPolicy:
+      create: false
+
+    resources:
+      requests:
+        cpu: 10m
+        memory: 64Mi
+      limits:
+        memory: 256Mi
