@@ -83,9 +83,9 @@ spec:
         existingClaim: bazarr-config
         globalMounts:
           - path: /config
-      media:
-        existingClaim: media-library
+      data:
+        existingClaim: media-data
         globalMounts:
-          - path: /data/media
+          - path: /data
       tmp:
         type: emptyDir
