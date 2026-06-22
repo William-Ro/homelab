@@ -7,4 +7,5 @@ namespace: kube-system
 resources:
   - ./namespace.yaml
   - ./coredns
+  - ./intel-device-plugins-operator
   - ./intel-gpu-device-plugin
