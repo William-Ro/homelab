@@ -28,6 +28,9 @@ spec:
         runAsGroup: 568
         fsGroup: 568
         fsGroupChangePolicy: OnRootMismatch
+        supplementalGroups:
+          - 44   # video
+          - 992  # render
 
     controllers:
       jellyfin:
@@ -95,3 +98,8 @@ spec:
         type: emptyDir
         globalMounts:
           - path: /tmp
+      dri:
+        type: hostPath
+        hostPath: /dev/dri
+        globalMounts:
+          - path: /dev/dri
