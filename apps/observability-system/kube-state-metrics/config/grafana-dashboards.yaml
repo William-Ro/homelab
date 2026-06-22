@@ -3,12 +3,12 @@
 apiVersion: grafana.integreatly.org/v1beta1
 kind: GrafanaDashboard
 metadata:
-  name: kubernetes-global
+  name: kube-state-metrics-global
   labels:
     app.kubernetes.io/name: kube-state-metrics
     app.kubernetes.io/managed-by: flux
 spec:
-  folderRef: kubernetes
+  folderRef: kube-state-metrics
   grafanaCom:
     id: 15757
     revision: 43
@@ -25,12 +25,12 @@ spec:
 apiVersion: grafana.integreatly.org/v1beta1
 kind: GrafanaDashboard
 metadata:
-  name: kubernetes-namespaces
+  name: kube-state-metrics-namespaces
   labels:
     app.kubernetes.io/name: kube-state-metrics
     app.kubernetes.io/managed-by: flux
 spec:
-  folderRef: kubernetes
+  folderRef: kube-state-metrics
   grafanaCom:
     id: 15758
     revision: 44
@@ -47,12 +47,12 @@ spec:
 apiVersion: grafana.integreatly.org/v1beta1
 kind: GrafanaDashboard
 metadata:
-  name: kubernetes-pods
+  name: kube-state-metrics-pods
   labels:
     app.kubernetes.io/name: kube-state-metrics
     app.kubernetes.io/managed-by: flux
 spec:
-  folderRef: kubernetes
+  folderRef: kube-state-metrics
   grafanaCom:
     id: 15760
     revision: 37
@@ -69,12 +69,12 @@ spec:
 apiVersion: grafana.integreatly.org/v1beta1
 kind: GrafanaDashboard
 metadata:
-  name: kubernetes-nodes
+  name: kube-state-metrics-nodes
   labels:
     app.kubernetes.io/name: kube-state-metrics
     app.kubernetes.io/managed-by: flux
 spec:
-  folderRef: kubernetes
+  folderRef: kube-state-metrics
   grafanaCom:
     id: 15759
     revision: 40

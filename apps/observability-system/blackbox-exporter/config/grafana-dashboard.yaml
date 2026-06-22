@@ -3,13 +3,13 @@
 apiVersion: grafana.integreatly.org/v1beta1
 kind: GrafanaDashboard
 metadata:
-  name: blackbox-http-status
+  name: blackbox-exporter
   labels:
     app.kubernetes.io/name: blackbox-exporter
     app.kubernetes.io/part-of: blackbox-exporter
     app.kubernetes.io/managed-by: flux
 spec:
-  folderRef: observability
+  folderRef: observability-system
   grafanaCom:
     id: 14928
     revision: 6

@@ -3,12 +3,12 @@
 apiVersion: grafana.integreatly.org/v1beta1
 kind: GrafanaFolder
 metadata:
-  name: observability
+  name: observability-system
   labels:
     app.kubernetes.io/name: observability-system
     app.kubernetes.io/managed-by: flux
 spec:
-  title: Observability
+  title: Observability System
   allowCrossNamespaceImport: true
   instanceSelector:
     matchLabels:
