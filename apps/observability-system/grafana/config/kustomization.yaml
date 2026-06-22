@@ -7,4 +7,3 @@ resources:
   - http-route.yaml
   - grafana.yaml
   - mimir-datasource.yaml
-  - dashboards.yaml

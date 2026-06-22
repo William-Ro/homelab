@@ -5,3 +5,5 @@ kind: Kustomization
 resources:
   - oci-repository.yaml
   - helm-release.yaml
+  - grafana-folder.yaml
+  - grafana-dashboards.yaml

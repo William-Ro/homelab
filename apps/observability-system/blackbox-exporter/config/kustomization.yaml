@@ -5,3 +5,4 @@ kind: Kustomization
 resources:
   - rules.yaml
   - http-route.yaml
+  - grafana-dashboard.yaml

@@ -1,0 +1,71 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/grafana.integreatly.org/grafanadashboard_v1beta1.json
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: mimir-overview
+  labels:
+    app.kubernetes.io/name: mimir
+    app.kubernetes.io/part-of: mimir
+    app.kubernetes.io/managed-by: flux
+spec:
+  folderRef: mimir
+  url: https://raw.githubusercontent.com/grafana/mimir/refs/heads/main/operations/mimir-mixin-compiled/dashboards/mimir-overview.json
+  allowCrossNamespaceImport: true
+  instanceSelector:
+    matchLabels:
+      grafana.internal/instance: grafana
+
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/grafana.integreatly.org/grafanadashboard_v1beta1.json
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: mimir-writes
+  labels:
+    app.kubernetes.io/name: mimir
+    app.kubernetes.io/part-of: mimir
+    app.kubernetes.io/managed-by: flux
+spec:
+  folderRef: mimir
+  url: https://raw.githubusercontent.com/grafana/mimir/refs/heads/main/operations/mimir-mixin-compiled/dashboards/mimir-writes.json
+  allowCrossNamespaceImport: true
+  instanceSelector:
+    matchLabels:
+      grafana.internal/instance: grafana
+
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/grafana.integreatly.org/grafanadashboard_v1beta1.json
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: mimir-reads
+  labels:
+    app.kubernetes.io/name: mimir
+    app.kubernetes.io/part-of: mimir
+    app.kubernetes.io/managed-by: flux
+spec:
+  folderRef: mimir
+  url: https://raw.githubusercontent.com/grafana/mimir/refs/heads/main/operations/mimir-mixin-compiled/dashboards/mimir-reads.json
+  allowCrossNamespaceImport: true
+  instanceSelector:
+    matchLabels:
+      grafana.internal/instance: grafana
+
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/grafana.integreatly.org/grafanadashboard_v1beta1.json
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: mimir-object-store
+  labels:
+    app.kubernetes.io/name: mimir
+    app.kubernetes.io/part-of: mimir
+    app.kubernetes.io/managed-by: flux
+spec:
+  folderRef: mimir
+  url: https://raw.githubusercontent.com/grafana/mimir/refs/heads/main/operations/mimir-mixin-compiled/dashboards/mimir-object-store.json
+  allowCrossNamespaceImport: true
+  instanceSelector:
+    matchLabels:
+      grafana.internal/instance: grafana

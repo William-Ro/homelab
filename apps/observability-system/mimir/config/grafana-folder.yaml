@@ -1,0 +1,16 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/grafana.integreatly.org/grafanafolder_v1beta1.json
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaFolder
+metadata:
+  name: mimir
+  labels:
+    app.kubernetes.io/name: mimir
+    app.kubernetes.io/part-of: mimir
+    app.kubernetes.io/managed-by: flux
+spec:
+  title: Mimir
+  allowCrossNamespaceImport: true
+  instanceSelector:
+    matchLabels:
+      grafana.internal/instance: grafana
