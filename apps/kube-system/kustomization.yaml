@@ -9,3 +9,4 @@ resources:
   - ./coredns
   - ./intel-device-plugins-operator
   - ./intel-gpu-device-plugin
+  - ./reloader

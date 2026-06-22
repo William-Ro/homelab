@@ -1,0 +1,35 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: reloader
+  namespace: kube-system
+  labels:
+    app.kubernetes.io/name: reloader
+    app.kubernetes.io/part-of: kube-system
+    app.kubernetes.io/managed-by: flux
+spec:
+  interval: 10m
+  chartRef:
+    kind: OCIRepository
+    name: reloader-chart
+
+  install:
+    remediation:
+      retries: -1
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+
+  values:
+    fullnameOverride: reloader
+    reloader:
+      readOnlyRootFileSystem: true
+      resources:
+        requests:
+          cpu: 10m
+          memory: 64Mi
+        limits:
+          memory: 128Mi
