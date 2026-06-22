@@ -1,0 +1,11 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kafka-passwd
+  namespace: observability-system
+data:
+  passwd: |
+    root:x:0:0:root:/root:/bin/sh
+    nobody:x:65534:65534:nobody:/nonexistent:/sbin/nologin
+    kafka:x:1001:1001::/tmp:/bin/sh

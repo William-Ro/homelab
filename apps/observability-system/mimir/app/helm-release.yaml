@@ -178,41 +178,15 @@ spec:
           value: "10000"
         - name: KAFKA_NUM_RECOVERY_THREADS_PER_DATA_DIR
           value: "2"
-        - name: HOME
-          value: /tmp
-      initContainers:
-        - name: kafka-recovery
-          image: busybox:1.38
-          securityContext:
-            runAsUser: 0
-          command:
-            - sh
-            - -c
-            - |
-              DATA_DIR="/var/lib/kafka/data"
-              CORRUPT=false
-              if find "${DATA_DIR}" -name "*.swap" 2>/dev/null | grep -q .; then
-                echo "Corruption detected: .swap files present"
-                CORRUPT=true
-              fi
-              for f in $(find "${DATA_DIR}" -name "*-checkpoint" 2>/dev/null); do
-                [ -f "$f" ] || continue
-                if ! head -n 1 "$f" 2>/dev/null | grep -qE '^[0-9]'; then
-                  echo "Corruption detected: malformed checkpoint file $f"
-                  CORRUPT=true
-                  break
-                fi
-              done
-              if [ "$CORRUPT" = "true" ]; then
-                echo "Wiping data directory..."
-                rm -rf "${DATA_DIR:?}"/*
-                echo "Done. Kafka will initialize fresh."
-              else
-                echo "No corruption found — Kafka will attempt normal recovery."
-              fi
-          volumeMounts:
-            - name: kafka-data
-              mountPath: /var/lib/kafka
+      extraVolumes:
+        - name: kafka-passwd
+          configMap:
+            name: kafka-passwd
+      extraVolumeMounts:
+        - name: kafka-passwd
+          mountPath: /etc/passwd
+          subPath: passwd
+          readOnly: true
 
     distributor:
       initContainers:
