@@ -21,6 +21,7 @@ spec:
 
     defaultPodOptions:
       automountServiceAccountToken: false
+      enableServiceLinks: false
 
     controllers:
       flaresolverr:
@@ -29,6 +30,8 @@ spec:
             image:
               repository: ghcr.io/flaresolverr/flaresolverr
               tag: v3.5.0
+            securityContext:
+              allowPrivilegeEscalation: false
             resources:
               requests:
                 cpu: 20m
