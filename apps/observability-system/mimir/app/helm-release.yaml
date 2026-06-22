@@ -188,9 +188,21 @@ spec:
             - -c
             - |
               DATA_DIR="/var/lib/kafka/data"
-              echo "Checking Kafka data directory for corruption..."
+              CORRUPT=false
               if find "${DATA_DIR}" -name "*.swap" 2>/dev/null | grep -q .; then
-                echo "Corruption detected (.swap files present) — wiping data directory"
+                echo "Corruption detected: .swap files present"
+                CORRUPT=true
+              fi
+              for f in $(find "${DATA_DIR}" -name "*-checkpoint" 2>/dev/null); do
+                [ -f "$f" ] || continue
+                if ! head -n 1 "$f" 2>/dev/null | grep -qE '^[0-9]'; then
+                  echo "Corruption detected: malformed checkpoint file $f"
+                  CORRUPT=true
+                  break
+                fi
+              done
+              if [ "$CORRUPT" = "true" ]; then
+                echo "Wiping data directory..."
                 rm -rf "${DATA_DIR:?}"/*
                 echo "Done. Kafka will initialize fresh."
               else
