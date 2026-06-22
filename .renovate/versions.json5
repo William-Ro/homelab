@@ -1,7 +1,0 @@
-{
-  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-
-  // Add custom versioning rules here when needed.
-  // Example: packages that use non-standard version schemes.
-  "packageRules": []
-}
