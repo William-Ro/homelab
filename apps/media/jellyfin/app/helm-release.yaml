@@ -28,9 +28,6 @@ spec:
         runAsGroup: 568
         fsGroup: 568
         fsGroupChangePolicy: OnRootMismatch
-        supplementalGroups:
-          - 44
-          - 992
 
     controllers:
       jellyfin:
@@ -63,8 +60,10 @@ spec:
               requests:
                 cpu: 20m
                 memory: 512Mi
+                gpu.intel.com/i915: "1"
               limits:
                 memory: 2Gi
+                gpu.intel.com/i915: "1"
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
@@ -98,8 +97,3 @@ spec:
         type: emptyDir
         globalMounts:
           - path: /tmp
-      dri:
-        type: hostPath
-        hostPath: /dev/dri
-        globalMounts:
-          - path: /dev/dri
