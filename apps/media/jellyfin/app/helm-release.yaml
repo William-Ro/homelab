@@ -29,8 +29,8 @@ spec:
         fsGroup: 568
         fsGroupChangePolicy: OnRootMismatch
         supplementalGroups:
-          - 44   # video
-          - 992  # render
+          - 44
+          - 992
 
     controllers:
       jellyfin:
