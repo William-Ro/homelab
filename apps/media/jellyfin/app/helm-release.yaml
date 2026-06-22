@@ -83,7 +83,6 @@ spec:
         existingClaim: media-library
         globalMounts:
           - path: /data/media
-            readOnly: true
       transcode:
         type: emptyDir
         globalMounts:
