@@ -178,15 +178,6 @@ spec:
           value: "10000"
         - name: KAFKA_NUM_RECOVERY_THREADS_PER_DATA_DIR
           value: "2"
-      extraVolumes:
-        - name: kafka-passwd
-          configMap:
-            name: kafka-passwd
-      extraVolumeMounts:
-        - name: kafka-passwd
-          mountPath: /etc/passwd
-          subPath: passwd
-          readOnly: true
 
     distributor:
       initContainers:
