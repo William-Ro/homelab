@@ -8,7 +8,7 @@ metadata:
     app.kubernetes.io/name: kube-state-metrics
     app.kubernetes.io/managed-by: flux
 spec:
-  folderRef: kube-state-metrics
+  folderRef: observability-system
   grafanaCom:
     id: 15757
     revision: 43
@@ -30,7 +30,7 @@ metadata:
     app.kubernetes.io/name: kube-state-metrics
     app.kubernetes.io/managed-by: flux
 spec:
-  folderRef: kube-state-metrics
+  folderRef: observability-system
   grafanaCom:
     id: 15758
     revision: 44
@@ -52,7 +52,7 @@ metadata:
     app.kubernetes.io/name: kube-state-metrics
     app.kubernetes.io/managed-by: flux
 spec:
-  folderRef: kube-state-metrics
+  folderRef: observability-system
   grafanaCom:
     id: 15760
     revision: 37
@@ -74,7 +74,7 @@ metadata:
     app.kubernetes.io/name: kube-state-metrics
     app.kubernetes.io/managed-by: flux
 spec:
-  folderRef: kube-state-metrics
+  folderRef: observability-system
   grafanaCom:
     id: 15759
     revision: 40

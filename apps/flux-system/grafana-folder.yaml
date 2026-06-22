@@ -9,7 +9,7 @@ metadata:
     app.kubernetes.io/name: flux-system
     app.kubernetes.io/managed-by: flux
 spec:
-  title: flux-system
+  title: Flux System
   allowCrossNamespaceImport: true
   instanceSelector:
     matchLabels:
