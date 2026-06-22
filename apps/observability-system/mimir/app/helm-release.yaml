@@ -178,6 +178,8 @@ spec:
           value: "10000"
         - name: KAFKA_NUM_RECOVERY_THREADS_PER_DATA_DIR
           value: "2"
+        - name: HOME
+          value: /tmp
       initContainers:
         - name: kafka-recovery
           image: busybox:1.38
