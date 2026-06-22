@@ -9,7 +9,6 @@ spec:
   interval: 5m
   prune: true
   wait: true
-  targetNamespace: kube-system
   path: ./apps/kube-system/intel-gpu-device-plugin/app
   sourceRef:
     kind: GitRepository
