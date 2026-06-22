@@ -26,6 +26,9 @@ spec:
     namespace: observability-system
 
   values:
+    podAnnotations:
+      reloader.stakater.com/auto: "true"
+
     minio:
       enabled: false
 
