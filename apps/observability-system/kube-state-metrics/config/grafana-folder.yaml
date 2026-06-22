@@ -8,7 +8,7 @@ metadata:
     app.kubernetes.io/name: kube-state-metrics
     app.kubernetes.io/managed-by: flux
 spec:
-  title: Kube State Metrics
+  title: kube-state-metrics
   allowCrossNamespaceImport: true
   instanceSelector:
     matchLabels:

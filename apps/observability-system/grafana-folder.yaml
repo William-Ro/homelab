@@ -8,7 +8,7 @@ metadata:
     app.kubernetes.io/name: observability-system
     app.kubernetes.io/managed-by: flux
 spec:
-  title: Observability System
+  title: observability-system
   allowCrossNamespaceImport: true
   instanceSelector:
     matchLabels:
