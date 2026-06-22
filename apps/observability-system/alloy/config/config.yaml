@@ -277,3 +277,63 @@ data:
       metrics_path = "/probe"
       forward_to   = [prometheus.remote_write.mimir.receiver]
     }
+
+
+    discovery.kubernetes "flux_controllers" {
+      role = "pod"
+      namespaces {
+        names = ["flux-system"]
+      }
+      selectors {
+        role  = "pod"
+        label = "app.kubernetes.io/part-of=flux"
+      }
+    }
+
+    discovery.relabel "flux_controllers" {
+      targets = discovery.kubernetes.flux_controllers.targets
+
+      rule {
+        source_labels = ["__meta_kubernetes_pod_phase"]
+        action        = "keep"
+        regex         = "Running"
+      }
+
+      rule {
+        source_labels = ["__meta_kubernetes_pod_container_port_number"]
+        action        = "keep"
+        regex         = "8080"
+      }
+
+      rule {
+        source_labels = ["__meta_kubernetes_pod_ip"]
+        target_label  = "__address__"
+        replacement   = "$1:8080"
+      }
+
+      rule {
+        source_labels = ["__meta_kubernetes_namespace"]
+        target_label  = "namespace"
+      }
+
+      rule {
+        source_labels = ["__meta_kubernetes_pod_name"]
+        target_label  = "pod"
+      }
+
+      rule {
+        source_labels = ["__meta_kubernetes_pod_label_app_kubernetes_io_component"]
+        target_label  = "component"
+      }
+
+      rule {
+        source_labels = ["__meta_kubernetes_pod_label_app_kubernetes_io_name"]
+        target_label  = "app"
+      }
+    }
+
+    prometheus.scrape "flux_controllers" {
+      targets    = discovery.relabel.flux_controllers.output
+      job_name   = "flux-system"
+      forward_to = [prometheus.remote_write.mimir.receiver]
+    }

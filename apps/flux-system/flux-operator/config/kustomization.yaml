@@ -4,4 +4,3 @@ kind: Kustomization
 
 resources:
   - ./http-route.yaml
-  - ./pod-monitor.yaml
