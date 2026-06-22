@@ -18,17 +18,15 @@ spec:
     kind: OCIRepository
     name: pihole
 
-  valuesFrom:
-    - kind: Secret
-      name: pihole-password
-      valuesKey: password
-      targetPath: pihole.web.password
-
   values:
     replicas: 1
 
+    podAnnotations:
+      reloader.stakater.com/auto: "true"
+
     pihole:
       web:
+        existingSecret: pihole-password
         service:
           type: LoadBalancer
           loadBalancerIP: 192.168.1.220
