@@ -59,10 +59,10 @@ spec:
             resources:
               requests:
                 cpu: 20m
-                memory: 1Gi
+                memory: 512Mi
                 gpu.intel.com/i915: "1"
               limits:
-                memory: 10Gi
+                memory: 4Gi
                 gpu.intel.com/i915: "1"
             securityContext:
               allowPrivilegeEscalation: false
@@ -90,7 +90,7 @@ spec:
         medium: Memory
         sizeLimit: 8Gi
         globalMounts:
-          - path: /cache/transcodes
+          - path: /transcode
       cache:
         existingClaim: jellyfin-cache
         globalMounts:
