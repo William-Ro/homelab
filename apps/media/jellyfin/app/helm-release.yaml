@@ -85,6 +85,10 @@ spec:
         existingClaim: media-data
         globalMounts:
           - path: /data
+      transcode:
+        type: emptyDir
+        globalMounts:
+          - path: /cache/transcodes
       cache:
         existingClaim: jellyfin-cache
         globalMounts:
