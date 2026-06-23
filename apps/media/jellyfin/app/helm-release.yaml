@@ -90,7 +90,7 @@ spec:
         medium: Memory
         sizeLimit: 8Gi
         globalMounts:
-          - path: /transcode
+          - path: /cache/transcodes
       cache:
         existingClaim: jellyfin-cache
         globalMounts:
