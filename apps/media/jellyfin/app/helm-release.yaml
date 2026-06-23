@@ -85,12 +85,6 @@ spec:
         existingClaim: media-data
         globalMounts:
           - path: /data
-      transcode:
-        type: emptyDir
-        medium: Memory
-        sizeLimit: 3Gi
-        globalMounts:
-          - path: /cache/transcodes
       cache:
         existingClaim: jellyfin-cache
         globalMounts:
