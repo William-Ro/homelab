@@ -84,7 +84,10 @@ spec:
 
     persistence:
       config:
-        existingClaim: sonarr-config
+        type: persistentVolumeClaim
+        accessMode: ReadWriteOnce
+        size: 5Gi
+        storageClassName: longhorn
         globalMounts:
           - path: /config
       data:

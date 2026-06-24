@@ -64,7 +64,10 @@ spec:
 
     persistence:
       config:
-        existingClaim: recyclarr-config
+        type: persistentVolumeClaim
+        accessMode: ReadWriteOnce
+        size: 1Gi
+        storageClassName: longhorn
         globalMounts:
           - path: /config
       config-file:

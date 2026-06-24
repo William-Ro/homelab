@@ -78,7 +78,10 @@ spec:
 
     persistence:
       config:
-        existingClaim: jellyfin-config
+        type: persistentVolumeClaim
+        accessMode: ReadWriteOnce
+        size: 10Gi
+        storageClassName: longhorn
         globalMounts:
           - path: /config
       data:
@@ -90,7 +93,10 @@ spec:
         globalMounts:
           - path: /cache/transcodes
       cache:
-        existingClaim: jellyfin-cache
+        type: persistentVolumeClaim
+        accessMode: ReadWriteOnce
+        size: 50Gi
+        storageClassName: longhorn
         globalMounts:
           - path: /cache
       tmp:

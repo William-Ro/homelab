@@ -96,7 +96,10 @@ spec:
 
     persistence:
       config:
-        existingClaim: autobrr-config
+        type: persistentVolumeClaim
+        accessMode: ReadWriteOnce
+        size: 2Gi
+        storageClassName: longhorn
         globalMounts:
           - path: /config
       tmp:

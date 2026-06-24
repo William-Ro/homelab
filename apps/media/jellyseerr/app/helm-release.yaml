@@ -79,7 +79,10 @@ spec:
 
     persistence:
       config:
-        existingClaim: jellyseerr-config
+        type: persistentVolumeClaim
+        accessMode: ReadWriteOnce
+        size: 2Gi
+        storageClassName: longhorn
         globalMounts:
           - path: /app/config
       tmp:

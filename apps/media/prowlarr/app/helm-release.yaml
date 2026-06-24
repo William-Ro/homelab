@@ -83,7 +83,10 @@ spec:
 
     persistence:
       config:
-        existingClaim: prowlarr-config
+        type: persistentVolumeClaim
+        accessMode: ReadWriteOnce
+        size: 2Gi
+        storageClassName: longhorn
         globalMounts:
           - path: /config
       tmp:
