@@ -42,6 +42,12 @@ spec:
               - sh
               - -c
               - "mkdir -p /config/config && cp /branding-template/branding.xml /config/config/branding.xml"
+            securityContext:
+              runAsUser: 0
+              runAsNonRoot: false
+              allowPrivilegeEscalation: false
+              capabilities:
+                drop: ["ALL"]
         containers:
           app:
             image:
