@@ -14,5 +14,5 @@ data:
     <BrandingOptions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
       <LoginDisclaimer />
       <CustomCss>@import url('https://cdn.jsdelivr.net/gh/AumGupta/abyss-jellyfin@main/abyss.css');</CustomCss>
-      <SplashscreenEnabled>false</SplashscreenEnabled>
+      <SplashscreenEnabled>true</SplashscreenEnabled>
     </BrandingOptions>
