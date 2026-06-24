@@ -99,7 +99,6 @@ spec:
         type: persistentVolumeClaim
         accessMode: ReadWriteOnce
         size: 2Gi
-        storageClassName: longhorn
         globalMounts:
           - path: /config
       tmp:

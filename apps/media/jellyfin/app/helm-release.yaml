@@ -81,7 +81,6 @@ spec:
         type: persistentVolumeClaim
         accessMode: ReadWriteOnce
         size: 10Gi
-        storageClassName: longhorn
         globalMounts:
           - path: /config
       data:
@@ -96,7 +95,6 @@ spec:
         type: persistentVolumeClaim
         accessMode: ReadWriteOnce
         size: 50Gi
-        storageClassName: longhorn
         globalMounts:
           - path: /cache
       tmp:
