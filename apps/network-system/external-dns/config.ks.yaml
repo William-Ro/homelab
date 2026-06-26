@@ -3,7 +3,7 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: external-dns
+  name: external-dns-config
   namespace: network-system
 spec:
   interval: 10m
@@ -11,8 +11,13 @@ spec:
   wait: true
   targetNamespace: network-system
 
-  path: ./apps/network-system/external-dns/app
+  path: ./apps/network-system/external-dns/config
   sourceRef:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
+
+  dependsOn:
+    - name: external-dns
+    - name: bitwarden-sdk-server-config
+      namespace: security-system
