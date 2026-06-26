@@ -15,6 +15,6 @@ resources:
   - ./bazarr
   - ./flaresolverr
   - ./jellyfin
-  - ./jellyseerr
+  - ./seerr
   - ./recyclarr
   - ./autobrr

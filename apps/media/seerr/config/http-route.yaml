@@ -3,9 +3,9 @@
 apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
 metadata:
-  name: jellyseerr
+  name: seerr
   labels:
-    app.kubernetes.io/name: jellyseerr
+    app.kubernetes.io/name: seerr
     app.kubernetes.io/component: httproute
     app.kubernetes.io/part-of: media-stack
     app.kubernetes.io/managed-by: flux
@@ -15,12 +15,12 @@ spec:
       namespace: network-system
       sectionName: https
   hostnames:
-    - jellyseerr.internal.reli.cc
+    - seerr.internal.reli.cc
   rules:
     - matches:
         - path:
             type: PathPrefix
             value: /
       backendRefs:
-        - name: jellyseerr
+        - name: seerr
           port: 5055
