@@ -18,5 +18,6 @@ spec:
     namespace: flux-system
 
   dependsOn:
+    - name: recyclarr
     - name: bitwarden-sdk-server-config
       namespace: security-system
