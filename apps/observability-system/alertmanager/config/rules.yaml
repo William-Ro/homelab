@@ -163,3 +163,90 @@ spec:
           annotations:
             summary: >-
               Longhorn disk on {{ $labels.node }} ({{ $labels.disk }}) is over 90% full
+
+    - name: storage.pvc
+      rules:
+        - alert: PVCHighUsage
+          expr: >-
+            kubelet_volume_stats_used_bytes
+            / kubelet_volume_stats_capacity_bytes > 0.85
+          for: 10m
+          labels:
+            severity: warning
+          annotations:
+            summary: >-
+              PVC {{ $labels.namespace }}/{{ $labels.persistentvolumeclaim }} is over 85% full
+            description: >-
+              Usage: {{ $value | humanizePercentage }}. Free up space, expand the PVC,
+              or reduce retention for the affected workload.
+
+        - alert: PVCCriticalUsage
+          expr: >-
+            kubelet_volume_stats_used_bytes
+            / kubelet_volume_stats_capacity_bytes > 0.95
+          for: 5m
+          labels:
+            severity: critical
+          annotations:
+            summary: >-
+              PVC {{ $labels.namespace }}/{{ $labels.persistentvolumeclaim }} is over 95% full — writes will fail soon
+            description: >-
+              Usage: {{ $value | humanizePercentage }}. Immediate action required.
+
+    - name: networking.certificates
+      rules:
+        - alert: CertificateExpiringSoon
+          expr: >-
+            (certmanager_certificate_expiration_timestamp_seconds - time()) < 14 * 24 * 3600
+          for: 1h
+          labels:
+            severity: warning
+          annotations:
+            summary: >-
+              Certificate {{ $labels.namespace }}/{{ $labels.name }} expires in less than 14 days
+            description: >-
+              Cert-manager should auto-renew but may be blocked by Cloudflare API issues.
+              Check: kubectl -n network-system get certificate {{ $labels.name }}
+
+        - alert: CertificateExpiryCritical
+          expr: >-
+            (certmanager_certificate_expiration_timestamp_seconds - time()) < 3 * 24 * 3600
+          for: 10m
+          labels:
+            severity: critical
+          annotations:
+            summary: >-
+              Certificate {{ $labels.namespace }}/{{ $labels.name }} expires in less than 3 days
+            description: >-
+              HTTPS will break imminently. Cert-manager renewal is failing.
+              Check cert-manager logs: kubectl -n network-system logs -l app=cert-manager
+
+    - name: security.externalsecrets
+      rules:
+        - alert: ExternalSecretSyncFailed
+          expr: >-
+            increase(externalsecrets_sync_calls_total{status="error"}[15m]) > 0
+          for: 15m
+          labels:
+            severity: warning
+          annotations:
+            summary: >-
+              ExternalSecret {{ $labels.namespace }}/{{ $labels.name }} failed to sync from Bitwarden
+            description: >-
+              Secret sync is failing. New or rotated secrets will not be applied to the cluster.
+              Check bitwarden-sdk-server: kubectl -n security-system logs -l app=bitwarden-sdk-server
+
+    - name: hardware.gpu
+      rules:
+        - alert: IntelGPUUnavailable
+          expr: >-
+            kube_node_status_allocatable{resource="gpu_intel_com_i915"} == 0
+          for: 10m
+          labels:
+            severity: warning
+          annotations:
+            summary: >-
+              Intel GPU (i915) is not allocatable on node {{ $labels.node }}
+            description: >-
+              Jellyfin will fall back to CPU transcoding, causing high CPU load.
+              Check intel-gpu-device-plugin: kubectl -n kube-system get pods -l app=intel-gpu-device-plugin
