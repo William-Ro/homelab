@@ -64,6 +64,53 @@ spec:
             summary: >-
               Flux {{ $labels.kind }}/{{ $labels.name }} reconciliation failed in {{ $labels.namespace }}
 
+    - name: storage.garage
+      rules:
+        - alert: GarageDataPVCLowDiskSpace
+          expr: >-
+            kubelet_volume_stats_available_bytes{
+              persistentvolumeclaim=~"data-garage-.*"
+            } < 5368709120
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: >-
+              Garage data PVC {{ $labels.persistentvolumeclaim }} has less than 5Gi free
+            description: >-
+              Available: {{ $value | humanize1024 }}B. With 3x replication, effective usable
+              space is ~6.7Gi total. Reduce Mimir retention or increase PVC size.
+
+        - alert: GarageDataPVCCritical
+          expr: >-
+            kubelet_volume_stats_available_bytes{
+              persistentvolumeclaim=~"data-garage-.*"
+            } < 2147483648
+          for: 5m
+          labels:
+            severity: critical
+          annotations:
+            summary: >-
+              Garage data PVC {{ $labels.persistentvolumeclaim }} has less than 2Gi free — imminent failure
+            description: >-
+              Available: {{ $value | humanize1024 }}B. Mimir writes will start failing immediately.
+              Restart mimir-compactor and check retention settings.
+
+    - name: observability.mimir.compactor
+      rules:
+        - alert: MimirCompactorNotRunning
+          expr: >-
+            (time() - cortex_compactor_last_successful_run_timestamp_seconds) > 7200
+          for: 10m
+          labels:
+            severity: warning
+          annotations:
+            summary: Mimir compactor has not completed a run in over 2 hours
+            description: >-
+              Last successful run was {{ $value | humanizeDuration }} ago.
+              Blocks will accumulate and Garage storage will fill up.
+              Check: kubectl -n observability-system logs -l app.kubernetes.io/component=compactor
+
     - name: storage.kafka
       rules:
         - alert: KafkaPVCLowDiskSpace
