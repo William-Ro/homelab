@@ -8,7 +8,7 @@ spec:
   secretName: bitwarden-tls-certs
   duration: 2160h  # 90 days
   renewBefore: 360h  # 15 days
-  isCA: false
+  isCA: true
   privateKey:
     algorithm: RSA
     encoding: PKCS1
