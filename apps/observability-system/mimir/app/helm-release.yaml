@@ -106,7 +106,7 @@ spec:
           memory: 3Gi
       persistentVolume:
         storageClass: longhorn
-        size: 5Gi
+        size: 15Gi
       initContainers:
         - name: wait-for-kafka
           image: busybox:1.38
