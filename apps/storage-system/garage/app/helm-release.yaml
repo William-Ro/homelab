@@ -48,7 +48,7 @@ spec:
         size: 256Mi
       data:
         storageClass: longhorn
-        size: 20Gi
+        size: 30Gi
 
     webui:
       enabled: true
