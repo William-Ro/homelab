@@ -6,4 +6,4 @@ kind: Kustomization
 namespace: storage-system
 
 resources:
-  - ./democratic-csi
+  - ./app.ks.yaml
