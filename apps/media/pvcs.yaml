@@ -1,6 +1,23 @@
 ---
-# Unified PVC for all media data (downloads + library on same filesystem for hardlinks)
-# Structure: /data/downloads/ (qbittorrent), /data/media/TV/, /data/media/Movies/
+# Static NFS PV backed by TrueNAS media/downloads dataset
+# Multiple pods (qbittorrent, radarr, sonarr, jellyfin) share this via ReadWriteMany
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: media-data
+spec:
+  capacity:
+    storage: 400Gi
+  accessModes:
+    - ReadWriteMany
+  nfs:
+    server: 192.168.1.42
+    path: /mnt/media/downloads
+  persistentVolumeReclaimPolicy: Retain
+  mountOptions:
+    - nfsvers=4.1
+    - hard
+---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
@@ -8,7 +25,8 @@ metadata:
 spec:
   accessModes:
     - ReadWriteMany
-  storageClassName: longhorn
+  storageClassName: ""
+  volumeName: media-data
   resources:
     requests:
-      storage: 700Gi
+      storage: 400Gi

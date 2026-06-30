@@ -220,8 +220,6 @@ data:
       targets = [
         {"__address__" = "https://grafana.internal.reli.cc",               "__tmp_name" = "grafana"},
         {"__address__" = "https://alertmanager.admin.reli.cc",             "__tmp_name" = "alertmanager"},
-        {"__address__" = "https://longhorn.admin.reli.cc",                 "__tmp_name" = "longhorn"},
-        {"__address__" = "https://garage.internal.reli.cc",                "__tmp_name" = "garage"},
         {"__address__" = "https://pihole.admin.reli.cc/admin",             "__tmp_name" = "pihole"},
         {"__address__" = "https://flux.admin.reli.cc",                     "__tmp_name" = "flux"},
         {"__address__" = "https://mimir.admin.reli.cc",                    "__tmp_name" = "mimir"},

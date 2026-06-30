@@ -7,5 +7,4 @@ namespace: storage-system
 
 resources:
   - ./namespace.yaml
-  - ./longhorn
-  - ./garage
+  - ./democratic-csi

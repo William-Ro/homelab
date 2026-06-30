@@ -86,7 +86,9 @@ spec:
         globalMounts:
           - path: /config
       data:
-        existingClaim: media-data
+        type: nfs
+        server: truenas.reli.cc
+        path: /mnt/media/downloads
         globalMounts:
           - path: /data
       tmp:

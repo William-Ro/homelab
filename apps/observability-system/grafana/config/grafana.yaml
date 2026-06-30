@@ -87,6 +87,6 @@ spec:
       resources:
         requests:
           storage: 5Gi
-      storageClassName: longhorn
+      storageClassName: truenas-iscsi
 
   disableDefaultSecurityContext: All

@@ -64,38 +64,6 @@ spec:
             summary: >-
               Flux {{ $labels.kind }}/{{ $labels.name }} reconciliation failed in {{ $labels.namespace }}
 
-    - name: storage.garage
-      rules:
-        - alert: GarageDataPVCLowDiskSpace
-          expr: >-
-            kubelet_volume_stats_available_bytes{
-              persistentvolumeclaim=~"data-garage-.*"
-            } < 5368709120
-          for: 5m
-          labels:
-            severity: warning
-          annotations:
-            summary: >-
-              Garage data PVC {{ $labels.persistentvolumeclaim }} has less than 5Gi free
-            description: >-
-              Available: {{ $value | humanize1024 }}B. With 3x replication, effective usable
-              space is ~6.7Gi total. Reduce Mimir retention or increase PVC size.
-
-        - alert: GarageDataPVCCritical
-          expr: >-
-            kubelet_volume_stats_available_bytes{
-              persistentvolumeclaim=~"data-garage-.*"
-            } < 2147483648
-          for: 5m
-          labels:
-            severity: critical
-          annotations:
-            summary: >-
-              Garage data PVC {{ $labels.persistentvolumeclaim }} has less than 2Gi free — imminent failure
-            description: >-
-              Available: {{ $value | humanize1024 }}B. Mimir writes will start failing immediately.
-              Restart mimir-compactor and check retention settings.
-
     - name: observability.mimir.compactor
       rules:
         - alert: MimirCompactorNotRunning
@@ -139,30 +107,6 @@ spec:
             summary: Mimir is dropping samples due to ingestion rate limiting
             description: >-
               Samples are being rejected with HTTP 429. Increase ingestion_rate/ingestion_burst_size or reduce scrape volume.
-
-    - name: storage.longhorn
-      rules:
-        - alert: LonghornVolumeDegraded
-          expr: longhorn_volume_robustness == 2
-          for: 5m
-          labels:
-            severity: warning
-          annotations:
-            summary: >-
-              Longhorn volume {{ $labels.volume }} is degraded
-            description: >-
-              Volume {{ $labels.volume }} has lost replicas. Check node/disk health.
-
-        - alert: LonghornDiskPressure
-          expr: >-
-            (longhorn_disk_capacity_bytes - longhorn_disk_usage_bytes)
-            / longhorn_disk_capacity_bytes < 0.10
-          for: 5m
-          labels:
-            severity: warning
-          annotations:
-            summary: >-
-              Longhorn disk on {{ $labels.node }} ({{ $labels.disk }}) is over 90% full
 
     - name: storage.pvc
       rules:

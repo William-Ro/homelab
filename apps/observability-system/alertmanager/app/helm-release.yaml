@@ -84,7 +84,7 @@ spec:
 
     persistence:
       enabled: true
-      storageClass: longhorn
+      storageClass: truenas-iscsi
       size: 1Gi
       accessModes:
         - ReadWriteOnce

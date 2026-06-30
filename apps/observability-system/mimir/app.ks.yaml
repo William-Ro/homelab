@@ -19,5 +19,3 @@ spec:
 
   dependsOn:
     - name: mimir-config
-    - name: garage
-      namespace: storage-system

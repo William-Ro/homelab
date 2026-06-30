@@ -7,7 +7,6 @@ namespace: media
 
 resources:
   - ./namespace.yaml
-  - ./pvcs.yaml
   - ./prowlarr
   - ./sonarr
   - ./radarr
