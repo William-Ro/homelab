@@ -33,10 +33,6 @@ spec:
         parameters:
           fsType: ext4
 
-    volumeSnapshotClasses:
-      - name: truenas-iscsi
-        deletionPolicy: Delete
-
     driver:
       config:
         driver: truenas-api-iscsi
