@@ -62,7 +62,7 @@ spec:
           storage:
             backend: s3
             s3:
-              endpoint: 192.168.1.42:30188
+              endpoint: truenas.reli.cc:30188
               region: us-east-1
               insecure: true
               access_key_id: ${MIMIR_S3_ACCESS_KEY_ID}
