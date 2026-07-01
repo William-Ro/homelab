@@ -8,4 +8,3 @@ namespace: storage-system
 resources:
   - ./helm-repository.yaml
   - ./helm-release.yaml
-  - ./external-secret.yaml

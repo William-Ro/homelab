@@ -6,5 +6,4 @@ kind: Kustomization
 namespace: storage-system
 
 resources:
-  - ./app.ks.yaml
-  - ./config.ks.yaml
+  - ./external-secret.yaml
