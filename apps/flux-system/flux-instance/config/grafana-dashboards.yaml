@@ -11,7 +11,7 @@ metadata:
     app.kubernetes.io/managed-by: flux
 spec:
   folderRef: flux-system
-  url: https://raw.githubusercontent.com/fluxcd/flux2-monitoring-example/refs/heads/main/monitoring/configs/dashboards/cluster.json
+  url: https://raw.githubusercontent.com/fluxcd/flux2-monitoring-example/7ab65dc8b90f7a6751d88f18bbb4e1bee33bf334/monitoring/configs/dashboards/cluster.json
   allowCrossNamespaceImport: true
   instanceSelector:
     matchLabels:
@@ -33,7 +33,7 @@ metadata:
     app.kubernetes.io/managed-by: flux
 spec:
   folderRef: flux-system
-  url: https://raw.githubusercontent.com/fluxcd/flux2-monitoring-example/refs/heads/main/monitoring/configs/dashboards/control-plane.json
+  url: https://raw.githubusercontent.com/fluxcd/flux2-monitoring-example/7ab65dc8b90f7a6751d88f18bbb4e1bee33bf334/monitoring/configs/dashboards/control-plane.json
   allowCrossNamespaceImport: true
   instanceSelector:
     matchLabels:
@@ -55,7 +55,7 @@ metadata:
     app.kubernetes.io/managed-by: flux
 spec:
   folderRef: flux-system
-  url: https://raw.githubusercontent.com/controlplaneio-fluxcd/flux-operator/refs/heads/main/config/monitoring/dashboards/flux-k8s-api-performance.json
+  url: https://raw.githubusercontent.com/controlplaneio-fluxcd/flux-operator/007c12c71445e9eb9e29a08c53cd1953aafd735a/config/monitoring/dashboards/flux-k8s-api-performance.json
   allowCrossNamespaceImport: true
   instanceSelector:
     matchLabels:
@@ -77,7 +77,7 @@ metadata:
     app.kubernetes.io/managed-by: flux
 spec:
   folderRef: flux-system
-  url: https://raw.githubusercontent.com/controlplaneio-fluxcd/flux-operator/refs/heads/main/config/monitoring/dashboards/flux-performance.json
+  url: https://raw.githubusercontent.com/controlplaneio-fluxcd/flux-operator/007c12c71445e9eb9e29a08c53cd1953aafd735a/config/monitoring/dashboards/flux-performance.json
   allowCrossNamespaceImport: true
   instanceSelector:
     matchLabels:
