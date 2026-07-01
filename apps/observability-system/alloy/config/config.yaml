@@ -49,6 +49,7 @@ data:
       targets           = discovery.relabel.kubelet.output
       job_name          = "kubelet"
       scheme            = "https"
+      scrape_interval   = "30s"
       bearer_token_file = "/var/run/secrets/kubernetes.io/serviceaccount/token"
       tls_config {
         insecure_skip_verify = true
@@ -75,6 +76,7 @@ data:
       targets           = discovery.relabel.cadvisor.output
       job_name          = "cadvisor"
       scheme            = "https"
+      scrape_interval   = "30s"
       metrics_path      = "/metrics/cadvisor"
       bearer_token_file = "/var/run/secrets/kubernetes.io/serviceaccount/token"
       tls_config {
@@ -93,9 +95,10 @@ data:
     }
 
     prometheus.scrape "kube_state_metrics" {
-      targets    = discovery.kubernetes.kube_state_metrics.targets
-      job_name   = "kube-state-metrics"
-      forward_to = [prometheus.remote_write.mimir.receiver]
+      targets         = discovery.kubernetes.kube_state_metrics.targets
+      job_name        = "kube-state-metrics"
+      scrape_interval = "30s"
+      forward_to      = [prometheus.remote_write.mimir.receiver]
     }
 
     prometheus.exporter.unix "node" {
@@ -105,9 +108,10 @@ data:
     }
 
     prometheus.scrape "node" {
-      targets    = prometheus.exporter.unix.node.targets
-      job_name   = "node-exporter"
-      forward_to = [prometheus.remote_write.mimir.receiver]
+      targets         = prometheus.exporter.unix.node.targets
+      job_name        = "node-exporter"
+      scrape_interval = "30s"
+      forward_to      = [prometheus.remote_write.mimir.receiver]
     }
 
     discovery.kubernetes "pods" {
@@ -155,9 +159,10 @@ data:
     }
 
     prometheus.scrape "annotated_pods" {
-      targets    = discovery.relabel.annotated_pods.output
-      job_name   = "kubernetes-pods"
-      forward_to = [prometheus.remote_write.mimir.receiver]
+      targets         = discovery.relabel.annotated_pods.output
+      job_name        = "kubernetes-pods"
+      scrape_interval = "30s"
+      forward_to      = [prometheus.remote_write.mimir.receiver]
     }
 
 
@@ -211,8 +216,9 @@ data:
     }
 
     prometheus.scrape "mimir_pods" {
-      targets    = discovery.relabel.mimir_pods.output
-      forward_to = [prometheus.remote_write.mimir.receiver]
+      targets         = discovery.relabel.mimir_pods.output
+      scrape_interval = "30s"
+      forward_to      = [prometheus.remote_write.mimir.receiver]
     }
 
 
@@ -270,10 +276,11 @@ data:
     }
 
     prometheus.scrape "blackbox_http" {
-      targets      = discovery.relabel.blackbox_http.output
-      job_name     = "blackbox"
-      metrics_path = "/probe"
-      forward_to   = [prometheus.remote_write.mimir.receiver]
+      targets         = discovery.relabel.blackbox_http.output
+      job_name        = "blackbox"
+      scrape_interval = "30s"
+      metrics_path    = "/probe"
+      forward_to      = [prometheus.remote_write.mimir.receiver]
     }
 
 
@@ -331,7 +338,8 @@ data:
     }
 
     prometheus.scrape "flux_controllers" {
-      targets    = discovery.relabel.flux_controllers.output
-      job_name   = "flux-system"
-      forward_to = [prometheus.remote_write.mimir.receiver]
+      targets         = discovery.relabel.flux_controllers.output
+      job_name        = "flux-system"
+      scrape_interval = "30s"
+      forward_to      = [prometheus.remote_write.mimir.receiver]
     }
