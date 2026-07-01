@@ -19,6 +19,12 @@ spec:
   values:
     fullnameOverride: kube-state-metrics
 
+    metricLabelsAllowlist:
+      - "namespaces=[]"
+      - "deployments=[]"
+      - "statefulsets=[]"
+      - "daemonsets=[]"
+
     resources:
       requests:
         cpu: 10m
