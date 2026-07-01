@@ -18,7 +18,7 @@ spec:
         cpu: 20m
         memory: 640Mi
       limits:
-        memory: 900Mi
+        memory: 1100Mi
     mounts:
       extra:
         - name: proc
