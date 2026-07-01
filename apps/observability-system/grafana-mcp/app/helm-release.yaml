@@ -14,7 +14,6 @@ spec:
   chartRef:
     kind: OCIRepository
     name: grafana-mcp-chart
-    namespace: flux-system
 
   values:
     global:
