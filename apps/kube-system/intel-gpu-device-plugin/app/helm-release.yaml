@@ -18,5 +18,4 @@ spec:
   values:
     nodeFeatureRule: false
     nodeSelector:
-      intel.feature.node.kubernetes.io/gpu: null
       kubernetes.io/arch: amd64
