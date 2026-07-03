@@ -5,3 +5,5 @@ kind: Kustomization
 resources:
   - library-pvc.yaml
   - http-route.yaml
+patches:
+  - path: cnpg-patch.yaml
