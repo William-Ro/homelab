@@ -92,9 +92,18 @@ data:
       udev_data_path = "/run/udev/data"
     }
 
+    // prometheus.exporter.unix sets job="integrations/unix" on targets;
+    // override to "integrations/node_exporter" so dashboard 1860 variables resolve
+    discovery.relabel "node_exporter" {
+      targets = prometheus.exporter.unix.node.targets
+      rule {
+        target_label = "job"
+        replacement  = "integrations/node_exporter"
+      }
+    }
+
     prometheus.scrape "node" {
-      targets         = prometheus.exporter.unix.node.targets
-      job_name        = "node-exporter"
+      targets         = discovery.relabel.node_exporter.output
       scrape_interval = "30s"
       forward_to      = [prometheus.remote_write.mimir.receiver]
     }
@@ -318,6 +327,53 @@ data:
     prometheus.scrape "flux_controllers" {
       targets         = discovery.relabel.flux_controllers.output
       job_name        = "flux-system"
+      scrape_interval = "30s"
+      forward_to      = [prometheus.remote_write.mimir.receiver]
+    }
+
+
+    discovery.kubernetes "cnpg_pods" {
+      role = "pod"
+      selectors {
+        role  = "pod"
+        label = "cnpg.io/podRole=instance"
+      }
+    }
+
+    discovery.relabel "cnpg_pods" {
+      targets = discovery.kubernetes.cnpg_pods.targets
+
+      rule {
+        source_labels = ["__meta_kubernetes_pod_phase"]
+        action        = "keep"
+        regex         = "Running"
+      }
+
+      rule {
+        source_labels = ["__meta_kubernetes_pod_ip"]
+        target_label  = "__address__"
+        replacement   = "$1:9187"
+      }
+
+      rule {
+        source_labels = ["__meta_kubernetes_namespace"]
+        target_label  = "namespace"
+      }
+
+      rule {
+        source_labels = ["__meta_kubernetes_pod_name"]
+        target_label  = "pod"
+      }
+
+      rule {
+        source_labels = ["__meta_kubernetes_pod_label_cnpg_io_cluster"]
+        target_label  = "cluster"
+      }
+    }
+
+    prometheus.scrape "cnpg_pods" {
+      targets         = discovery.relabel.cnpg_pods.output
+      job_name        = "cnpg"
       scrape_interval = "30s"
       forward_to      = [prometheus.remote_write.mimir.receiver]
     }
