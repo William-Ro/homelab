@@ -4,7 +4,7 @@
 apiVersion: source.toolkit.fluxcd.io/v1
 kind: OCIRepository
 metadata:
-  name: alertmanager-chart
+  name: alertmanager
   namespace: observability-system
   labels:
     app.kubernetes.io/name: alertmanager

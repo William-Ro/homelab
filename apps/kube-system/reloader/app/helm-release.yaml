@@ -13,7 +13,7 @@ spec:
   interval: 10m
   chartRef:
     kind: OCIRepository
-    name: reloader-chart
+    name: reloader
 
   install:
     remediation:

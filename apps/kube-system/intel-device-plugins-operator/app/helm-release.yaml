@@ -12,7 +12,7 @@ spec:
   interval: 30m
   chartRef:
     kind: OCIRepository
-    name: intel-device-plugins-operator-chart
+    name: intel-device-plugins-operator
     namespace: flux-system
 
   values: {}

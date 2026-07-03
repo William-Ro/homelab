@@ -20,7 +20,7 @@ spec:
       retries: 3
   chartRef:
     kind: OCIRepository
-    name: alertmanager-chart
+    name: alertmanager
     namespace: observability-system
 
   values:

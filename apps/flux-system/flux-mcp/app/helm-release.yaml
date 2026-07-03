@@ -13,7 +13,7 @@ spec:
   interval: 30m
   chartRef:
     kind: OCIRepository
-    name: flux-mcp-chart
+    name: flux-mcp
 
   values:
     fullnameOverride: flux-mcp

@@ -13,7 +13,7 @@ spec:
   interval: 30m
   chartRef:
     kind: OCIRepository
-    name: prowlarr-chart
+    name: prowlarr
 
   values:
     global:

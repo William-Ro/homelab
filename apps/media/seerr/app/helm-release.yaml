@@ -13,7 +13,7 @@ spec:
   interval: 30m
   chartRef:
     kind: OCIRepository
-    name: seerr-chart
+    name: seerr
 
   values:
     global:

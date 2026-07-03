@@ -13,7 +13,7 @@ spec:
   interval: 30m
   chartRef:
     kind: OCIRepository
-    name: jellyfin-chart
+    name: jellyfin
 
   values:
     global:

@@ -3,7 +3,7 @@
 apiVersion: source.toolkit.fluxcd.io/v1
 kind: OCIRepository
 metadata:
-  name: flux-mcp-chart
+  name: flux-mcp
   namespace: flux-system
 spec:
   interval: 15m

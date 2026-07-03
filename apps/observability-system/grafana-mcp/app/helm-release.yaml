@@ -13,7 +13,7 @@ spec:
   interval: 30m
   chartRef:
     kind: OCIRepository
-    name: grafana-mcp-chart
+    name: grafana-mcp
 
   values:
     global:
