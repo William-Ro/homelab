@@ -2,6 +2,14 @@
 name: CI PR
 
 on:
+  push:
+    branches:
+      - "renovate/**"
+    paths:
+      - apps/**
+      - bootstrap/**
+      - .github/flux-local/**
+      - .github/workflows/**
   pull_request:
     branches: [main]
     paths:
