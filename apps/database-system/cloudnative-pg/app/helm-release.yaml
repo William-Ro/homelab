@@ -16,6 +16,8 @@ spec:
     name: cloudnative-pg
 
   values:
+    fullnameOverride: cloudnative-pg-operator
+
     replicaCount: 1
 
     resources:
