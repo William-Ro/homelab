@@ -10,6 +10,9 @@ metadata:
 data:
   config.alloy: |
 
+    // ── REMOTE WRITE ──────────────────────────────────────────────────────────
+    // All scraped metrics go to Mimir. The cluster label is attached globally.
+
     prometheus.remote_write "mimir" {
       endpoint {
         url = "http://mimir-gateway.observability-system.svc.cluster.local:80/api/v1/push"
@@ -25,6 +28,10 @@ data:
       }
     }
 
+
+    // ── KUBERNETES INFRASTRUCTURE ─────────────────────────────────────────────
+    // Node-level metrics: kubelet (node stats), cadvisor (container resources),
+    // kube-state-metrics (object state), node-exporter (OS stats), kube-apiserver.
 
     discovery.kubernetes "nodes" {
       role = "node"
@@ -57,6 +64,8 @@ data:
       forward_to = [prometheus.remote_write.mimir.receiver]
     }
 
+    // cadvisor reuses the kubelet node targets; relabel overrides job and
+    // adds metrics_path so dashboards can distinguish cadvisor series.
     prometheus.scrape "cadvisor" {
       targets           = discovery.relabel.kubelet.output
       job_name          = "cadvisor"
@@ -82,7 +91,6 @@ data:
       forward_to = [prometheus.remote_write.mimir.receiver]
     }
 
-
     discovery.kubernetes "kube_state_metrics" {
       role = "service"
       selectors {
@@ -98,14 +106,14 @@ data:
       forward_to      = [prometheus.remote_write.mimir.receiver]
     }
 
+    // Built-in node exporter; job is overridden to "integrations/node_exporter"
+    // so the Node Exporter Full dashboard (grafana.com/1860) variables resolve.
     prometheus.exporter.unix "node" {
-      procfs_path = "/host/proc"
-      sysfs_path  = "/host/sys"
+      procfs_path    = "/host/proc"
+      sysfs_path     = "/host/sys"
       udev_data_path = "/run/udev/data"
     }
 
-    // prometheus.exporter.unix sets job="integrations/unix" on targets;
-    // override to "integrations/node_exporter" so dashboard 1860 variables resolve
     discovery.relabel "node_exporter" {
       targets = prometheus.exporter.unix.node.targets
       rule {
@@ -120,6 +128,43 @@ data:
       forward_to      = [prometheus.remote_write.mimir.receiver]
     }
 
+    discovery.kubernetes "kube_apiserver" {
+      role = "endpoints"
+      namespaces {
+        names = ["default"]
+      }
+    }
+
+    discovery.relabel "kube_apiserver" {
+      targets = discovery.kubernetes.kube_apiserver.targets
+
+      rule {
+        source_labels = ["__meta_kubernetes_namespace", "__meta_kubernetes_service_name"]
+        action        = "keep"
+        regex         = "default;kubernetes"
+      }
+    }
+
+    prometheus.scrape "kube_apiserver" {
+      targets           = discovery.relabel.kube_apiserver.output
+      job_name          = "kubernetes"
+      scheme            = "https"
+      scrape_interval   = "30s"
+      bearer_token_file = "/var/run/secrets/kubernetes.io/serviceaccount/token"
+      tls_config {
+        insecure_skip_verify = true
+      }
+      forward_to = [prometheus.remote_write.mimir.receiver]
+    }
+
+
+    // ── APPLICATION METRICS ───────────────────────────────────────────────────
+    // Pod-level scrapes: a generic annotation-based fallback plus dedicated
+    // blocks for apps that need specific targeting or label overrides.
+
+    // Generic fallback: scrapes any pod with prometheus.io/scrape=true.
+    // Pods with app.kubernetes.io/part-of=flux are dropped here since they
+    // have a dedicated block below.
     discovery.kubernetes "pods" {
       role = "pod"
     }
@@ -133,9 +178,6 @@ data:
         regex         = "true"
       }
 
-      // Drop pods already covered by a dedicated scrape block to prevent
-      // double-counting in dashboards (e.g. flux controllers have both
-      // app.kubernetes.io/part-of=flux and prometheus.io/scrape=true).
       rule {
         source_labels = ["__meta_kubernetes_pod_label_app_kubernetes_io_part_of"]
         action        = "drop"
@@ -175,7 +217,7 @@ data:
       forward_to      = [prometheus.remote_write.mimir.receiver]
     }
 
-
+    // Mimir distributed components — job = "observability-system/<component>".
     discovery.kubernetes "mimir_pods" {
       role = "pod"
       namespaces {
@@ -231,58 +273,7 @@ data:
       forward_to      = [prometheus.remote_write.mimir.receiver]
     }
 
-
-    discovery.relabel "blackbox_http" {
-      targets = [
-        {"__address__" = "https://grafana.internal.reli.cc"},
-        {"__address__" = "https://alertmanager.admin.reli.cc"},
-        {"__address__" = "https://pihole.admin.reli.cc/admin"},
-        {"__address__" = "https://flux.admin.reli.cc"},
-        {"__address__" = "https://mimir.admin.reli.cc"},
-        {"__address__" = "https://alloy.admin.reli.cc"},
-        {"__address__" = "https://blackbox-exporter.admin.reli.cc"},
-        {"__address__" = "https://prowlarr.internal.reli.cc"},
-        {"__address__" = "https://sonarr.internal.reli.cc"},
-        {"__address__" = "https://radarr.internal.reli.cc"},
-        {"__address__" = "https://qbittorrent.internal.reli.cc"},
-        {"__address__" = "https://bazarr.internal.reli.cc"},
-        {"__address__" = "https://jellyfin.internal.reli.cc"},
-        {"__address__" = "https://autobrr.internal.reli.cc"},
-        {"__address__" = "https://seerr.internal.reli.cc"},
-        {"__address__" = "https://immich.internal.reli.cc"},
-      ]
-
-      rule {
-        source_labels = ["__address__"]
-        target_label  = "__param_target"
-      }
-
-      rule {
-        replacement  = "http_2xx"
-        target_label = "__param_module"
-      }
-
-      rule {
-        replacement  = "blackbox-exporter.observability-system.svc.cluster.local:9115"
-        target_label = "__address__"
-      }
-
-      rule {
-        source_labels = ["__param_target"]
-        target_label  = "target"
-      }
-
-    }
-
-    prometheus.scrape "blackbox_http" {
-      targets         = discovery.relabel.blackbox_http.output
-      job_name        = "blackbox"
-      scrape_interval = "30s"
-      metrics_path    = "/probe"
-      forward_to      = [prometheus.remote_write.mimir.receiver]
-    }
-
-
+    // Flux controllers (helm, kustomize, notification, source).
     discovery.kubernetes "flux_controllers" {
       role = "pod"
       namespaces {
@@ -333,7 +324,7 @@ data:
       forward_to      = [prometheus.remote_write.mimir.receiver]
     }
 
-
+    // CloudNativePG operator (controller metrics) + postgres instances (cnpg_collector).
     discovery.kubernetes "cnpg_operator" {
       role = "pod"
       namespaces {
@@ -378,7 +369,6 @@ data:
       forward_to      = [prometheus.remote_write.mimir.receiver]
     }
 
-
     discovery.kubernetes "cnpg_pods" {
       role = "pod"
       selectors {
@@ -416,7 +406,6 @@ data:
         source_labels = ["__meta_kubernetes_pod_label_cnpg_io_cluster"]
         target_label  = "cluster"
       }
-
     }
 
     prometheus.scrape "cnpg_pods" {
@@ -426,32 +415,56 @@ data:
       forward_to      = [prometheus.remote_write.mimir.receiver]
     }
 
-    discovery.kubernetes "kube_apiserver" {
-      role = "endpoints"
-      namespaces {
-        names = ["default"]
-      }
-    }
 
-    discovery.relabel "kube_apiserver" {
-      targets = discovery.kubernetes.kube_apiserver.targets
+    // ── SYNTHETIC PROBES ──────────────────────────────────────────────────────
+    // HTTP probes via blackbox-exporter (job = "blackbox").
+    // Add new endpoints to the targets list; the module is fixed to http_2xx.
+
+    discovery.relabel "blackbox_http" {
+      targets = [
+        {"__address__" = "https://grafana.internal.reli.cc"},
+        {"__address__" = "https://alertmanager.admin.reli.cc"},
+        {"__address__" = "https://pihole.admin.reli.cc/admin"},
+        {"__address__" = "https://flux.admin.reli.cc"},
+        {"__address__" = "https://mimir.admin.reli.cc"},
+        {"__address__" = "https://alloy.admin.reli.cc"},
+        {"__address__" = "https://blackbox-exporter.admin.reli.cc"},
+        {"__address__" = "https://prowlarr.internal.reli.cc"},
+        {"__address__" = "https://sonarr.internal.reli.cc"},
+        {"__address__" = "https://radarr.internal.reli.cc"},
+        {"__address__" = "https://qbittorrent.internal.reli.cc"},
+        {"__address__" = "https://bazarr.internal.reli.cc"},
+        {"__address__" = "https://jellyfin.internal.reli.cc"},
+        {"__address__" = "https://autobrr.internal.reli.cc"},
+        {"__address__" = "https://seerr.internal.reli.cc"},
+        {"__address__" = "https://immich.internal.reli.cc"},
+      ]
 
       rule {
-        source_labels = ["__meta_kubernetes_namespace", "__meta_kubernetes_service_name"]
-        action        = "keep"
-        regex         = "default;kubernetes"
+        source_labels = ["__address__"]
+        target_label  = "__param_target"
       }
 
+      rule {
+        replacement  = "http_2xx"
+        target_label = "__param_module"
+      }
+
+      rule {
+        replacement  = "blackbox-exporter.observability-system.svc.cluster.local:9115"
+        target_label = "__address__"
+      }
+
+      rule {
+        source_labels = ["__param_target"]
+        target_label  = "target"
+      }
     }
 
-    prometheus.scrape "kube_apiserver" {
-      targets           = discovery.relabel.kube_apiserver.output
-      job_name          = "kubernetes"
-      scheme            = "https"
-      scrape_interval   = "30s"
-      bearer_token_file = "/var/run/secrets/kubernetes.io/serviceaccount/token"
-      tls_config {
-        insecure_skip_verify = true
-      }
-      forward_to = [prometheus.remote_write.mimir.receiver]
+    prometheus.scrape "blackbox_http" {
+      targets         = discovery.relabel.blackbox_http.output
+      job_name        = "blackbox"
+      scrape_interval = "30s"
+      metrics_path    = "/probe"
+      forward_to      = [prometheus.remote_write.mimir.receiver]
     }
