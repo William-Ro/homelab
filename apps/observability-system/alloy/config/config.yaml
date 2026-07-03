@@ -343,3 +343,8 @@ data:
       scrape_interval = "30s"
       forward_to      = [prometheus.remote_write.mimir.receiver]
     }
+
+
+    mimir.rules.kubernetes "default" {
+      address = "http://mimir-gateway.observability-system.svc.cluster.local:80"
+    }
