@@ -33,7 +33,6 @@ spec:
       extraEnvFrom:
         - secretRef:
             name: mimir-s3-credentials
-      # Applies reloader annotation to all pods so they restart on secret rotation
       podAnnotations:
         reloader.stakater.com/auto: "true"
 
@@ -41,9 +40,11 @@ spec:
       structuredConfig:
         multitenancy_enabled: false
 
-        # Disable Kafka-based ingest storage; use classic distributor→ingester path
         ingest_storage:
           enabled: false
+
+        ingester:
+          push_grpc_method_enabled: true
 
         limits:
           max_global_series_per_user: 300000
