@@ -79,22 +79,6 @@ spec:
               Blocks will accumulate and Garage storage will fill up.
               Check: kubectl -n observability-system logs -l app.kubernetes.io/component=compactor
 
-    - name: storage.kafka
-      rules:
-        - alert: KafkaPVCLowDiskSpace
-          expr: >-
-            kubelet_volume_stats_available_bytes{
-              persistentvolumeclaim=~"kafka-data-.*"
-            } < 3221225472
-          for: 5m
-          labels:
-            severity: warning
-          annotations:
-            summary: >-
-              Kafka PVC {{ $labels.persistentvolumeclaim }} has less than 3Gi free
-            description: >-
-              Available: {{ $value | humanize1024 }}B. Kafka will crash when full — increase PVC size or reduce retention.
-
     - name: observability.mimir
       rules:
         - alert: MimirIngestionRateLimited
