@@ -67,6 +67,18 @@ data:
       tls_config {
         insecure_skip_verify = true
       }
+      forward_to = [prometheus.relabel.cadvisor.receiver]
+    }
+
+    prometheus.relabel "cadvisor" {
+      rule {
+        target_label = "job"
+        replacement  = "kubelet"
+      }
+      rule {
+        target_label = "metrics_path"
+        replacement  = "/metrics/cadvisor"
+      }
       forward_to = [prometheus.remote_write.mimir.receiver]
     }
 
