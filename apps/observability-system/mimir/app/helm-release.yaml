@@ -269,6 +269,7 @@ spec:
           memory: 64Mi
 
     rollout_operator:
+      enabled: false
       resources:
         requests:
           cpu: 5m
