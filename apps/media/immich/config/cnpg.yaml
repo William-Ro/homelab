@@ -9,6 +9,12 @@ spec:
       - name: pgvector
         image:
           reference: ghcr.io/cloudnative-pg/pgvector:0.8.4-18-bookworm
+  managed:
+    roles:
+      - name: ${APP}
+        ensure: present
+        login: true
+        superuser: true
 ---
 apiVersion: postgresql.cnpg.io/v1
 kind: Database
