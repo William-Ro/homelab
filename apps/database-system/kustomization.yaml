@@ -5,4 +5,5 @@ kind: Kustomization
 namespace: database-system
 resources:
   - ./namespace.yaml
+  - ./grafana-folder.yaml
   - ./cloudnative-pg
