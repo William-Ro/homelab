@@ -29,15 +29,11 @@ spec:
                     secretKeyRef:
                       name: immich-postgres-app
                       key: uri
-      persistence:
-        library:
-          type: persistentVolumeClaim
-          accessMode: ReadWriteOnce
-          size: 500Gi
-          globalMounts:
-            - path: /usr/src/app/upload
 
     immich:
+      persistence:
+        library:
+          existingClaim: immich-library
       # Disable machine learning via immich's own config
       configuration:
         machineLearning:
