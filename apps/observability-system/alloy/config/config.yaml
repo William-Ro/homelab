@@ -332,6 +332,51 @@ data:
     }
 
 
+    discovery.kubernetes "cnpg_operator" {
+      role = "pod"
+      namespaces {
+        names = ["database-system"]
+      }
+      selectors {
+        role  = "pod"
+        label = "app.kubernetes.io/name=cloudnative-pg"
+      }
+    }
+
+    discovery.relabel "cnpg_operator" {
+      targets = discovery.kubernetes.cnpg_operator.targets
+
+      rule {
+        source_labels = ["__meta_kubernetes_pod_phase"]
+        action        = "keep"
+        regex         = "Running"
+      }
+
+      rule {
+        source_labels = ["__meta_kubernetes_pod_ip"]
+        target_label  = "__address__"
+        replacement   = "$1:8080"
+      }
+
+      rule {
+        source_labels = ["__meta_kubernetes_namespace"]
+        target_label  = "namespace"
+      }
+
+      rule {
+        source_labels = ["__meta_kubernetes_pod_name"]
+        target_label  = "pod"
+      }
+    }
+
+    prometheus.scrape "cnpg_operator" {
+      targets         = discovery.relabel.cnpg_operator.output
+      job_name        = "cnpg-operator"
+      scrape_interval = "30s"
+      forward_to      = [prometheus.remote_write.mimir.receiver]
+    }
+
+
     discovery.kubernetes "cnpg_pods" {
       role = "pod"
       selectors {
