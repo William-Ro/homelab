@@ -76,11 +76,6 @@ spec:
             head_compaction_interval: 15m
             wal_replay_concurrency: 3
 
-        alertmanager_storage:
-          s3:
-            bucket_name: mimir
-          storage_prefix: alertmanager
-
         ruler_storage:
           s3:
             bucket_name: mimir
@@ -118,6 +113,7 @@ spec:
         size: 5Gi
 
     compactor:
+      replicas: 1
       resources:
         requests:
           cpu: 50m
@@ -129,21 +125,13 @@ spec:
         size: 20Gi
 
     alertmanager:
-      resources:
-        requests:
-          cpu: 10m
-          memory: 64Mi
-        limits:
-          memory: 128Mi
-      persistentVolume:
-        storageClass: truenas-iscsi
-        size: 1Gi
-      fallbackConfig: ""
+      enabled: false
 
     kafka:
       enabled: false
 
     distributor:
+      replicas: 1
       resources:
         requests:
           cpu: 30m
@@ -152,6 +140,7 @@ spec:
           memory: 1Gi
 
     querier:
+      replicas: 1
       resources:
         requests:
           cpu: 50m
@@ -160,6 +149,7 @@ spec:
           memory: 256Mi
 
     query_frontend:
+      replicas: 1
       resources:
         requests:
           cpu: 50m
@@ -168,6 +158,7 @@ spec:
           memory: 256Mi
 
     query_scheduler:
+      replicas: 1
       resources:
         requests:
           cpu: 20m
@@ -176,6 +167,7 @@ spec:
           memory: 128Mi
 
     ruler:
+      replicas: 1
       resources:
         requests:
           cpu: 10m
@@ -184,6 +176,7 @@ spec:
           memory: 128Mi
 
     gateway:
+      replicas: 1
       resources:
         requests:
           cpu: 10m
@@ -192,6 +185,7 @@ spec:
           memory: 64Mi
 
     overrides_exporter:
+      replicas: 1
       resources:
         requests:
           cpu: 5m
