@@ -18,3 +18,13 @@ releases:
     namespace: network-system
     chart: oci://mirror.gcr.io/envoyproxy/gateway-helm
     version: v1.8.2
+
+  - name: grafana-operator
+    namespace: observability-system
+    chart: oci://ghcr.io/grafana/helm-charts/grafana-operator
+    version: 5.24.0
+
+  - name: prometheus-operator-crds
+    namespace: observability-system
+    chart: oci://ghcr.io/prometheus-community/charts/prometheus-operator-crds
+    version: 30.0.1

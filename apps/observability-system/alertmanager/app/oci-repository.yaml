@@ -18,24 +18,3 @@ spec:
   layerSelector:
     mediaType: application/vnd.cncf.helm.chart.content.v1.tar+gzip
     operation: copy
-
----
-# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/source.toolkit.fluxcd.io/ocirepository_v1.json
-
-apiVersion: source.toolkit.fluxcd.io/v1
-kind: OCIRepository
-metadata:
-  name: prometheus-operator-crds-chart
-  namespace: observability-system
-  labels:
-    app.kubernetes.io/name: prometheus-operator-crds
-    app.kubernetes.io/part-of: alertmanager
-    app.kubernetes.io/managed-by: flux
-spec:
-  interval: 15m
-  url: oci://ghcr.io/prometheus-community/charts/prometheus-operator-crds
-  ref:
-    tag: 30.0.1
-  layerSelector:
-    mediaType: application/vnd.cncf.helm.chart.content.v1.tar+gzip
-    operation: copy

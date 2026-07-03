@@ -5,5 +5,4 @@ kind: Kustomization
 
 resources:
   - oci-repository.yaml
-  - prometheus-operator-crds.yaml
   - helm-release.yaml
