@@ -17,4 +17,4 @@ releases:
   - name: envoy-gateway
     namespace: network-system
     chart: oci://mirror.gcr.io/envoyproxy/gateway-helm
-    version: v1.8.1
+    version: v1.8.2
