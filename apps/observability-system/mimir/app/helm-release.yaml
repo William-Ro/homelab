@@ -45,6 +45,8 @@ spec:
 
         ingester:
           push_grpc_method_enabled: true
+          ring:
+            replication_factor: 1
 
         limits:
           max_global_series_per_user: 300000
