@@ -25,6 +25,7 @@ spec:
 
     controllers:
       flaresolverr:
+        replicas: 1
         containers:
           app:
             image:
