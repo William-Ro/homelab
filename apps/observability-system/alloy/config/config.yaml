@@ -57,23 +57,8 @@ data:
       forward_to = [prometheus.remote_write.mimir.receiver]
     }
 
-    discovery.relabel "cadvisor" {
-      targets = discovery.kubernetes.nodes.targets
-
-      rule {
-        source_labels = ["__meta_kubernetes_node_address_InternalIP"]
-        target_label  = "__address__"
-        replacement   = "$1:10250"
-      }
-
-      rule {
-        source_labels = ["__meta_kubernetes_node_name"]
-        target_label  = "node"
-      }
-    }
-
     prometheus.scrape "cadvisor" {
-      targets           = discovery.relabel.cadvisor.output
+      targets           = discovery.relabel.kubelet.output
       job_name          = "cadvisor"
       scheme            = "https"
       scrape_interval   = "30s"
@@ -263,16 +248,6 @@ data:
         source_labels = ["__tmp_name"]
         target_label  = "instance"
       }
-
-      rule {
-        source_labels = ["__tmp_name"]
-        target_label  = "target"
-      }
-
-      rule {
-        source_labels = ["__tmp_name"]
-        target_label  = "service"
-      }
     }
 
     prometheus.scrape "blackbox_http" {
@@ -342,9 +317,4 @@ data:
       job_name        = "flux-system"
       scrape_interval = "30s"
       forward_to      = [prometheus.remote_write.mimir.receiver]
-    }
-
-
-    mimir.rules.kubernetes "default" {
-      address = "http://mimir-gateway.observability-system.svc.cluster.local:80"
     }

@@ -29,6 +29,9 @@ spec:
 
     podAnnotations:
       reloader.stakater.com/auto: "true"
+      prometheus.io/scrape: "true"
+      prometheus.io/port: "9093"
+      prometheus.io/path: /metrics
 
     config:
       global:
