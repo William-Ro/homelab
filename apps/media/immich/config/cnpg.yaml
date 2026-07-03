@@ -1,0 +1,21 @@
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: ${APP}-postgres
+spec:
+  postgresql:
+    extensions:
+      - name: pgvector
+        image:
+          reference: ghcr.io/cloudnative-pg/pgvector:0.8.4-18-bookworm
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: ${APP}
+spec:
+  extensions:
+    - name: vector
+    - name: cube
+    - name: earthdistance

@@ -6,4 +6,4 @@ resources:
   - library-pvc.yaml
   - http-route.yaml
 patches:
-  - path: cnpg-patch.yaml
+  - path: cnpg.yaml
