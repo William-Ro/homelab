@@ -222,6 +222,9 @@ data:
         {"__address__" = "https://qbittorrent.internal.reli.cc",           "__tmp_name" = "qbittorrent"},
         {"__address__" = "https://bazarr.internal.reli.cc",                "__tmp_name" = "bazarr"},
         {"__address__" = "https://jellyfin.internal.reli.cc",              "__tmp_name" = "jellyfin"},
+        {"__address__" = "https://autobrr.internal.reli.cc",               "__tmp_name" = "autobrr"},
+        {"__address__" = "https://seerr.internal.reli.cc",                 "__tmp_name" = "seerr"},
+        {"__address__" = "https://immich.internal.reli.cc",                "__tmp_name" = "immich"},
       ]
 
       rule {
