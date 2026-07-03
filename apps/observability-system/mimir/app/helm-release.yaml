@@ -26,9 +26,6 @@ spec:
     namespace: observability-system
 
   values:
-    podAnnotations:
-      reloader.stakater.com/auto: "true"
-
     minio:
       enabled: false
 
@@ -36,27 +33,24 @@ spec:
       extraEnvFrom:
         - secretRef:
             name: mimir-s3-credentials
+      # Applies reloader annotation to all pods so they restart on secret rotation
+      podAnnotations:
+        reloader.stakater.com/auto: "true"
 
     mimir:
       structuredConfig:
         multitenancy_enabled: false
 
+        # Disable Kafka-based ingest storage; use classic distributor→ingester path
+        ingest_storage:
+          enabled: false
+
         limits:
-          max_global_series_per_user: 500000
+          max_global_series_per_user: 300000
           compactor_blocks_retention_period: 14d
-          ingestion_rate: 100000
-          ingestion_burst_size: 400000
+          ingestion_rate: 50000
+          ingestion_burst_size: 100000
           out_of_order_time_window: 6h
-
-        ingester:
-          instance_limits:
-            max_series: 400000
-            max_ingestion_rate: 150000
-
-        distributor:
-          remote_timeout: 5s
-          instance_limits:
-            max_ingestion_rate: 200000
 
         common:
           storage:
@@ -92,7 +86,7 @@ spec:
           storage_prefix: ruler
 
     ingester:
-      replicas: 2
+      replicas: 1
       zoneAwareReplication:
         enabled: false
       readinessProbe:
@@ -103,20 +97,10 @@ spec:
           cpu: 100m
           memory: 512Mi
         limits:
-          memory: 3Gi
+          memory: 2Gi
       persistentVolume:
         storageClass: truenas-iscsi
         size: 15Gi
-      initContainers:
-        - name: wait-for-kafka
-          image: busybox:1.38
-          command:
-            - sh
-            - -c
-            - |
-              until nc -z mimir-kafka.observability-system.svc.cluster.local 9092; do
-                echo "waiting for kafka..."; sleep 2
-              done
 
     store_gateway:
       replicas: 1
@@ -156,43 +140,9 @@ spec:
       fallbackConfig: ""
 
     kafka:
-      persistence:
-        storageClassName: truenas-iscsi
-        size: 20Gi
-      resources:
-        requests:
-          cpu: 50m
-          memory: 256Mi
-        limits:
-          memory: 512Mi
-      terminationGracePeriodSeconds: 120
-      extraEnv:
-        - name: KAFKA_LOG_RETENTION_MS
-          value: "3600000"
-        - name: KAFKA_LOG_RETENTION_BYTES
-          value: "1073741824"
-        - name: KAFKA_LOG_SEGMENT_BYTES
-          value: "134217728"
-        - name: KAFKA_LOG_RETENTION_CHECK_INTERVAL_MS
-          value: "60000"
-        - name: KAFKA_LOG_FLUSH_INTERVAL_MS
-          value: "5000"
-        - name: KAFKA_LOG_FLUSH_INTERVAL_MESSAGES
-          value: "10000"
-        - name: KAFKA_NUM_RECOVERY_THREADS_PER_DATA_DIR
-          value: "2"
+      enabled: false
 
     distributor:
-      initContainers:
-        - name: wait-for-kafka
-          image: busybox:1.38
-          command:
-            - sh
-            - -c
-            - |
-              until nc -z mimir-kafka.observability-system.svc.cluster.local 9092; do
-                echo "waiting for kafka..."; sleep 2
-              done
       resources:
         requests:
           cpu: 30m
@@ -201,16 +151,6 @@ spec:
           memory: 1Gi
 
     querier:
-      initContainers:
-        - name: wait-for-kafka
-          image: busybox:1.38
-          command:
-            - sh
-            - -c
-            - |
-              until nc -z mimir-kafka.observability-system.svc.cluster.local 9092; do
-                echo "waiting for kafka..."; sleep 2
-              done
       resources:
         requests:
           cpu: 50m
@@ -235,16 +175,6 @@ spec:
           memory: 128Mi
 
     ruler:
-      initContainers:
-        - name: wait-for-kafka
-          image: busybox:1.38
-          command:
-            - sh
-            - -c
-            - |
-              until nc -z mimir-kafka.observability-system.svc.cluster.local 9092; do
-                echo "waiting for kafka..."; sleep 2
-              done
       resources:
         requests:
           cpu: 10m
@@ -270,12 +200,6 @@ spec:
 
     rollout_operator:
       enabled: false
-      resources:
-        requests:
-          cpu: 5m
-          memory: 32Mi
-        limits:
-          memory: 64Mi
 
     "chunks-cache":
       enabled: false
