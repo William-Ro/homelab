@@ -133,6 +133,15 @@ data:
         regex         = "true"
       }
 
+      // Drop pods already covered by a dedicated scrape block to prevent
+      // double-counting in dashboards (e.g. flux controllers have both
+      // app.kubernetes.io/part-of=flux and prometheus.io/scrape=true).
+      rule {
+        source_labels = ["__meta_kubernetes_pod_label_app_kubernetes_io_part_of"]
+        action        = "drop"
+        regex         = "flux"
+      }
+
       rule {
         source_labels = ["__meta_kubernetes_pod_annotation_prometheus_io_path"]
         target_label  = "__metrics_path__"
@@ -433,4 +442,38 @@ data:
       job_name        = "cnpg"
       scrape_interval = "30s"
       forward_to      = [prometheus.remote_write.mimir.receiver]
+    }
+
+    discovery.kubernetes "kube_apiserver" {
+      role = "endpoints"
+      namespaces {
+        names = ["default"]
+      }
+    }
+
+    discovery.relabel "kube_apiserver" {
+      targets = discovery.kubernetes.kube_apiserver.targets
+
+      rule {
+        source_labels = ["__meta_kubernetes_namespace", "__meta_kubernetes_service_name"]
+        action        = "keep"
+        regex         = "default;kubernetes"
+      }
+
+      rule {
+        source_labels = ["__meta_kubernetes_service_name"]
+        target_label  = "service"
+      }
+    }
+
+    prometheus.scrape "kube_apiserver" {
+      targets           = discovery.relabel.kube_apiserver.output
+      job_name          = "kubernetes"
+      scheme            = "https"
+      scrape_interval   = "30s"
+      bearer_token_file = "/var/run/secrets/kubernetes.io/serviceaccount/token"
+      tls_config {
+        insecure_skip_verify = true
+      }
+      forward_to = [prometheus.remote_write.mimir.receiver]
     }
