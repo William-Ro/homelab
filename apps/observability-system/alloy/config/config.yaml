@@ -112,6 +112,32 @@ data:
       forward_to      = [prometheus.remote_write.mimir.receiver]
     }
 
+    // Built-in node exporter — only the collectors required by k8s_views_nodes (ID 15759).
+    prometheus.exporter.unix "node" {
+      procfs_path    = "/host/proc"
+      sysfs_path     = "/host/sys"
+      udev_data_path = "/run/udev/data"
+      set_collectors = [
+        "cpu", "stat", "diskstats", "filesystem",
+        "meminfo", "loadavg", "netdev", "netstat",
+        "filefd", "conntrack", "time", "timex", "uname",
+      ]
+    }
+
+    discovery.relabel "node_exporter" {
+      targets = prometheus.exporter.unix.node.targets
+      rule {
+        target_label = "job"
+        replacement  = "integrations/node_exporter"
+      }
+    }
+
+    prometheus.scrape "node" {
+      targets         = discovery.relabel.node_exporter.output
+      scrape_interval = "30s"
+      forward_to      = [prometheus.remote_write.mimir.receiver]
+    }
+
 
     // ── APPLICATION METRICS ───────────────────────────────────────────────────
     // Pod-level scrapes: a generic annotation-based fallback plus dedicated
