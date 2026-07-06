@@ -30,6 +30,11 @@ spec:
         - name: udev
           mountPath: /run/udev/data
           readOnly: true
+    extraEnv:
+      - name: K8S_NODE_NAME
+        valueFrom:
+          fieldRef:
+            fieldPath: spec.nodeName
 
   podAnnotations:
     prometheus.io/scrape: "true"

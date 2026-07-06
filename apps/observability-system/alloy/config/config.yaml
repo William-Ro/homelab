@@ -41,6 +41,12 @@ data:
       targets = discovery.kubernetes.nodes.targets
 
       rule {
+        source_labels = ["__meta_kubernetes_node_name"]
+        action        = "keep"
+        regex         = env("K8S_NODE_NAME")
+      }
+
+      rule {
         source_labels = ["__meta_kubernetes_node_address_InternalIP"]
         target_label  = "__address__"
         replacement   = "$1:10250"
