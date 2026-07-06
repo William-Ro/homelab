@@ -17,6 +17,9 @@ spec:
     name: bitwarden-sdk-server
 
   values:
+    podAnnotations:
+      reloader.stakater.com/auto: "true"
+
     resources:
       requests:
         cpu: 10m
