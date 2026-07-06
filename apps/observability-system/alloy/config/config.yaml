@@ -112,57 +112,6 @@ data:
       forward_to      = [prometheus.remote_write.mimir.receiver]
     }
 
-    // Built-in node exporter; job is overridden to "integrations/node_exporter"
-    // so the Node Exporter Full dashboard (grafana.com/1860) variables resolve.
-    prometheus.exporter.unix "node" {
-      procfs_path    = "/host/proc"
-      sysfs_path     = "/host/sys"
-      udev_data_path = "/run/udev/data"
-    }
-
-    discovery.relabel "node_exporter" {
-      targets = prometheus.exporter.unix.node.targets
-      rule {
-        target_label = "job"
-        replacement  = "integrations/node_exporter"
-      }
-    }
-
-    prometheus.scrape "node" {
-      targets         = discovery.relabel.node_exporter.output
-      scrape_interval = "30s"
-      forward_to      = [prometheus.remote_write.mimir.receiver]
-    }
-
-    discovery.kubernetes "kube_apiserver" {
-      role = "endpoints"
-      namespaces {
-        names = ["default"]
-      }
-    }
-
-    discovery.relabel "kube_apiserver" {
-      targets = discovery.kubernetes.kube_apiserver.targets
-
-      rule {
-        source_labels = ["__meta_kubernetes_namespace", "__meta_kubernetes_service_name"]
-        action        = "keep"
-        regex         = "default;kubernetes"
-      }
-    }
-
-    prometheus.scrape "kube_apiserver" {
-      targets           = discovery.relabel.kube_apiserver.output
-      job_name          = "kubernetes"
-      scheme            = "https"
-      scrape_interval   = "30s"
-      bearer_token_file = "/var/run/secrets/kubernetes.io/serviceaccount/token"
-      tls_config {
-        insecure_skip_verify = true
-      }
-      forward_to = [prometheus.remote_write.mimir.receiver]
-    }
-
 
     // ── APPLICATION METRICS ───────────────────────────────────────────────────
     // Pod-level scrapes: a generic annotation-based fallback plus dedicated

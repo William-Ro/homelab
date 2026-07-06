@@ -25,50 +25,6 @@ spec:
 apiVersion: grafana.integreatly.org/v1beta1
 kind: GrafanaDashboard
 metadata:
-  name: flux-instance-control-plane
-  namespace: flux-system
-  labels:
-    app.kubernetes.io/name: flux-instance
-    app.kubernetes.io/part-of: flux
-    app.kubernetes.io/managed-by: flux
-spec:
-  folderRef: flux-system
-  url: https://raw.githubusercontent.com/fluxcd/flux2-monitoring-example/7ab65dc8b90f7a6751d88f18bbb4e1bee33bf334/monitoring/configs/dashboards/control-plane.json
-  allowCrossNamespaceImport: true
-  instanceSelector:
-    matchLabels:
-      grafana.internal/instance: grafana
-  datasources:
-    - datasourceName: Mimir
-      inputName: DS_PROMETHEUS
-
----
-# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/grafana.integreatly.org/grafanadashboard_v1beta1.json
-apiVersion: grafana.integreatly.org/v1beta1
-kind: GrafanaDashboard
-metadata:
-  name: flux-instance-k8s-api-performance
-  namespace: flux-system
-  labels:
-    app.kubernetes.io/name: flux-instance
-    app.kubernetes.io/part-of: flux
-    app.kubernetes.io/managed-by: flux
-spec:
-  folderRef: flux-system
-  url: https://raw.githubusercontent.com/controlplaneio-fluxcd/flux-operator/007c12c71445e9eb9e29a08c53cd1953aafd735a/config/monitoring/dashboards/flux-k8s-api-performance.json
-  allowCrossNamespaceImport: true
-  instanceSelector:
-    matchLabels:
-      grafana.internal/instance: grafana
-  datasources:
-    - datasourceName: Mimir
-      inputName: DS_PROMETHEUS
-
----
-# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/grafana.integreatly.org/grafanadashboard_v1beta1.json
-apiVersion: grafana.integreatly.org/v1beta1
-kind: GrafanaDashboard
-metadata:
   name: flux-instance-performance
   namespace: flux-system
   labels:

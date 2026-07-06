@@ -10,4 +10,3 @@ resources:
   - alloy-rules.yaml
   - alloy-rules-rbac.yaml
   - http-route.yaml
-  - grafana-dashboards.yaml
