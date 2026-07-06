@@ -32,10 +32,6 @@ spec:
       limits:
         memory: 384Mi
 
-    prometheus:
-      monitor:
-        enabled: false
-
     rbac:
       extraRules:
         - verbs: [list, watch]

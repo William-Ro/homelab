@@ -38,9 +38,6 @@ spec:
       limits:
         memory: 128Mi
 
-    serviceMonitor:
-      enabled: false
-
     config:
       modules:
         http_2xx:
