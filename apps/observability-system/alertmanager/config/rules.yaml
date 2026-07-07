@@ -24,7 +24,7 @@ spec:
     - name: kubernetes.pods
       rules:
         - alert: KubernetesPodCrashLooping
-          expr: rate(kube_pod_container_status_restarts_total[15m]) > 0.2
+          expr: increase(kube_pod_container_status_restarts_total[15m]) > 3
           for: 5m
           labels:
             severity: warning
