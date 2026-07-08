@@ -53,9 +53,9 @@ spec:
       "panels": [
         {
           "id": 1,
-          "title": "Nodes",
+          "title": "",
           "type": "stat",
-          "gridPos": { "h": 12, "w": 2, "x": 0, "y": 0 },
+          "gridPos": { "h": 16, "w": 2, "x": 0, "y": 0 },
           "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
           "targets": [
             {
@@ -93,9 +93,9 @@ spec:
         },
         {
           "id": 2,
-          "title": "Pods",
+          "title": "",
           "type": "stat",
-          "gridPos": { "h": 12, "w": 2, "x": 2, "y": 0 },
+          "gridPos": { "h": 16, "w": 2, "x": 2, "y": 0 },
           "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
           "targets": [
             {
@@ -128,7 +128,7 @@ spec:
           "id": 3,
           "title": "CPU",
           "type": "gauge",
-          "gridPos": { "h": 12, "w": 3, "x": 4, "y": 0 },
+          "gridPos": { "h": 16, "w": 3, "x": 4, "y": 0 },
           "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
           "targets": [
             {
@@ -169,7 +169,7 @@ spec:
           "id": 4,
           "title": "Memory",
           "type": "gauge",
-          "gridPos": { "h": 12, "w": 3, "x": 7, "y": 0 },
+          "gridPos": { "h": 16, "w": 3, "x": 7, "y": 0 },
           "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
           "targets": [
             {
@@ -210,7 +210,7 @@ spec:
           "id": 5,
           "title": "Disk",
           "type": "gauge",
-          "gridPos": { "h": 12, "w": 3, "x": 10, "y": 0 },
+          "gridPos": { "h": 16, "w": 3, "x": 10, "y": 0 },
           "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
           "targets": [
             {
@@ -249,9 +249,9 @@ spec:
         },
         {
           "id": 6,
-          "title": "Net In",
+          "title": "",
           "type": "stat",
-          "gridPos": { "h": 12, "w": 2, "x": 13, "y": 0 },
+          "gridPos": { "h": 16, "w": 2, "x": 13, "y": 0 },
           "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
           "targets": [
             {
@@ -282,9 +282,9 @@ spec:
         },
         {
           "id": 7,
-          "title": "Net Out",
+          "title": "",
           "type": "stat",
-          "gridPos": { "h": 12, "w": 2, "x": 15, "y": 0 },
+          "gridPos": { "h": 16, "w": 2, "x": 15, "y": 0 },
           "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
           "targets": [
             {
@@ -315,9 +315,9 @@ spec:
         },
         {
           "id": 8,
-          "title": "Services",
+          "title": "",
           "type": "stat",
-          "gridPos": { "h": 12, "w": 2, "x": 17, "y": 0 },
+          "gridPos": { "h": 16, "w": 2, "x": 17, "y": 0 },
           "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
           "targets": [
             {
@@ -356,9 +356,9 @@ spec:
         },
         {
           "id": 9,
-          "title": "Flux",
+          "title": "",
           "type": "stat",
-          "gridPos": { "h": 12, "w": 2, "x": 19, "y": 0 },
+          "gridPos": { "h": 16, "w": 2, "x": 19, "y": 0 },
           "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
           "targets": [
             {
@@ -404,9 +404,9 @@ spec:
         },
         {
           "id": 10,
-          "title": "Database",
+          "title": "",
           "type": "stat",
-          "gridPos": { "h": 12, "w": 3, "x": 21, "y": 0 },
+          "gridPos": { "h": 16, "w": 3, "x": 21, "y": 0 },
           "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
           "targets": [
             {
