@@ -8,3 +8,4 @@ resources:
   - http-route.yaml
   - grafana.yaml
   - mimir-datasource.yaml
+  - rack-dashboard.yaml
