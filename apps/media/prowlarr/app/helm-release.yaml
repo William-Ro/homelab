@@ -11,6 +11,7 @@ metadata:
     app.kubernetes.io/managed-by: flux
 spec:
   interval: 30m
+  timeout: 10m
   chartRef:
     kind: OCIRepository
     name: prowlarr
