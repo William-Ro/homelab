@@ -35,7 +35,7 @@ spec:
       pullPolicy: IfNotPresent
     connector:
       logLevel: "info"
-      network: "your-twingate-network" # Replace with your Twingate network name
+      network: "williamr2409"
       url: "twingate.com"
       existingSecret: twingate-secret
     resources:
