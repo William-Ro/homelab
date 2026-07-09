@@ -49,6 +49,9 @@ node_modules/
 *.tmp
 .cache/
 
+# --- Graphify ---
+graphify-out/cost.json
+
 # --- Local agent / editor tooling (not pushed to GitHub) ---
 .github/agents
 .github/instructions
