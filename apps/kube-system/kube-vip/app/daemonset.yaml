@@ -37,6 +37,10 @@ spec:
           tolerationSeconds: 30
       hostNetwork: true
       dnsPolicy: ClusterFirstWithHostNet
+      hostAliases:
+        - ip: "127.0.0.1"
+          hostnames:
+            - kubernetes
       serviceAccountName: kube-vip
       containers:
         - name: kube-vip
