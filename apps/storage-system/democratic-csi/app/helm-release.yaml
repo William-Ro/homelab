@@ -19,10 +19,6 @@ spec:
       name: democratic-csi-secret
       valuesKey: truenas-api-key
       targetPath: driver.config.wssConnection.apiKey
-    - kind: Secret
-      name: democratic-csi-secret
-      valuesKey: truenas-api-key
-      targetPath: driver.config.httpConnection.apiKey
 
   values:
     csiDriver:
@@ -40,11 +36,6 @@ spec:
     driver:
       config:
         driver: truenas-api-iscsi
-        httpConnection:
-          protocol: https
-          host: truenas.reli.cc
-          port: 443
-          allowInsecure: false
         wssConnection:
           protocol: wss
           host: truenas.reli.cc
