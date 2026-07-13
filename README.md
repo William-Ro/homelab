@@ -6,6 +6,4 @@ Declarative Kubernetes infrastructure and service configuration managed from a s
 
 This repository contains platform resources, infrastructure components, and self-hosted services organized into reusable and modular configurations for cluster operations, networking, storage, security, and applications.
 
-**[View interactive knowledge graph →](https://htmlpreview.github.io/?https://raw.githubusercontent.com/William-Ro/homelab/main/graphify-out/graph.standalone.html)**
-
 </div>
