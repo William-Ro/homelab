@@ -8,6 +8,7 @@ namespace: kube-system
 resources:
   - ./namespace.yaml
   - ./coredns
+  - ./descheduler
   - ./intel-device-plugins-operator
   - ./intel-gpu-device-plugin
   - ./kube-vip

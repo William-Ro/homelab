@@ -1,0 +1,19 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/source.toolkit.fluxcd.io/ocirepository_v1.json
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: OCIRepository
+metadata:
+  name: descheduler
+  namespace: kube-system
+  labels:
+    app.kubernetes.io/name: descheduler
+    app.kubernetes.io/part-of: kube-system
+    app.kubernetes.io/managed-by: flux
+spec:
+  interval: 15m
+  url: oci://ghcr.io/home-operations/charts-mirror/descheduler
+  ref:
+    tag: 0.36.0
+  layerSelector:
+    mediaType: application/vnd.cncf.helm.chart.content.v1.tar+gzip
+    operation: copy
