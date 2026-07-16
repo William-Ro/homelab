@@ -14,7 +14,7 @@ spec:
   interval: 15m
   url: oci://ghcr.io/prometheus-community/charts/alertmanager
   ref:
-    tag: 1.40.2
+    tag: 1.40.3
   layerSelector:
     mediaType: application/vnd.cncf.helm.chart.content.v1.tar+gzip
     operation: copy
