@@ -10,10 +10,12 @@ resources:
   - ./prowlarr
   - ./sonarr
   - ./radarr
+  - ./lidarr
   - ./qbittorrent
   - ./bazarr
   - ./flaresolverr
   - ./jellyfin
+  - ./navidrome
   - ./seerr
   - ./recyclarr
   - ./autobrr
