@@ -84,7 +84,7 @@ spec:
       music:
         type: nfs
         server: truenas.reli.cc
-        path: /mnt/media/downloads/music
+        path: /mnt/media/downloads/audio
         globalMounts:
           - path: /music
             readOnly: true
