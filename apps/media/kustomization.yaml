@@ -19,5 +19,4 @@ resources:
   - ./navidrome
   - ./seerr
   - ./recyclarr
-  - ./autobrr
   - ./immich
