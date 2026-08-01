@@ -32,6 +32,7 @@ fetchart:
   maxwidth: 2000
   enforce_ratio: yes
   cover_names: cover front art album folder
+  high_resolution: yes
   sources:
     - itunes
     - coverart
