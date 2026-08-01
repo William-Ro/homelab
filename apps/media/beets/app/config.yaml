@@ -1,0 +1,38 @@
+---
+directory: /music
+library: /config/library.db
+
+import:
+  copy: no
+  move: no
+  link: no
+  hardlink: no
+  autotag: yes
+  quiet: yes
+  quiet_fallback: skip
+  resume: no
+  incremental: yes
+  timid: no
+  write: yes
+
+plugins: fetchart embedart
+
+art_filename: cover
+
+fetchart:
+  auto: yes
+  minwidth: 1000
+  maxwidth: 2000
+  enforce_ratio: yes
+  cover_names: cover front art album folder
+  sources:
+    - coverart
+    - itunes
+    - amazon
+    - albumart
+    - filesystem
+
+embedart:
+  auto: yes
+  maxwidth: 1000
+  ifempty: no

@@ -3,17 +3,17 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: navidrome
+  name: beets
   namespace: media
   labels:
-    app.kubernetes.io/name: navidrome
+    app.kubernetes.io/name: beets
     app.kubernetes.io/part-of: media-stack
     app.kubernetes.io/managed-by: flux
 spec:
   interval: 30m
   chartRef:
     kind: OCIRepository
-    name: navidrome
+    name: beets
 
   values:
     global:
@@ -21,7 +21,6 @@ spec:
 
     defaultPodOptions:
       automountServiceAccountToken: false
-      enableServiceLinks: false
       securityContext:
         runAsNonRoot: true
         runAsUser: 568
@@ -30,37 +29,36 @@ spec:
         fsGroupChangePolicy: OnRootMismatch
 
     controllers:
-      navidrome:
-        replicas: 1
-        annotations:
-          reloader.stakater.com/auto: "true"
+      beets:
+        type: cronjob
+        cronjob:
+          schedule: "0 4 * * *"
+          backoffLimit: 0
+          concurrencyPolicy: Forbid
+          successfulJobsHistory: 1
+          failedJobsHistory: 1
+          ttlSecondsAfterFinished: 86400
+        pod:
+          restartPolicy: Never
         containers:
           app:
             image:
-              repository: ghcr.io/navidrome/navidrome
-              tag: 0.63.2
+              repository: lscr.io/linuxserver/beets
+              tag: "2.13.1"
+            command:
+              - beet
+            args:
+              - import
+              - -A
+              - -q
+              - /music
             env:
-              ND_DATAFOLDER: /data
-              ND_MUSICFOLDER: /music
-              ND_PORT: &port 4533
-              ND_LOGLEVEL: info
-              ND_SCANSCHEDULE: 30m
-              ND_ENABLESHARING: "false"
-              ND_COVERARTPRIORITY: "cover.*, folder.*, front.*, embedded"
-            probes:
-              liveness:
-                enabled: true
-              readiness:
-                enabled: true
-              startup:
-                enabled: true
-                spec:
-                  failureThreshold: 30
-                  periodSeconds: 5
+              BEETSDIR: /config
+              TMPDIR: /tmp
             resources:
               requests:
                 cpu: 20m
-                memory: 256Mi
+                memory: 128Mi
               limits:
                 memory: 1Gi
             securityContext:
@@ -69,25 +67,24 @@ spec:
               capabilities:
                 drop: ["ALL"]
 
-    service:
-      app:
-        ports:
-          http:
-            port: *port
-
     persistence:
       config:
         type: persistentVolumeClaim
         accessMode: ReadWriteOnce
-        size: 2Gi
+        size: 1Gi
         globalMounts:
-          - path: /data
+          - path: /config
+      config-file:
+        type: configMap
+        name: beets-configmap
+        globalMounts:
+          - path: /config/config.yaml
+            subPath: config.yaml
       music:
         type: nfs
         server: truenas.reli.cc
         path: /mnt/media/downloads/audio
         globalMounts:
           - path: /music
-            readOnly: true
       tmp:
         type: emptyDir

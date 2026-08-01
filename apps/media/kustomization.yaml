@@ -19,4 +19,5 @@ resources:
   - ./navidrome
   - ./seerr
   - ./recyclarr
+  - ./beets
   - ./immich
