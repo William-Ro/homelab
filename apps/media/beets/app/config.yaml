@@ -28,9 +28,7 @@ art_filename: cover
 
 fetchart:
   auto: yes
-  minwidth: 1000
-  maxwidth: 2000
-  enforce_ratio: yes
+  enforce_ratio: 0.5%
   cover_names: cover front art album folder
   high_resolution: yes
   sources:
