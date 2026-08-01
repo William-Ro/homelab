@@ -17,6 +17,13 @@ import:
 
 plugins: fetchart embedart
 
+match:
+  preferred:
+    media:
+      - Digital Media
+      - CD
+    original_year: yes
+
 art_filename: cover
 
 fetchart:
