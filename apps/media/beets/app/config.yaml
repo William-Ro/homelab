@@ -28,14 +28,13 @@ art_filename: cover
 
 fetchart:
   auto: yes
-  enforce_ratio: 0.5%
+  minwidth: 1000
+  maxwidth: 2000
+  enforce_ratio: yes
   cover_names: cover front art album folder
-  high_resolution: yes
   sources:
     - itunes
-    - coverart
-    - amazon
-    - albumart
+    - wikipedia
     - filesystem
 
 embedart:
