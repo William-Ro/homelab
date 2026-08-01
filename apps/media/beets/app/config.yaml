@@ -33,8 +33,8 @@ fetchart:
   enforce_ratio: yes
   cover_names: cover front art album folder
   sources:
-    - coverart
     - itunes
+    - coverart
     - amazon
     - albumart
     - filesystem
