@@ -26,19 +26,6 @@ spec:
       securityContext:
         seccompProfile:
           type: RuntimeDefault
-      # Avoid node-02, which hosts NFS-heavy media apps (e.g. sabnzbd) whose
-      # disk I/O contention has been observed to spike node load average high
-      # enough to make DNS resolvers miss their liveness probes and restart.
-      affinity:
-        nodeAffinity:
-          preferredDuringSchedulingIgnoredDuringExecution:
-            - weight: 100
-              preference:
-                matchExpressions:
-                  - key: kubernetes.io/hostname
-                    operator: NotIn
-                    values:
-                      - node-02
 
     controllers:
       app:
