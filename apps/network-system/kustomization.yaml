@@ -13,4 +13,3 @@ resources:
   - ./cert-manager
   - ./pihole
   - ./twingate
-  - ./unbound

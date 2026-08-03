@@ -19,4 +19,3 @@ spec:
 
   dependsOn:
     - name: pihole-config
-    - name: unbound
