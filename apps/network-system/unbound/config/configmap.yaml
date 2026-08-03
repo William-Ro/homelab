@@ -1,0 +1,23 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: unbound-custom-conf
+  labels:
+    app.kubernetes.io/name: unbound
+    app.kubernetes.io/part-of: unbound
+    app.kubernetes.io/managed-by: flux
+data:
+  hardening.conf: |
+    # https://unbound.docs.nlnetlabs.nl/en/latest/manpages/unbound.conf.html
+    server:
+        # Don't reveal the resolver's identity/version to clients
+        hide-identity: yes
+        hide-version: yes
+
+        # cert-manager (DNS01/Cloudflare) publishes real public records for
+        # reli.cc that resolve to internal LAN IPs (split-horizon via public DNS).
+        # Unbound's anti-DNS-rebinding protection strips private-address answers
+        # from public domains by default, so explicitly trust this zone and its
+        # subdomains to legitimately return private addresses.
+        private-domain: "reli.cc"

@@ -24,6 +24,20 @@ spec:
     podAnnotations:
       reloader.stakater.com/auto: "true"
 
+    # Avoid node-02, which hosts NFS-heavy media apps (e.g. sabnzbd) whose
+    # disk I/O contention has been observed to spike node load average high
+    # enough to make pihole miss its DNS liveness probe and get restarted.
+    affinity:
+      nodeAffinity:
+        preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            preference:
+              matchExpressions:
+                - key: kubernetes.io/hostname
+                  operator: NotIn
+                  values:
+                    - node-02
+
     pihole:
       web:
         existingSecret: pihole-password
@@ -38,7 +52,7 @@ spec:
         dns:
           listeningMode: all
           upstreams:
-            - 192.168.1.1
+            - unbound.network-system.svc.cluster.local
 
           service:
             type: LoadBalancer
