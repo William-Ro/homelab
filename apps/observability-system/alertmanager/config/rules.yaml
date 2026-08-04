@@ -187,6 +187,7 @@ spec:
         - alert: IntelGPUUnavailable
           expr: >-
             kube_node_status_allocatable{resource="gpu_intel_com_i915"} == 0
+            and on(node) kube_node_status_capacity{resource="gpu_intel_com_i915"} > 0
           for: 10m
           labels:
             severity: warning
@@ -195,4 +196,4 @@ spec:
               Intel GPU (i915) is not allocatable on node {{ $labels.node }}
             description: >-
               Jellyfin will fall back to CPU transcoding, causing high CPU load.
-              Check intel-gpu-device-plugin: kubectl -n kube-system get pods -l app=intel-gpu-device-plugin
+              Check intel-gpu-plugin: kubectl -n kube-system get pods -l app=intel-gpu-plugin
