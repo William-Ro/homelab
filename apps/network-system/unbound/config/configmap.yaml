@@ -15,6 +15,13 @@ data:
         hide-identity: yes
         hide-version: yes
 
+        # This network has no working IPv6 egress. Without this, unbound still
+        # returns AAAA records for dual-stack domains (e.g. TMDB), and clients
+        # (like Jellyfin's .NET HttpClient) waste their connect timeout trying
+        # unreachable IPv6 addresses before falling back to IPv4 - causing slow
+        # or outright failed metadata fetches for new media.
+        do-ip6: no
+
         # cert-manager (DNS01/Cloudflare) publishes real public records for
         # reli.cc that resolve to internal LAN IPs (split-horizon via public DNS).
         # Unbound's anti-DNS-rebinding protection strips private-address answers
