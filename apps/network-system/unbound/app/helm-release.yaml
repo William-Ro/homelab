@@ -36,7 +36,7 @@ spec:
           app:
             image:
               repository: docker.io/klutchell/unbound
-              tag: 1.25.2
+              tag: 1.26.0
             probes:
               liveness:
                 enabled: true
