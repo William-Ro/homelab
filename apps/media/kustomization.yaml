@@ -11,7 +11,6 @@ resources:
   - ./sonarr
   - ./radarr
   - ./lidarr
-  - ./qbittorrent
   - ./sabnzbd
   - ./bazarr
   - ./flaresolverr

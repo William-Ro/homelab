@@ -413,7 +413,6 @@ data:
         {"__address__" = "https://prowlarr.internal.reli.cc"},
         {"__address__" = "https://sonarr.internal.reli.cc"},
         {"__address__" = "https://radarr.internal.reli.cc"},
-        {"__address__" = "https://qbittorrent.internal.reli.cc"},
         {"__address__" = "https://bazarr.internal.reli.cc"},
         {"__address__" = "https://jellyfin.internal.reli.cc"},
         {"__address__" = "https://seerr.internal.reli.cc"},
