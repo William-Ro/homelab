@@ -13,7 +13,6 @@ resources:
   - ./lidarr
   - ./sabnzbd
   - ./bazarr
-  - ./flaresolverr
   - ./jellyfin
   - ./navidrome
   - ./seerr
