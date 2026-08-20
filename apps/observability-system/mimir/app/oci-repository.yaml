@@ -10,4 +10,4 @@ spec:
   interval: 15m
   url: oci://ghcr.io/grafana/helm-charts/mimir-distributed
   ref:
-    tag: 6.1.0
+    tag: 6.2.0
