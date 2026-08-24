@@ -12,6 +12,7 @@ resources:
   - ./radarr
   - ./lidarr
   - ./sabnzbd
+  - ./slskd
   - ./bazarr
   - ./jellyfin
   - ./navidrome
