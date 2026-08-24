@@ -40,6 +40,8 @@ spec:
               repository: docker.io/slskd/slskd
               tag: 0.26.0
             env:
+              # single-file .NET bundle extraction dir, must be writable (root fs is read-only)
+              DOTNET_BUNDLE_EXTRACT_BASE_DIR: /tmp
               SLSKD_HTTP_PORT: &port 5030
               SLSKD_NO_HTTPS: "true"
               SLSKD_REMOTE_CONFIGURATION: "true"
