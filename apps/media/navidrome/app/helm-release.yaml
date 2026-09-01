@@ -44,7 +44,8 @@ spec:
               ND_MUSICFOLDER: /music
               ND_PORT: &port 4533
               ND_LOGLEVEL: info
-              ND_SCANSCHEDULE: 30m
+              ND_SCANNER_SCHEDULE: 30m
+              ND_SCANNER_PURGEMISSING: always
               ND_ENABLESHARING: "false"
               ND_COVERARTPRIORITY: "cover.*, folder.*, front.*, embedded"
             probes:
