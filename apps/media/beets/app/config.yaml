@@ -11,7 +11,10 @@ import:
   quiet: yes
   quiet_fallback: skip
   resume: no
-  incremental: yes
+  # rescan everything nightly so re-downloaded/upgraded albums (same path) get re-tagged
+  incremental: no
+  # replace the stale library entry instead of silently skipping the re-import
+  duplicate_action: remove
   timid: no
   write: yes
 
