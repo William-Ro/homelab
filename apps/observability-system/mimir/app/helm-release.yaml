@@ -98,8 +98,7 @@ spec:
           memory: 2Gi
       persistentVolume:
         storageClass: truenas-iscsi
-        # matches the live PVC size (StatefulSet volumeClaimTemplates are immutable, resized out-of-band before)
-        size: 60Gi
+        size: 30Gi
 
     store_gateway:
       replicas: 1
