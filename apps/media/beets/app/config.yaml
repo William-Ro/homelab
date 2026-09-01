@@ -35,8 +35,12 @@ fetchart:
   maxwidth: 2000
   enforce_ratio: yes
   cover_names: cover front art album folder
+  # coverart is keyed to the matched MusicBrainz release, so it's the most accurate;
+  # itunes/wikipedia are text-search based and can match the wrong edition (e.g. Aja)
   sources:
+    - coverart
     - itunes
+    - amazon
     - wikipedia
     - filesystem
 
