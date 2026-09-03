@@ -51,6 +51,7 @@ spec:
               RADARR__LOG__DBENABLED: "False"
               RADARR__LOG__LEVEL: info
               RADARR__SERVER__PORT: &port 7878
+              RADARR__SERVER__ALLOWEDHOSTS: radarr.internal.reli.cc,radarr.media.svc.cluster.local,radarr
               RADARR__UPDATE__BRANCH: develop
             probes:
               liveness: &probes
@@ -60,6 +61,9 @@ spec:
                   httpGet:
                     path: /ping
                     port: *port
+                    httpHeaders:
+                      - name: Host
+                        value: localhost
                   initialDelaySeconds: 0
                   periodSeconds: 10
                   timeoutSeconds: 1

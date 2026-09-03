@@ -51,6 +51,7 @@ spec:
               SONARR__LOG__DBENABLED: "False"
               SONARR__LOG__LEVEL: info
               SONARR__SERVER__PORT: &port 8989
+              SONARR__SERVER__ALLOWEDHOSTS: sonarr.internal.reli.cc,sonarr.media.svc.cluster.local,sonarr
               SONARR__UPDATE__BRANCH: develop
             probes:
               liveness: &probes
@@ -60,6 +61,9 @@ spec:
                   httpGet:
                     path: /ping
                     port: *port
+                    httpHeaders:
+                      - name: Host
+                        value: localhost
                   initialDelaySeconds: 0
                   periodSeconds: 10
                   timeoutSeconds: 1
