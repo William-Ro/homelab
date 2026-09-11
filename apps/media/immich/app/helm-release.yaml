@@ -20,6 +20,7 @@ spec:
       controllers:
         main:
           replicas: 1
+          strategy: Recreate
           annotations:
             reloader.stakater.com/auto: "true"
           containers:
