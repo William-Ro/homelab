@@ -42,6 +42,8 @@ spec:
               EXCLUDE_PATHS: /data/audio,/data/complete,/data/incomplete,/data/software,/data/soulseek
               MAX_CONCURRENT_SYNC_TASKS: "1"
               INCLUDE_ENGINES: ffsubsync,autosubsync,alass
+              # silences autosubsync's bundled pkg_resources deprecation UserWarning
+              PYTHONWARNINGS: ignore::UserWarning
               # defaults to 127.0.0.1, must bind all interfaces for the Service to reach it
               WEB_HOST: 0.0.0.0
               WEB_PORT: &port 3000
