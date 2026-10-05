@@ -63,10 +63,14 @@ spec:
                 memory: 768Mi
             securityContext:
               allowPrivilegeEscalation: false
-              readOnlyRootFilesystem: true
+              # entrypoint starts as root: it runs usermod/groupmod on the baked-in
+              # "node" user to remap it to PUID/PGID, chowns /home/node and /app/data,
+              # then execs `gosu node`. usermod/groupmod need to write /etc/passwd and
+              # /etc/group, so the rootfs cannot be read-only or PUID/PGID is silently
+              # ignored (process stays uid 1000, breaking writes to the 568-owned NFS share).
+              readOnlyRootFilesystem: false
               capabilities:
                 drop: ["ALL"]
-                # entrypoint starts as root and uses gosu to chown mounts then drop to PUID/PGID
                 add: ["CHOWN", "SETUID", "SETGID"]
 
     service:
