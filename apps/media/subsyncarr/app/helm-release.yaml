@@ -39,7 +39,7 @@ spec:
               TZ: Etc/UTC
               CRON_SCHEDULE: "0 0 * * *"
               SCAN_PATHS: /data
-              EXCLUDE_PATHS: /data/audio,/data/soulseek
+              EXCLUDE_PATHS: /data/audio,/data/complete,/data/incomplete,/data/software,/data/soulseek
               MAX_CONCURRENT_SYNC_TASKS: "1"
               INCLUDE_ENGINES: ffsubsync,autosubsync,alass
               # defaults to 127.0.0.1, must bind all interfaces for the Service to reach it
