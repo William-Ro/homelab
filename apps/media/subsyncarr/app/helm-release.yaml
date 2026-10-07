@@ -62,7 +62,9 @@ spec:
                 cpu: 20m
                 memory: 128Mi
               limits:
-                memory: 768Mi
+                # ffsubsync/autosubsync/alass decode full audio tracks in memory;
+                # 768Mi got OOMKilled (exit 137) syncing a 2160p Atmos remux
+                memory: 2Gi
             securityContext:
               allowPrivilegeEscalation: false
               # entrypoint starts as root: it runs usermod/groupmod on the baked-in
