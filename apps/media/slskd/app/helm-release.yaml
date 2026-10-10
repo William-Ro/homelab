@@ -38,7 +38,7 @@ spec:
           app:
             image:
               repository: docker.io/slskd/slskd
-              tag: 0.26.0
+              tag: 0.26.1
             env:
               # single-file .NET bundle extraction dir, must be writable (root fs is read-only)
               DOTNET_BUNDLE_EXTRACT_BASE_DIR: /tmp
