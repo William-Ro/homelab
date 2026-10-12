@@ -20,4 +20,3 @@ resources:
   - ./recyclarr
   - ./beets
   - ./immich
-  - ./subsyncarr
