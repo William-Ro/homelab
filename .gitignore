@@ -48,12 +48,5 @@ node_modules/
 *.bak
 *.tmp
 .cache/
-
-# --- Local agent / editor tooling (not pushed to GitHub) ---
-.github/agents
-.github/instructions
-.github/skills
-.github/copilot-instructions.md
-AGENTS.md
 docs
 example-repos

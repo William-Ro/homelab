@@ -1,0 +1,14 @@
+{
+  "servers": {
+    "flux": {
+      "type": "http",
+      "url": "https://flux-mcp.internal.reli.cc/mcp",
+      "tools": ["*"]
+    },
+    "grafana": {
+      "type": "http",
+      "url": "https://grafana-mcp.internal.reli.cc/mcp",
+      "tools": ["*"]
+    }
+  }
+}
