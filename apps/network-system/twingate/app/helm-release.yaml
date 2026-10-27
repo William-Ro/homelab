@@ -31,7 +31,7 @@ spec:
   values:
     image:
       repository: docker.io/twingate/connector
-      tag: 1.94.0
+      tag: 1.95.0
       pullPolicy: IfNotPresent
     connector:
       logLevel: "info"
