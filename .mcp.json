@@ -1,5 +1,5 @@
 {
-  "servers": {
+  "mcpServers": {
     "flux": {
       "type": "http",
       "url": "https://flux-mcp.internal.reli.cc/mcp",
