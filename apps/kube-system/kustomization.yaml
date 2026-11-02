@@ -12,4 +12,5 @@ resources:
   - ./intel-device-plugins-operator
   - ./intel-gpu-device-plugin
   - ./kube-vip
+  - ./node-feature-discovery
   - ./reloader

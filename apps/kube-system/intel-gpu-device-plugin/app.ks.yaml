@@ -16,3 +16,4 @@ spec:
     namespace: flux-system
   dependsOn:
     - name: intel-device-plugins-operator
+    - name: node-feature-discovery

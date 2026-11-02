@@ -1,0 +1,34 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: node-feature-discovery
+  namespace: kube-system
+  labels:
+    app.kubernetes.io/name: node-feature-discovery
+    app.kubernetes.io/managed-by: flux
+spec:
+  interval: 30m
+  chartRef:
+    kind: OCIRepository
+    name: node-feature-discovery
+    namespace: flux-system
+
+  values:
+    master:
+      tolerations:
+        - key: node-role.kubernetes.io/control-plane
+          operator: Exists
+          effect: NoSchedule
+    worker:
+      config:
+        core:
+          # only PCI devices - this cluster only needs GPU vendor/class detection
+          sources: ["pci"]
+        sources:
+          pci:
+            deviceClassWhitelist: ["03"]
+            deviceLabelFields: ["class", "vendor"]
+    prometheus:
+      enable: true
