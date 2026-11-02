@@ -1,0 +1,22 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: spegel
+  namespace: kube-system
+  labels:
+    app.kubernetes.io/name: spegel
+    app.kubernetes.io/managed-by: flux
+spec:
+  interval: 30m
+  chartRef:
+    kind: OCIRepository
+    name: spegel
+    namespace: flux-system
+
+  values:
+    spegel:
+      containerdSock: /run/k3s/containerd/containerd.sock
+      containerdRegistryConfigPath: /var/lib/rancher/k3s/agent/etc/containerd/certs.d
+      containerdContentPath: /var/lib/rancher/k3s/agent/containerd/io.containerd.content.v1.content
