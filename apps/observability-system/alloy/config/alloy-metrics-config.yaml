@@ -438,6 +438,11 @@ data:
         source_labels = ["__param_target"]
         target_label  = "target"
       }
+
+      rule {
+        source_labels = ["__param_target"]
+        target_label  = "instance"
+      }
     }
 
     prometheus.scrape "blackbox_http" {

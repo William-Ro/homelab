@@ -20,9 +20,9 @@ spec:
             severity: critical
           annotations:
             summary: >-
-              {{ $labels.instance }} is unreachable
+              {{ $labels.target }} is unreachable
             description: >-
-              The {{ $labels.module }} probe against {{ $labels.instance }} has been failing for more than 5 minutes.
+              The {{ $labels.module }} probe against {{ $labels.target }} has been failing for more than 5 minutes.
 
         - alert: BlackboxProbeSlowResponse
           expr: probe_http_duration_seconds{phase="processing"} > 2
@@ -31,6 +31,27 @@ spec:
             severity: warning
           annotations:
             summary: >-
-              {{ $labels.instance }} is responding slowly
+              {{ $labels.target }} is responding slowly
             description: >-
-              HTTP response time for {{ $labels.instance }} exceeds 2 seconds.
+              HTTP response time for {{ $labels.target }} exceeds 2 seconds.
+
+        - alert: BlackboxScrapeFailed
+          expr: up{job="blackbox"} == 0
+          for: 2m
+          labels:
+            severity: critical
+          annotations:
+            summary: >-
+              Blackbox scrape for {{ $labels.instance }} is failing
+            description: >-
+              Alloy cannot scrape the blackbox-exporter for this target.
+
+        - alert: BlackboxMetricsMissing
+          expr: absent_over_time(up{job="blackbox"}[5m])
+          for: 2m
+          labels:
+            severity: critical
+          annotations:
+            summary: Blackbox scrape metrics are missing
+            description: >-
+              No blackbox scrape status has reached Mimir for at least 5 minutes.

@@ -23,6 +23,26 @@ spec:
 
     - name: kubernetes.pods
       rules:
+        - alert: KubernetesPodImagePullFailed
+          expr: kube_pod_container_status_waiting_reason{reason=~"ImagePullBackOff|ErrImagePull"} == 1
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: >-
+              Container {{ $labels.container }} in pod {{ $labels.namespace }}/{{ $labels.pod }} cannot pull its image
+            description: >-
+              Kubernetes reports {{ $labels.reason }}. Check the image reference, registry availability, and pull credentials.
+
+        - alert: KubernetesPodPending
+          expr: kube_pod_status_phase{phase="Pending"} == 1
+          for: 10m
+          labels:
+            severity: warning
+          annotations:
+            summary: >-
+              Pod {{ $labels.namespace }}/{{ $labels.pod }} has been Pending for over 10 minutes
+
         - alert: KubernetesPodCrashLooping
           expr: increase(kube_pod_container_status_restarts_total[15m]) > 3
           for: 5m
@@ -94,7 +114,7 @@ spec:
             summary: Mimir compactor has not completed a run in over 2 hours
             description: >-
               Last successful run was {{ $value | humanizeDuration }} ago.
-              Blocks will accumulate and Garage storage will fill up.
+              Blocks may accumulate in object storage.
               Check: kubectl -n observability-system logs -l app.kubernetes.io/component=compactor
 
     - name: observability.mimir
