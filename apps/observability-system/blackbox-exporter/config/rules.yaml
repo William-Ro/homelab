@@ -22,7 +22,7 @@ spec:
             summary: >-
               {{ $labels.target }} is unreachable
             description: >-
-              The {{ $labels.module }} probe against {{ $labels.target }} has been failing for more than 5 minutes.
+              The HTTP probe against {{ $labels.target }} has been failing for more than 5 minutes.
 
         - alert: BlackboxProbeSlowResponse
           expr: probe_http_duration_seconds{phase="processing"} > 2
