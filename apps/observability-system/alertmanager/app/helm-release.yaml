@@ -64,7 +64,7 @@ spec:
                 {{ range .Alerts -}}
                 **Severity:** {{ .Labels.severity | toUpper }}
                 {{ if .Labels.namespace }}**Namespace:** `{{ .Labels.namespace }}`{{ end }}
-                {{ if .Labels.target }}**Target:** `{{ .Labels.target }}`{{ else if .Labels.instance }}**Target:** `{{ .Labels.instance }}`{{ end }}
+                {{ if .Labels.target }}**Target:** `{{ .Labels.target }}`{{ end }}
                 {{ if .Annotations.summary }}**Summary:** {{ .Annotations.summary }}{{ end }}
                 {{ if .Annotations.description }}**Details:** {{ .Annotations.description }}{{ end }}
                 {{ end }}
