@@ -17,17 +17,31 @@ The bootstrap in `bootstrap/helmfile.yaml` installs CoreDNS, the Flux Operator, 
 
 ## Validation
 
-There is no application build or unit-test suite. CI is defined in `.github/workflows/ci-pr.yml`; it runs strict YAML linting and Flux manifest validation. Run both checks locally:
+There is no application build or unit-test suite. CI is defined in `.github/workflows/ci-pr.yml` and runs four layers:
+
+- `yamllint` (strict) for syntax.
+- `conftest` for repo policies in `policy/` (Rego, with unit tests in `policy/*_test.rego`).
+- `flate` to render every Kustomization and HelmRelease from the Flux tree.
+- `kubeconform` to schema-validate the rendered output, including Flux and other CRDs.
+
+Run them locally:
 
 ```sh
 nix shell nixpkgs#yamllint --command yamllint --strict -c .yamllint.yaml apps/ bootstrap/
-
-nix shell nixpkgs#docker --command docker run --rm \
-  -v "$PWD:/github/workspace" -w /github/workspace \
-  ghcr.io/allenporter/flux-local:v8.4.0 test \
-  --all-namespaces --path .github/flux-local --skip-secrets \
-  --kustomize-build-flags=--load-restrictor=LoadRestrictionsNone -v
+nix shell nixpkgs#conftest --command bash -c 'conftest verify --policy policy && conftest test apps components --policy policy --all-namespaces'
+nix shell nixpkgs#docker nixpkgs#kubeconform --command bash -c '
+  flate() { docker run --rm --user 0:0 -v "$PWD:/w" -w /w ghcr.io/home-operations/flate:0.6.5 "$@"; }
+  flate test all -p .github/flux-local --no-progress &&
+  flate build all -p .github/flux-local --no-progress 2>/dev/null |
+    kubeconform -summary -ignore-missing-schemas -schema-location default \
+      -schema-location "https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/{{.Group}}/{{.ResourceKind}}_{{.ResourceAPIVersion}}.json"'
 ```
+
+## Change workflow
+
+- Never commit to `main`. Work on a branch and open a pull request; the `main` ruleset requires a PR, an approval and passing checks (`Syntax & Lint`, `Security Scan`, `Validate Manifests`).
+- A change is not done until all validation layers above pass. Fix failures instead of skipping or weakening checks.
+- When adding a rule that CI should enforce, add a Rego policy and a test under `policy/`.
 
 For a focused check, lint one YAML file or render one Kustomize base:
 
@@ -36,7 +50,7 @@ nix shell nixpkgs#yamllint --command yamllint --strict -c .yamllint.yaml apps/me
 nix shell nixpkgs#kustomize --command kustomize build apps/media/immich/config
 ```
 
-A single-base Kustomize render does not apply Flux dependencies or substitutions; use the full `flux-local test` to validate the configured tree.
+A single-base Kustomize render does not apply Flux dependencies or substitutions; use the full `flate test all` run to validate the configured tree.
 
 ## Repository conventions
 
