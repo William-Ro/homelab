@@ -1,11 +1,11 @@
 {
-  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  $schema: "https://docs.renovatebot.com/renovate-schema.json",
 
-  "packageRules": [
+  packageRules: [
     {
       // CI renders manifests but cannot catch runtime upgrade failures (webhooks, CRDs, migrations)
-      "description": "Operators and cluster-critical charts: always open a PR, never automerge",
-      "matchPackageNames": [
+      description: "Operators and cluster-critical charts: always open a PR, never automerge",
+      matchPackageNames: [
         "/cloudnative-pg/",
         "/flux-operator/",
         "/flux-instance/",
@@ -18,10 +18,10 @@
         "/intel-device-plugins/",
         "/node-feature-discovery/",
         "/spegel/",
-        "/prometheus-operator-crds/"
+        "/prometheus-operator-crds/",
       ],
-      "automerge": false,
-      "addLabels": ["renovate/manual-review"]
-    }
-  ]
+      automerge: false,
+      addLabels: ["renovate/manual-review"],
+    },
+  ],
 }
