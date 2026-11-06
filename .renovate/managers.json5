@@ -5,8 +5,13 @@
     "managerFilePatterns": ["/\\.yaml$/"]
   },
 
+  // Scoped to values/HelmRelease files only - matching every *.yaml like the
+  // kubernetes manager double-extracts image: lines and inflates minimumGroupSize counts
   "helm-values": {
-    "managerFilePatterns": ["/\\.yaml$/"]
+    "managerFilePatterns": [
+      "/(^|/)values\\.ya?ml$/",
+      "/(^|/)helm-release\\.ya?ml$/"
+    ]
   },
 
   "kubernetes": {
