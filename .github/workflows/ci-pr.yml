@@ -11,6 +11,7 @@ on:
       - .github/flux-local/**
       - .github/workflows/**
   pull_request:
+    types: [opened, reopened]
     branches: [main]
     paths:
       - apps/**
