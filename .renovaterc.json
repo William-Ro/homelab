@@ -6,6 +6,7 @@
 
     // Local configuration overrides for this repo
     "github>William-Ro/homelab//.renovate/groups.json5",
-    "github>William-Ro/homelab//.renovate/managers.json5"
+    "github>William-Ro/homelab//.renovate/managers.json5",
+    "github>William-Ro/homelab//.renovate/manual-review.json5"
   ]
 }

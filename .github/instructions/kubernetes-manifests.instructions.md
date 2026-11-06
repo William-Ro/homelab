@@ -12,4 +12,4 @@ description: "Repository-specific conventions for Flux and Kubernetes manifests"
 - Keep bootstrap chart configuration in the app's `HelmRelease`; `bootstrap/templates/values.yaml.gotmpl` reads it to avoid a second copy of values.
 - Use the existing SOPS filename and encryption rules in `.sops.yaml` for encrypted Secrets. Do not introduce plaintext secret values.
 - Add new resources to the appropriate Kustomize base and area-level Kustomization so Flux and CI can discover them.
-- Validate YAML with `nix shell nixpkgs#yamllint --command yamllint --strict -c .yamllint.yaml <file>` and validate the assembled Flux tree with the `flux-local test` command documented in `.github/copilot-instructions.md`.
+- Validate YAML with `nix shell nixpkgs#yamllint --command yamllint --strict -c .yamllint.yaml <file>` and validate the assembled Flux tree with the `flate test all` command documented in `.github/copilot-instructions.md`.

@@ -1,23 +1,16 @@
 # yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
 name: CI PR
 
+# No path filters: required checks must report on every PR or it can never merge.
+# Renovate branches are validated by the push run (needed for branch automerge),
+# so the pull_request run is skipped for them to avoid duplicates.
 on:
   push:
     branches:
       - "renovate/**"
-    paths:
-      - apps/**
-      - bootstrap/**
-      - .github/flux-local/**
-      - .github/workflows/**
   pull_request:
-    types: [opened, reopened]
+    types: [opened, reopened, synchronize]
     branches: [main]
-    paths:
-      - apps/**
-      - bootstrap/**
-      - .github/flux-local/**
-      - .github/workflows/**
 
 concurrency:
   group: ci-pr-${{ github.ref }}
@@ -26,6 +19,7 @@ concurrency:
 jobs:
   syntax:
     name: Syntax & Lint
+    if: github.event_name != 'pull_request' || !startsWith(github.head_ref, 'renovate/')
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:
@@ -40,8 +34,19 @@ jobs:
           pip install yamllint --quiet
           yamllint --strict -c .yamllint.yaml apps/ bootstrap/
 
+      - name: Policy unit tests
+        uses: docker://openpolicyagent/conftest:v0.71.0
+        with:
+          args: verify --policy policy
+
+      - name: Policy check
+        uses: docker://openpolicyagent/conftest:v0.71.0
+        with:
+          args: test apps components --policy policy --all-namespaces
+
   security:
     name: Security Scan
+    if: github.event_name != 'pull_request' || !startsWith(github.head_ref, 'renovate/')
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:
@@ -69,6 +74,7 @@ jobs:
 
   validate:
     name: Validate Manifests
+    if: github.event_name != 'pull_request' || !startsWith(github.head_ref, 'renovate/')
     runs-on: ubuntu-latest
     timeout-minutes: 15
     permissions:
@@ -78,19 +84,33 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: flux-local test
-        uses: docker://ghcr.io/allenporter/flux-local:v8.4.0
+      - name: Render and test Flux resources
+        run: >-
+          docker run --rm --user "$(id -u):$(id -g)" -e HOME=/tmp
+          -v "$PWD:/github/workspace" -w /github/workspace
+          ghcr.io/home-operations/flate:0.6.5
+          test all -p .github/flux-local --no-progress
+
+      - name: Render manifests
+        run: >-
+          docker run --rm --user "$(id -u):$(id -g)" -e HOME=/tmp
+          -v "$PWD:/github/workspace" -w /github/workspace
+          ghcr.io/home-operations/flate:0.6.5
+          build all -p .github/flux-local --no-progress > rendered.yaml
+
+      - name: Schema validation
+        uses: docker://ghcr.io/yannh/kubeconform:v0.8.0
         with:
+          entrypoint: /kubeconform
           args: >-
-            test
-            --all-namespaces
-            --path /github/workspace/.github/flux-local
-            --skip-secrets
-            --kustomize-build-flags=--load-restrictor=LoadRestrictionsNone
-            -v
+            -summary -ignore-missing-schemas
+            -schema-location default
+            -schema-location https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/{{.Group}}/{{.ResourceKind}}_{{.ResourceAPIVersion}}.json
+            rendered.yaml
 
   diff:
     name: Manifest Diff
+    if: github.event_name != 'pull_request' || !startsWith(github.head_ref, 'renovate/')
     runs-on: ubuntu-latest
     timeout-minutes: 15
     permissions:
@@ -144,7 +164,7 @@ jobs:
     name: Summary
     runs-on: ubuntu-latest
     needs: [syntax, security, validate, diff]
-    if: always()
+    if: always() && (github.event_name != 'pull_request' || !startsWith(github.head_ref, 'renovate/'))
     permissions:
       pull-requests: write
     steps:
@@ -184,7 +204,7 @@ jobs:
               '### Pipeline Status',
               `- **Syntax & Lint:** ${check(syntaxOk, 'YAML is valid, manifests conform to schema.', 'Check yamllint or kubeconform output.')}`,
               `- **Security Scan:** ${check(securityOk, 'No secrets or critical misconfigurations found.', 'Review gitleaks or trivy findings.')}`,
-              `- **Manifest Validation:** ${check(validateOk, 'All Kustomizations build successfully.', 'flux-local test failed. Check the logs.')}`,
+              `- **Manifest Validation:** ${check(validateOk, 'All Kustomizations build successfully.', 'flate render or schema validation failed. Check the logs.')}`,
               `- **Manifest Diff:** ${check(diffOk, 'Diff computed. See the run summary for details.', 'Diff step had issues.')}`,
               '',
               '### Conclusion',
