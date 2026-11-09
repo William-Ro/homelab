@@ -46,3 +46,5 @@ A single-base Kustomize render does not apply Flux dependencies or substitutions
 - Flux substitutions are configured on the app's Flux Kustomization. A plain Kustomize render does not supply them.
 - Follow `.sops.yaml` for encrypted Secret filenames (`*.secret.yaml` or `*.secret.sops.yaml`). Flux-side SOPS decryption is configured in the FluxInstance HelmRelease. Never add plaintext secret values.
 - Follow `.yamllint.yaml`; CI runs yamllint in strict mode over `apps/` and `bootstrap/`.
+- Record lasting architectural/operational decisions in [`decisions/`](../docs/decisions/README.md); check it before changing something that looks wrong — it may be intentional (e.g. a version pin).
+- Operational recovery procedures (rollback, etc.) live in [`runbooks/`](../docs/runbooks/).

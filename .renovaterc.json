@@ -6,14 +6,21 @@
   "kubernetes": { "managerFilePatterns": ["/\\.yaml$/"] },
   // Scoped: matching every *.yaml double-extracts image: lines and inflates minimumGroupSize counts
   "helm-values": {
-    "managerFilePatterns": ["/(^|/)values\\.ya?ml$/", "/(^|/)helm-release\\.ya?ml$/"]
+    "managerFilePatterns": [
+      "/(^|/)values\\.ya?ml$/",
+      "/(^|/)helm-release\\.ya?ml$/"
+    ]
   },
 
   "packageRules": [
     {
       "groupName": "flux-operator",
       "matchDatasources": ["docker"],
-      "matchPackageNames": ["/flux-operator/", "/flux-instance/", "/flux-operator-manifests/"],
+      "matchPackageNames": [
+        "/flux-operator/",
+        "/flux-instance/",
+        "/flux-operator-manifests/"
+      ],
       "minimumGroupSize": 2
     }
   ]

@@ -48,5 +48,3 @@ node_modules/
 *.bak
 *.tmp
 .cache/
-docs
-example-repos
