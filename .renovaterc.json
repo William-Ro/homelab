@@ -1,11 +1,20 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": [
-    // Shared base config for all William-Ro repos
-    "github>William-Ro/renovate-config//default.json5",
+  "extends": ["github>William-Ro/renovate-config//default.json5"],
 
-    // Local configuration overrides for this repo
-    "github>William-Ro/homelab//.renovate/groups.json5",
-    "github>William-Ro/homelab//.renovate/managers.json5"
+  "flux": { "managerFilePatterns": ["/\\.yaml$/"] },
+  "kubernetes": { "managerFilePatterns": ["/\\.yaml$/"] },
+  // Scoped: matching every *.yaml double-extracts image: lines and inflates minimumGroupSize counts
+  "helm-values": {
+    "managerFilePatterns": ["/(^|/)values\\.ya?ml$/", "/(^|/)helm-release\\.ya?ml$/"]
+  },
+
+  "packageRules": [
+    {
+      "groupName": "flux-operator",
+      "matchDatasources": ["docker"],
+      "matchPackageNames": ["/flux-operator/", "/flux-instance/", "/flux-operator-manifests/"],
+      "minimumGroupSize": 2
+    }
   ]
 }

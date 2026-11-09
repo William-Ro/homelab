@@ -125,7 +125,6 @@ confirmed "blocks merge" unless a repo admin confirms branch protection rules.
 | `.github/flux-local/` | CI-only mirror of the FluxInstance-generated root Kustomization; not deployed. |
 | `.github/workflows/` | `ci-pr.yml` (lint/security/validate/diff/summary) and `renovate.yaml` (scheduled dependency bot). |
 | `.github/instructions/` | `applyTo`-scoped Copilot instruction file for manifest conventions. |
-| `.renovate/` | Renovate grouping (`groups.json5`) and manager (`managers.json5`) overrides layered on a shared org config. |
 | `docs/` | **Out of scope** — gitignored local clones of two other engineers' unrelated home-ops repos (`mirceanton/home-ops`, `chr1sd/home-ops`), kept as reference material only; not tracked by this repo's Git history (confirmed via `.gitignore` and `git ls-files docs/` returning nothing). |
 
 ### Deployment & Runtime Surface
@@ -408,7 +407,7 @@ sequenceDiagram
 | Logging/metrics/tracing | Alloy (collector) → Mimir (metrics) + Grafana (viz) + Alertmanager (alerting), `kube-state-metrics`/`blackbox-exporter` as metric sources, `GrafanaFolder` CRs grouping dashboards per area | `apps/observability-system/*`, `apps/*/grafana-folder.yaml` |
 | Feature flags | None found `[UNVERIFIED]` |
 | Error handling / health | Flux `wait: true` + `health checks` implicit in `kustomize.toolkit.fluxcd.io` Kustomizations (`wait: true` on every `*.ks.yaml`); `CancelHealthCheckOnNewRevision` feature gate enabled on kustomize-controller | `apps/flux-system/flux-instance/app/helm-release.yaml#L138-L143` |
-| Dependency updates | Renovate, org-shared base + local `groups.json5`/`managers.json5`, scoped to flux/helm-values/kubernetes managers over all `.yaml` | `.renovaterc.json`, `.renovate/*.json5` |
+| Dependency updates | Renovate, org-shared base + local manager/grouping overrides in one file; minor/patch/digest automerge straight to `main`, majors need dashboard approval | `.renovaterc.json` |
 
 ### Inferred Architectural Decision Records
 
@@ -641,7 +640,7 @@ reserving it for the single unavoidable case.
 - [`components/cnpg/`](components/cnpg/) — shared Kustomize `Component` for per-app Postgres (cluster + database).
 - [`.sops.yaml`](.sops.yaml) — SOPS encryption rule for `*.secret(.sops)?.yaml` files.
 - [`.yamllint.yaml`](.yamllint.yaml) — strict yamllint ruleset used by CI and local validation.
-- [`.renovaterc.json`](.renovaterc.json), [`.renovate/groups.json5`](.renovate/groups.json5), [`.renovate/managers.json5`](.renovate/managers.json5) — dependency-update configuration.
+- [`.renovaterc.json`](.renovaterc.json) — dependency-update configuration.
 - [`apps/flux-system/flux-instance/app/helm-release.yaml`](apps/flux-system/flux-instance/app/helm-release.yaml) — FluxInstance sync target (`main`, `apps/`, 5m) and controller patches (RC image, feature gates, SOPS flag).
 - [`apps/media/immich/`](apps/media/immich/) — representative full-pattern app (app/config split, cnpg component, cross-namespace `dependsOn`, Gateway API route).
 - [`apps/security-system/bitwarden-sdk-server/config/clustersecretstore.yaml`](apps/security-system/bitwarden-sdk-server/config/clustersecretstore.yaml) — the `ClusterSecretStore` all `ExternalSecret`s reference.
