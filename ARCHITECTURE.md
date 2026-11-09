@@ -8,15 +8,15 @@
 
 ## Checkout identity
 
-| Field | Value |
-|---|---|
-| Remote | `git@github.com:William-Ro/homelab.git` (SSH, no embedded credentials) |
-| Branch | `main` |
-| HEAD commit | `9e6e5c62d2537f82aa0c6d76f5b32bc3af43af72` |
-| HEAD subject | `fix(container): update ghcr.io/coredns/charts/coredns ( 1.48.2 → 1.49.0 )` |
-| Commit count | 738 (`git log --oneline \| wc -l`) |
+| Field        | Value                                                                                        |
+| ------------ | -------------------------------------------------------------------------------------------- |
+| Remote       | `git@github.com:William-Ro/homelab.git` (SSH, no embedded credentials)                       |
+| Branch       | `main`                                                                                       |
+| HEAD commit  | `9e6e5c62d2537f82aa0c6d76f5b32bc3af43af72`                                                   |
+| HEAD subject | `fix(container): update ghcr.io/coredns/charts/coredns ( 1.48.2 → 1.49.0 )`                  |
+| Commit count | 738 (`git log --oneline \| wc -l`)                                                           |
 | First commit | `2026-03-17` — `docs: update README` / `chore: test helmfile` / `feat(longhorn): add values` |
-| License | None found in repo root `[UNVERIFIED]` |
+| License      | None found in repo root `[UNVERIFIED]`                                                       |
 
 ---
 
@@ -39,28 +39,28 @@ produce the Kustomize/Helm output Flux expects" — there is no compiled artifac
 
 ### Tech-stack detection table
 
-| Layer | Technology | Evidence |
-|---|---|---|
-| GitOps engine | Flux CD (`kustomize-controller`, `helm-controller`, `source-controller`, `notification-controller`) via the **Flux Operator** + **FluxInstance** CRD | [`apps/flux-system/flux-instance/app/helm-release.yaml#L12-L21`](apps/flux-system/flux-instance/app/helm-release.yaml) |
-| Bootstrap installer | `helmfile` | [`bootstrap/helmfile.yaml`](bootstrap/helmfile.yaml) |
-| Manifest composition | Kustomize (bases + a shared `Component` type) | [`components/cnpg/kustomization.yaml`](components/cnpg/kustomization.yaml), every `*/kustomization.yaml` |
-| Package delivery | Helm charts, fetched as **OCI artifacts** (`OCIRepository`) or occasionally classic **Helm repos** (`HelmRepository`) | [`apps/media/immich/app/oci-repository.yaml`](apps/media/immich/app/oci-repository.yaml), [`apps/storage-system/democratic-csi/app/helm-repository.yaml`](apps/storage-system/democratic-csi/app/helm-repository.yaml) |
-| Secrets encryption at rest | SOPS + age, decrypted by `kustomize-controller` in-cluster | [`.sops.yaml`](.sops.yaml), `--sops-age-secret=sops-age` in [`apps/flux-system/flux-instance/app/helm-release.yaml#L130-L134`](apps/flux-system/flux-instance/app/helm-release.yaml) |
-| Runtime secret fetch | External Secrets Operator + Bitwarden Secrets Manager provider | [`apps/security-system/bitwarden-sdk-server/config/clustersecretstore.yaml`](apps/security-system/bitwarden-sdk-server/config/clustersecretstore.yaml) |
-| DNS (cluster + internal) | CoreDNS (bootstrap-pinned) + Pi-hole + Unbound | [`bootstrap/helmfile.yaml#L8-L13`](bootstrap/helmfile.yaml), `apps/network-system/pihole`, `apps/network-system/unbound` |
-| Load balancing | MetalLB (L2 advertisement, IP pool) | `apps/network-system/metallb/config/ip-pool.yaml`, `l2-advertisement.yaml` |
-| Ingress / routing | Envoy Gateway + Kubernetes Gateway API (`Gateway`, `HTTPRoute`, `BackendTrafficPolicy`, `ClientTrafficPolicy`) | `apps/network-system/envoy-gateway/config/**` |
-| External DNS | `external-dns` syncing records from `HTTPRoute`s | `apps/network-system/external-dns` |
-| TLS issuance | cert-manager | `apps/network-system/cert-manager` |
-| VPN / zero-trust remote access | Twingate | `apps/network-system/twingate` |
-| Database | CloudNativePG (Postgres operator), shared via a Kustomize `Component` | [`components/cnpg/cnpg.yaml`](components/cnpg/cnpg.yaml), [`apps/database-system/cloudnative-pg`](apps/database-system/cloudnative-pg) |
-| Storage/CSI | `democratic-csi` (TrueNAS iSCSI backend, `truenas-iscsi` StorageClass) | `apps/storage-system/democratic-csi`, `components/cnpg/cnpg.yaml#L16,20` |
-| Observability | Grafana (+ Grafana Operator CRDs), Mimir, Alertmanager, Alloy, `kube-state-metrics`, `blackbox-exporter`, Prometheus Operator CRDs | `apps/observability-system/**`, [`bootstrap/crds/helmfile.yaml`](bootstrap/crds/helmfile.yaml) |
-| In-cluster AI/MCP tooling | `flux-mcp` and `grafana-mcp` HelmReleases exposing MCP servers over HTTPRoute | `apps/flux-system/flux-mcp`, `apps/observability-system/grafana-mcp` |
-| Media stack | Jellyfin, Sonarr/Radarr/Lidarr/Prowlarr/Bazarr/Recyclarr, SABnzbd, slskd, Navidrome, Seerr, Beets, Immich | `apps/media/*` (13 apps) |
-| Node-system add-ons | kube-vip, descheduler, Reloader, Intel GPU device plugin + operator | `apps/kube-system/*` |
-| Dependency automation | Renovate (shared org config + local overrides), scheduled hourly via a reusable workflow | [`.renovaterc.json`](.renovaterc.json), [`.github/workflows/renovate.yaml`](.github/workflows/renovate.yaml) |
-| CI | GitHub Actions (`ci-pr.yml`): yamllint, `flux-local test`, `flux-local diff`, on pull requests | [`.github/workflows/ci-pr.yml`](.github/workflows/ci-pr.yml) |
+| Layer                          | Technology                                                                                                                                           | Evidence                                                                                                                                                                                                               |
+| ------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| GitOps engine                  | Flux CD (`kustomize-controller`, `helm-controller`, `source-controller`, `notification-controller`) via the **Flux Operator** + **FluxInstance** CRD | [`apps/flux-system/flux-instance/app/helm-release.yaml#L12-L21`](apps/flux-system/flux-instance/app/helm-release.yaml)                                                                                                 |
+| Bootstrap installer            | `helmfile`                                                                                                                                           | [`bootstrap/helmfile.yaml`](bootstrap/helmfile.yaml)                                                                                                                                                                   |
+| Manifest composition           | Kustomize (bases + a shared `Component` type)                                                                                                        | [`components/cnpg/kustomization.yaml`](components/cnpg/kustomization.yaml), every `*/kustomization.yaml`                                                                                                               |
+| Package delivery               | Helm charts, fetched as **OCI artifacts** (`OCIRepository`) or occasionally classic **Helm repos** (`HelmRepository`)                                | [`apps/media/immich/app/oci-repository.yaml`](apps/media/immich/app/oci-repository.yaml), [`apps/storage-system/democratic-csi/app/helm-repository.yaml`](apps/storage-system/democratic-csi/app/helm-repository.yaml) |
+| Secrets encryption at rest     | SOPS + age, decrypted by `kustomize-controller` in-cluster                                                                                           | [`.sops.yaml`](.sops.yaml), `--sops-age-secret=sops-age` in [`apps/flux-system/flux-instance/app/helm-release.yaml#L130-L134`](apps/flux-system/flux-instance/app/helm-release.yaml)                                   |
+| Runtime secret fetch           | External Secrets Operator + Bitwarden Secrets Manager provider                                                                                       | [`apps/security-system/bitwarden-sdk-server/config/clustersecretstore.yaml`](apps/security-system/bitwarden-sdk-server/config/clustersecretstore.yaml)                                                                 |
+| DNS (cluster + internal)       | CoreDNS (bootstrap-pinned) + Pi-hole + Unbound                                                                                                       | [`bootstrap/helmfile.yaml#L8-L13`](bootstrap/helmfile.yaml), `apps/network-system/pihole`, `apps/network-system/unbound`                                                                                               |
+| Load balancing                 | MetalLB (L2 advertisement, IP pool)                                                                                                                  | `apps/network-system/metallb/config/ip-pool.yaml`, `l2-advertisement.yaml`                                                                                                                                             |
+| Ingress / routing              | Envoy Gateway + Kubernetes Gateway API (`Gateway`, `HTTPRoute`, `BackendTrafficPolicy`, `ClientTrafficPolicy`)                                       | `apps/network-system/envoy-gateway/config/**`                                                                                                                                                                          |
+| External DNS                   | `external-dns` syncing records from `HTTPRoute`s                                                                                                     | `apps/network-system/external-dns`                                                                                                                                                                                     |
+| TLS issuance                   | cert-manager                                                                                                                                         | `apps/network-system/cert-manager`                                                                                                                                                                                     |
+| VPN / zero-trust remote access | Twingate                                                                                                                                             | `apps/network-system/twingate`                                                                                                                                                                                         |
+| Database                       | CloudNativePG (Postgres operator), shared via a Kustomize `Component`                                                                                | [`components/cnpg/cnpg.yaml`](components/cnpg/cnpg.yaml), [`apps/database-system/cloudnative-pg`](apps/database-system/cloudnative-pg)                                                                                 |
+| Storage/CSI                    | `democratic-csi` (TrueNAS iSCSI backend, `truenas-iscsi` StorageClass)                                                                               | `apps/storage-system/democratic-csi`, `components/cnpg/cnpg.yaml#L16,20`                                                                                                                                               |
+| Observability                  | Grafana (+ Grafana Operator CRDs), Mimir, Alertmanager, Alloy, `kube-state-metrics`, `blackbox-exporter`, Prometheus Operator CRDs                   | `apps/observability-system/**`, [`bootstrap/crds/helmfile.yaml`](bootstrap/crds/helmfile.yaml)                                                                                                                         |
+| In-cluster AI/MCP tooling      | `flux-mcp` and `grafana-mcp` HelmReleases exposing MCP servers over HTTPRoute                                                                        | `apps/flux-system/flux-mcp`, `apps/observability-system/grafana-mcp`                                                                                                                                                   |
+| Media stack                    | Jellyfin, Sonarr/Radarr/Lidarr/Prowlarr/Bazarr/Recyclarr, SABnzbd, slskd, Navidrome, Seerr, Beets, Immich                                            | `apps/media/*` (13 apps)                                                                                                                                                                                               |
+| Node-system add-ons            | kube-vip, descheduler, Reloader, Intel GPU device plugin + operator                                                                                  | `apps/kube-system/*`                                                                                                                                                                                                   |
+| Dependency automation          | Renovate (shared org config + local overrides), scheduled hourly via a reusable workflow                                                             | [`.renovaterc.json`](.renovaterc.json), [`.github/workflows/renovate.yaml`](.github/workflows/renovate.yaml)                                                                                                           |
+| CI                             | GitHub Actions (`ci-pr.yml`): yamllint, `flux-local test`, `flux-local diff`, on pull requests                                                       | [`.github/workflows/ci-pr.yml`](.github/workflows/ci-pr.yml)                                                                                                                                                           |
 
 ### Entry points
 
@@ -84,13 +84,13 @@ There is no application process to "start." The operative entry points are:
 
 ### Commands & Verification Inventory
 
-| Command | Purpose | Evidence |
-|---|---|---|
-| `yamllint --strict -c .yamllint.yaml apps/ bootstrap/` | Strict YAML lint across the whole manifest tree | [`.github/workflows/ci-pr.yml` `lint` job](.github/workflows/ci-pr.yml), [`.github/copilot-instructions.md`](.github/copilot-instructions.md) |
-| `yamllint --strict -c .yamllint.yaml <single file>` | Focused lint of one file | [`.github/copilot-instructions.md`](.github/copilot-instructions.md) |
-| `docker run ghcr.io/allenporter/flux-local:v8.4.0 test --all-namespaces --path .github/flux-local --skip-secrets --kustomize-build-flags=--load-restrictor=LoadRestrictionsNone -v` | Builds and validates the assembled Flux tree (Kustomizations + HelmReleases) end to end | [`.github/workflows/ci-pr.yml` `validate` job](.github/workflows/ci-pr.yml) |
-| `kustomize build apps/media/immich/config` | Render a single Kustomize base directly (no Flux `dependsOn`/substitutions applied) | [`.github/copilot-instructions.md`](.github/copilot-instructions.md) |
-| Renovate (scheduled, hourly cron + manual dispatch) | Dependency/chart/container/Flux-manifest version bumps via a reusable org workflow | [`.github/workflows/renovate.yaml`](.github/workflows/renovate.yaml) |
+| Command                                                                                                                                                                             | Purpose                                                                                 | Evidence                                                                                                                                      |
+| ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| `yamllint --strict -c .yamllint.yaml apps/ bootstrap/`                                                                                                                              | Strict YAML lint across the whole manifest tree                                         | [`.github/workflows/ci-pr.yml` `lint` job](.github/workflows/ci-pr.yml), [`.github/copilot-instructions.md`](.github/copilot-instructions.md) |
+| `yamllint --strict -c .yamllint.yaml <single file>`                                                                                                                                 | Focused lint of one file                                                                | [`.github/copilot-instructions.md`](.github/copilot-instructions.md)                                                                          |
+| `docker run ghcr.io/allenporter/flux-local:v8.4.0 test --all-namespaces --path .github/flux-local --skip-secrets --kustomize-build-flags=--load-restrictor=LoadRestrictionsNone -v` | Builds and validates the assembled Flux tree (Kustomizations + HelmReleases) end to end | [`.github/workflows/ci-pr.yml` `validate` job](.github/workflows/ci-pr.yml)                                                                   |
+| `kustomize build apps/media/immich/config`                                                                                                                                          | Render a single Kustomize base directly (no Flux `dependsOn`/substitutions applied)     | [`.github/copilot-instructions.md`](.github/copilot-instructions.md)                                                                          |
+| Renovate (scheduled, hourly cron + manual dispatch)                                                                                                                                 | Dependency/chart/container/Flux-manifest version bumps via a reusable org workflow      | [`.github/workflows/renovate.yaml`](.github/workflows/renovate.yaml)                                                                          |
 
 **CI trigger surface:** `ci-pr.yml` runs only on `pull_request` targeting
 `main`, scoped to `apps/**`, `bootstrap/**`, `.github/flux-local/**`,
@@ -101,39 +101,39 @@ PR or CI; major updates open a PR and so get these checks.
 
 ### Directory layout
 
-| Path | Purpose |
-|---|---|
-| `apps/` | Flux-synced root. One subdirectory per platform area (namespace group); everything here is live cluster state. |
-| `apps/<area>/kustomization.yaml` | Assembles `namespace.yaml` + each child app directory into one Kustomize base for the area. |
-| `apps/<area>/namespace.yaml` | The `Namespace` object for the area. |
-| `apps/<area>/<app>/app/` | Chart installation: `OCIRepository`/`HelmRepository` + `HelmRelease` + its own `kustomization.yaml`. |
-| `apps/<area>/<app>/config/` | Supporting resources (ExternalSecrets, HTTPRoutes, PVCs, CNPG clusters, dashboards) + its own `kustomization.yaml`. Present for 32 of 40 apps; omitted for apps with no supporting resources beyond the chart itself (e.g. `coredns`, `kube-vip`, `beets`). |
-| `apps/<area>/<app>/app.ks.yaml` | Flux `Kustomization` pointing at `<app>/app`, usually `dependsOn: [<app>-config]`. |
-| `apps/<area>/<app>/config.ks.yaml` | Flux `Kustomization` pointing at `<app>/config`, carrying `dependsOn`, `targetNamespace`, `postBuild.substitute`, and optional `components:`. |
-| `apps/<area>/<app>/kustomization.yaml` | Includes both `*.ks.yaml` Flux Kustomizations into the area's base. |
-| `bootstrap/` | `helmfile`-driven, one-time cluster bootstrap (CoreDNS, Flux Operator, FluxInstance) plus a separate CRD-extraction helmfile. |
-| `components/cnpg/` | A reusable Kustomize `Component` (CloudNativePG `Cluster` + `Database`) parameterized via `postBuild.substitute` variables, consumed by any app needing its own Postgres instance. |
-| `.github/flux-local/` | CI-only mirror of the FluxInstance-generated root Kustomization; not deployed. |
-| `.github/workflows/` | `ci-pr.yml` (lint/validate/diff) and `renovate.yaml` (scheduled dependency bot). |
-| `.github/instructions/` | `applyTo`-scoped Copilot instruction file for manifest conventions. |
-| `docs/` | **Out of scope** — gitignored local clones of two other engineers' unrelated home-ops repos (`mirceanton/home-ops`, `chr1sd/home-ops`), kept as reference material only; not tracked by this repo's Git history (confirmed via `.gitignore` and `git ls-files docs/` returning nothing). |
+| Path                                   | Purpose                                                                                                                                                                                                                                                                                  |
+| -------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `apps/`                                | Flux-synced root. One subdirectory per platform area (namespace group); everything here is live cluster state.                                                                                                                                                                           |
+| `apps/<area>/kustomization.yaml`       | Assembles `namespace.yaml` + each child app directory into one Kustomize base for the area.                                                                                                                                                                                              |
+| `apps/<area>/namespace.yaml`           | The `Namespace` object for the area.                                                                                                                                                                                                                                                     |
+| `apps/<area>/<app>/app/`               | Chart installation: `OCIRepository`/`HelmRepository` + `HelmRelease` + its own `kustomization.yaml`.                                                                                                                                                                                     |
+| `apps/<area>/<app>/config/`            | Supporting resources (ExternalSecrets, HTTPRoutes, PVCs, CNPG clusters, dashboards) + its own `kustomization.yaml`. Present for 32 of 40 apps; omitted for apps with no supporting resources beyond the chart itself (e.g. `coredns`, `kube-vip`, `beets`).                              |
+| `apps/<area>/<app>/app.ks.yaml`        | Flux `Kustomization` pointing at `<app>/app`, usually `dependsOn: [<app>-config]`.                                                                                                                                                                                                       |
+| `apps/<area>/<app>/config.ks.yaml`     | Flux `Kustomization` pointing at `<app>/config`, carrying `dependsOn`, `targetNamespace`, `postBuild.substitute`, and optional `components:`.                                                                                                                                            |
+| `apps/<area>/<app>/kustomization.yaml` | Includes both `*.ks.yaml` Flux Kustomizations into the area's base.                                                                                                                                                                                                                      |
+| `bootstrap/`                           | `helmfile`-driven, one-time cluster bootstrap (CoreDNS, Flux Operator, FluxInstance) plus a separate CRD-extraction helmfile.                                                                                                                                                            |
+| `components/cnpg/`                     | A reusable Kustomize `Component` (CloudNativePG `Cluster` + `Database`) parameterized via `postBuild.substitute` variables, consumed by any app needing its own Postgres instance.                                                                                                       |
+| `.github/flux-local/`                  | CI-only mirror of the FluxInstance-generated root Kustomization; not deployed.                                                                                                                                                                                                           |
+| `.github/workflows/`                   | `ci-pr.yml` (lint/validate/diff) and `renovate.yaml` (scheduled dependency bot).                                                                                                                                                                                                         |
+| `.github/instructions/`                | `applyTo`-scoped Copilot instruction file for manifest conventions.                                                                                                                                                                                                                      |
+| `docs/`                                | **Out of scope** — gitignored local clones of two other engineers' unrelated home-ops repos (`mirceanton/home-ops`, `chr1sd/home-ops`), kept as reference material only; not tracked by this repo's Git history (confirmed via `.gitignore` and `git ls-files docs/` returning nothing). |
 
 ### Deployment & Runtime Surface
 
-| Component | Version pin | Evidence |
-|---|---|---|
-| CoreDNS | `1.49.0` | [`bootstrap/helmfile.yaml#L10`](bootstrap/helmfile.yaml) |
-| Flux Operator / FluxInstance chart | `0.61.0` | [`bootstrap/helmfile.yaml#L15,21`](bootstrap/helmfile.yaml) |
-| Flux distribution artifact (operator-managed controllers) | `v0.46.0` | [`apps/flux-system/flux-instance/app/helm-release.yaml#L21`](apps/flux-system/flux-instance/app/helm-release.yaml) |
-| `kustomize-controller` image override | `ghcr.io/fluxcd/kustomize-controller:rc-203b42e7` (pinned to an RC build, not a stable release, for global `sops-age-secret` support) | [`apps/flux-system/flux-instance/app/helm-release.yaml#L148-L152`](apps/flux-system/flux-instance/app/helm-release.yaml) |
-| CloudNativePG Postgres image (default) | `ghcr.io/cloudnative-pg/postgresql:17` | [`components/cnpg/cnpg.yaml#L8`](components/cnpg/cnpg.yaml) |
-| CloudNativePG Postgres image (Immich override) | `ghcr.io/cloudnative-pg/postgresql:18.6-system-bookworm` | [`apps/media/immich/config.ks.yaml#L25`](apps/media/immich/config.ks.yaml) — **a per-app major-version drift from the component default (17 vs 18), by design via `postBuild.substitute`.** |
-| CI runner image | `ubuntu-latest` (GitHub-hosted) | [`.github/workflows/ci-pr.yml`](.github/workflows/ci-pr.yml) throughout |
-| `flux-local` validation image | `ghcr.io/allenporter/flux-local:v8.4.0` | same file, `validate`/`diff` jobs |
-| envoy-gateway CRD chart | `v1.9.2` | [`bootstrap/crds/helmfile.yaml#L17`](bootstrap/crds/helmfile.yaml) |
-| grafana-operator CRD chart | `5.25.0` | same file |
-| prometheus-operator-crds chart | `32.0.1` | same file |
-| Target Kubernetes version | `v1.36` (per badge) `[UNVERIFIED]` | [`docs/mirceanton/home-ops/README.md`](docs/mirceanton/home-ops/README.md) is a *different, unrelated repo* — no Kubernetes version badge or pin was found for **this** repo; node OS/CNI are provisioned outside this Git tree. |
+| Component                                                 | Version pin                                                                                                                           | Evidence                                                                                                                                                                                                                         |
+| --------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| CoreDNS                                                   | `1.49.0`                                                                                                                              | [`bootstrap/helmfile.yaml#L10`](bootstrap/helmfile.yaml)                                                                                                                                                                         |
+| Flux Operator / FluxInstance chart                        | `0.61.0`                                                                                                                              | [`bootstrap/helmfile.yaml#L15,21`](bootstrap/helmfile.yaml)                                                                                                                                                                      |
+| Flux distribution artifact (operator-managed controllers) | `v0.46.0`                                                                                                                             | [`apps/flux-system/flux-instance/app/helm-release.yaml#L21`](apps/flux-system/flux-instance/app/helm-release.yaml)                                                                                                               |
+| `kustomize-controller` image override                     | `ghcr.io/fluxcd/kustomize-controller:rc-203b42e7` (pinned to an RC build, not a stable release, for global `sops-age-secret` support) | [`apps/flux-system/flux-instance/app/helm-release.yaml#L148-L152`](apps/flux-system/flux-instance/app/helm-release.yaml)                                                                                                         |
+| CloudNativePG Postgres image (default)                    | `ghcr.io/cloudnative-pg/postgresql:17`                                                                                                | [`components/cnpg/cnpg.yaml#L8`](components/cnpg/cnpg.yaml)                                                                                                                                                                      |
+| CloudNativePG Postgres image (Immich override)            | `ghcr.io/cloudnative-pg/postgresql:18.6-system-bookworm`                                                                              | [`apps/media/immich/config.ks.yaml#L25`](apps/media/immich/config.ks.yaml) — **a per-app major-version drift from the component default (17 vs 18), by design via `postBuild.substitute`.**                                      |
+| CI runner image                                           | `ubuntu-latest` (GitHub-hosted)                                                                                                       | [`.github/workflows/ci-pr.yml`](.github/workflows/ci-pr.yml) throughout                                                                                                                                                          |
+| `flux-local` validation image                             | `ghcr.io/allenporter/flux-local:v8.4.0`                                                                                               | same file, `validate`/`diff` jobs                                                                                                                                                                                                |
+| envoy-gateway CRD chart                                   | `v1.9.2`                                                                                                                              | [`bootstrap/crds/helmfile.yaml#L17`](bootstrap/crds/helmfile.yaml)                                                                                                                                                               |
+| grafana-operator CRD chart                                | `5.25.0`                                                                                                                              | same file                                                                                                                                                                                                                        |
+| prometheus-operator-crds chart                            | `32.0.1`                                                                                                                              | same file                                                                                                                                                                                                                        |
+| Target Kubernetes version                                 | `v1.36` (per badge) `[UNVERIFIED]`                                                                                                    | [`docs/mirceanton/home-ops/README.md`](docs/mirceanton/home-ops/README.md) is a _different, unrelated repo_ — no Kubernetes version badge or pin was found for **this** repo; node OS/CNI are provisioned outside this Git tree. |
 
 There is no application container build (no `Dockerfile` in the repo) — every
 workload is an upstream chart/image reference, so "build-runtime vs.
@@ -197,11 +197,11 @@ See the table at the top of this document.
 
 ### Repo-specific agent/contributor docs present
 
-| File | Encodes |
-|---|---|
-| [`.github/copilot-instructions.md`](.github/copilot-instructions.md) | The app/config split, bootstrap/FluxInstance relationship, validation commands, and repo conventions (components, `dependsOn`, SOPS filenames, yamllint). Auto-loaded by GitHub Copilot. |
+| File                                                                                                                     | Encodes                                                                                                                                                                                                                                  |
+| ------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [`.github/copilot-instructions.md`](.github/copilot-instructions.md)                                                     | The app/config split, bootstrap/FluxInstance relationship, validation commands, and repo conventions (components, `dependsOn`, SOPS filenames, yamllint). Auto-loaded by GitHub Copilot.                                                 |
 | [`.github/instructions/kubernetes-manifests.instructions.md`](.github/instructions/kubernetes-manifests.instructions.md) | The same conventions, scoped via `applyTo` to `apps/**/*.yaml`, `bootstrap/**/*.yaml`, `components/**/*.yaml`, `.github/flux-local/**/*.yaml` — i.e., it governs manifest edits specifically, separate from the general-repo file above. |
-| [`README.md`](README.md) | One-paragraph repo description; minimal, no quick-start. |
+| [`README.md`](README.md)                                                                                                 | One-paragraph repo description; minimal, no quick-start.                                                                                                                                                                                 |
 
 No `CONTRIBUTING.md` or `CODEOWNERS` file was found in the repo root or
 `.github/`. `[UNVERIFIED]` — not confirmed absent beyond a root/`.github` listing.
@@ -390,19 +390,20 @@ sequenceDiagram
 
 ### Cross-cutting concerns table
 
-| Concern | Location | Evidence |
-|---|---|---|
-| AuthN/Z (secrets access) | External Secrets Operator `ClusterSecretStore` → Bitwarden Secrets Manager, mTLS CA from `bitwarden-tls-certs` | `apps/security-system/bitwarden-sdk-server/config/clustersecretstore.yaml` |
-| Config / values | Chart values live in each app's `HelmRelease.spec.values`; bootstrap reads the same source, never duplicated | [`.github/copilot-instructions.md`](.github/copilot-instructions.md), `bootstrap/templates/values.yaml.gotmpl` |
-| Secrets at rest | SOPS + age; only `*.secret(.sops)?.yaml` files are encrypted, matched by regex | `.sops.yaml` |
-| Logging/metrics/tracing | Alloy (collector) → Mimir (metrics) + Grafana (viz) + Alertmanager (alerting), `kube-state-metrics`/`blackbox-exporter` as metric sources, `GrafanaFolder` CRs grouping dashboards per area | `apps/observability-system/*`, `apps/*/grafana-folder.yaml` |
-| Feature flags | None found `[UNVERIFIED]` |
-| Error handling / health | Flux `wait: true` + `health checks` implicit in `kustomize.toolkit.fluxcd.io` Kustomizations (`wait: true` on every `*.ks.yaml`); `CancelHealthCheckOnNewRevision` feature gate enabled on kustomize-controller | `apps/flux-system/flux-instance/app/helm-release.yaml#L138-L143` |
-| Dependency updates | Renovate, org-shared base + local manager/grouping overrides in one file; minor/patch/digest/pin updates automerge into `main` without a PR; majors open a PR | `.renovaterc.json` |
+| Concern                  | Location                                                                                                                                                                                                        | Evidence                                                                                                       |
+| ------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| AuthN/Z (secrets access) | External Secrets Operator `ClusterSecretStore` → Bitwarden Secrets Manager, mTLS CA from `bitwarden-tls-certs`                                                                                                  | `apps/security-system/bitwarden-sdk-server/config/clustersecretstore.yaml`                                     |
+| Config / values          | Chart values live in each app's `HelmRelease.spec.values`; bootstrap reads the same source, never duplicated                                                                                                    | [`.github/copilot-instructions.md`](.github/copilot-instructions.md), `bootstrap/templates/values.yaml.gotmpl` |
+| Secrets at rest          | SOPS + age; only `*.secret(.sops)?.yaml` files are encrypted, matched by regex                                                                                                                                  | `.sops.yaml`                                                                                                   |
+| Logging/metrics/tracing  | Alloy (collector) → Mimir (metrics) + Grafana (viz) + Alertmanager (alerting), `kube-state-metrics`/`blackbox-exporter` as metric sources, `GrafanaFolder` CRs grouping dashboards per area                     | `apps/observability-system/*`, `apps/*/grafana-folder.yaml`                                                    |
+| Feature flags            | None found `[UNVERIFIED]`                                                                                                                                                                                       |
+| Error handling / health  | Flux `wait: true` + `health checks` implicit in `kustomize.toolkit.fluxcd.io` Kustomizations (`wait: true` on every `*.ks.yaml`); `CancelHealthCheckOnNewRevision` feature gate enabled on kustomize-controller | `apps/flux-system/flux-instance/app/helm-release.yaml#L138-L143`                                               |
+| Dependency updates       | Renovate, org-shared base + local manager/grouping overrides in one file; minor/patch/digest/pin updates automerge into `main` without a PR; majors open a PR                                                   | `.renovaterc.json`                                                                                             |
 
 ### Inferred Architectural Decision Records
 
 #### ADR: Split every app into `app/` (chart) and `config/` (supporting resources)
+
 - **Context:** Charts need to be upgraded independently of hand-authored
   supporting resources (routes, secrets, DB clusters), and ordering between
   them (e.g. DB must exist before the app starts) needs to be explicit.
@@ -416,6 +417,7 @@ sequenceDiagram
   updates (e.g. re-applying just `config/`) become possible.
 
 #### ADR: Shared Postgres provisioning via a Kustomize `Component`
+
 - **Context:** Several apps (at least Immich, cloudnative-pg's own dashboard)
   need a dedicated Postgres database; duplicating the `Cluster`/`Database`
   manifests per app would drift.
@@ -431,6 +433,7 @@ sequenceDiagram
   manager picks up the plain image string.
 
 #### ADR: Secrets sourced from Bitwarden at runtime, SOPS reserved for the exception
+
 - **Context:** Committing encrypted secrets to Git (SOPS) works, but requires
   decryption keys to be distributed to the cluster and ties secret rotation to
   a Git commit.
@@ -589,7 +592,7 @@ flowchart TD
 ```
 
 **Why this split matters:** the bootstrap secret is the only credential that
-must exist *before* the External Secrets control loop itself can authenticate
+must exist _before_ the External Secrets control loop itself can authenticate
 to Bitwarden — a one-time chicken-and-egg problem solved with SOPS, after which
 every other secret in the repo flows through the ClusterSecretStore instead.
 This is why `.sops.yaml`'s regex exists but is almost unused: the design
@@ -600,17 +603,17 @@ reserving it for the single unavoidable case.
 
 ## Confidence assessment
 
-| Claim area | Confidence | Notes |
-|---|---|---|
-| Directory/app structural conventions (app/config split, `.ks.yaml` wiring) | **High** | Directly verified across many apps (Immich, external-dns, twingate, democratic-csi, cloudnative-pg) and matches the written repo instructions exactly. |
-| Bootstrap sequencing (CoreDNS → Flux Operator → FluxInstance) | **High** | Explicit `needs:` chain read directly from `bootstrap/helmfile.yaml`. |
-| CI gate list and trigger scope | **High** | Read directly from `.github/workflows/ci-pr.yml`. |
-| CI *enforcement* (required status checks / branch protection) | **Unverified** | Not visible from the local checkout; platform-side GitHub setting. |
-| Secrets model (SOPS exception + Bitwarden default) | **High** | Verified by counting SOPS-named files (1) vs. `ExternalSecret` resources (15+) across `apps/`. |
-| CNPG per-app image divergence being intentional vs. accidental | **Inferred** | The mechanism clearly allows divergence; whether the Immich 17→18 gap is a deliberate upgrade-in-progress or an oversight isn't stated anywhere in-repo. |
-| Target Kubernetes cluster version | **Unverified** | No version pin found for this repo; the only version badge found belongs to an unrelated reference repo under gitignored `docs/`. |
-| License | **Unverified** | No `LICENSE` file found at the root. |
-| Renovate/workflow sibling repos (`renovate-config`, `github-workflows`) existing and current | **Inferred** | Referenced by name/ref in config; not fetched or verified remotely, per the local-first/last-resort rule. |
+| Claim area                                                                                   | Confidence     | Notes                                                                                                                                                    |
+| -------------------------------------------------------------------------------------------- | -------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Directory/app structural conventions (app/config split, `.ks.yaml` wiring)                   | **High**       | Directly verified across many apps (Immich, external-dns, twingate, democratic-csi, cloudnative-pg) and matches the written repo instructions exactly.   |
+| Bootstrap sequencing (CoreDNS → Flux Operator → FluxInstance)                                | **High**       | Explicit `needs:` chain read directly from `bootstrap/helmfile.yaml`.                                                                                    |
+| CI gate list and trigger scope                                                               | **High**       | Read directly from `.github/workflows/ci-pr.yml`.                                                                                                        |
+| CI _enforcement_ (required status checks / branch protection)                                | **Unverified** | Not visible from the local checkout; platform-side GitHub setting.                                                                                       |
+| Secrets model (SOPS exception + Bitwarden default)                                           | **High**       | Verified by counting SOPS-named files (1) vs. `ExternalSecret` resources (15+) across `apps/`.                                                           |
+| CNPG per-app image divergence being intentional vs. accidental                               | **Inferred**   | The mechanism clearly allows divergence; whether the Immich 17→18 gap is a deliberate upgrade-in-progress or an oversight isn't stated anywhere in-repo. |
+| Target Kubernetes cluster version                                                            | **Unverified** | No version pin found for this repo; the only version badge found belongs to an unrelated reference repo under gitignored `docs/`.                        |
+| License                                                                                      | **Unverified** | No `LICENSE` file found at the root.                                                                                                                     |
+| Renovate/workflow sibling repos (`renovate-config`, `github-workflows`) existing and current | **Inferred**   | Referenced by name/ref in config; not fetched or verified remotely, per the local-first/last-resort rule.                                                |
 
 ---
 
