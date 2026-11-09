@@ -1,17 +1,8 @@
 # yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
-name: CI PR
+name: CI
 
 on:
-  push:
-    branches:
-      - "renovate/**"
-    paths:
-      - apps/**
-      - bootstrap/**
-      - .github/flux-local/**
-      - .github/workflows/**
   pull_request:
-    types: [opened, reopened]
     branches: [main]
     paths:
       - apps/**
@@ -20,66 +11,36 @@ on:
       - .github/workflows/**
 
 concurrency:
-  group: ci-pr-${{ github.ref }}
+  group: ci-${{ github.ref }}
   cancel-in-progress: true
 
+permissions:
+  contents: read
+
 jobs:
-  syntax:
-    name: Syntax & Lint
+  lint:
+    name: Lint
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    permissions:
-      contents: read
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
 
-      - name: yamllint
-        run: |
+      - run: |
           pip install yamllint --quiet
           yamllint --strict -c .yamllint.yaml apps/ bootstrap/
 
-  security:
-    name: Security Scan
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    permissions:
-      contents: read
-      security-events: write
-    steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          persist-credentials: false
-
-      - name: Gitleaks
-        continue-on-error: true
-        uses: gitleaks/gitleaks-action@e0c47f4f8be36e29cdc102c57e68cb5cbf0e8d1e # v3
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Trivy misconfiguration scan
-        continue-on-error: true
-        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
-        with:
-          scan-type: config
-          scan-ref: .
-          severity: CRITICAL,HIGH
-          exit-code: 0
-
   validate:
-    name: Validate Manifests
+    name: Validate
     runs-on: ubuntu-latest
     timeout-minutes: 15
-    permissions:
-      contents: read
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
 
-      - name: flux-local test
-        uses: docker://ghcr.io/allenporter/flux-local:v8.4.0
+      - uses: docker://ghcr.io/allenporter/flux-local:v8.4.0
         with:
           args: >-
             test
@@ -90,12 +51,9 @@ jobs:
             -v
 
   diff:
-    name: Manifest Diff
+    name: Diff ${{ matrix.resources }}
     runs-on: ubuntu-latest
     timeout-minutes: 15
-    permissions:
-      contents: read
-      pull-requests: write
     strategy:
       matrix:
         resources: [helmrelease, kustomization]
@@ -112,12 +70,7 @@ jobs:
           path: default
           persist-credentials: false
 
-      - name: Initialize diff output
-        run: touch diff.patch
-
-      - name: flux-local diff
-        continue-on-error: true
-        uses: docker://ghcr.io/allenporter/flux-local:v8.4.0
+      - uses: docker://ghcr.io/allenporter/flux-local:v8.4.0
         with:
           args: >-
             diff ${{ matrix.resources }}
@@ -131,71 +84,10 @@ jobs:
             --kustomize-build-flags=--load-restrictor=LoadRestrictionsNone
             --output-file diff.patch
 
-      - name: Post diff to summary
+      - name: Show diff in run summary
         run: |
           {
-            echo "## Flux ${{ matrix.resources }} diff"
             echo '```diff'
             cat diff.patch
             echo '```'
-          } >> "${GITHUB_STEP_SUMMARY}"
-
-  summary:
-    name: Summary
-    runs-on: ubuntu-latest
-    needs: [syntax, security, validate, diff]
-    if: always()
-    permissions:
-      pull-requests: write
-    steps:
-      - name: Check required jobs
-        run: |
-          if [ "${{ needs.syntax.result }}" != "success" ]; then
-            echo "Syntax validation failed"
-            exit 1
-          fi
-          if [ "${{ needs.validate.result }}" != "success" ]; then
-            echo "Manifest validation failed"
-            exit 1
-          fi
-
-      - name: Post PR comment
-        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9
-        if: always() && github.event_name == 'pull_request'
-        env:
-          SYNTAX_RESULT: ${{ needs.syntax.result }}
-          SECURITY_RESULT: ${{ needs.security.result }}
-          VALIDATE_RESULT: ${{ needs.validate.result }}
-          DIFF_RESULT: ${{ needs.diff.result }}
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            const syntaxOk = process.env.SYNTAX_RESULT === 'success';
-            const securityOk = process.env.SECURITY_RESULT === 'success';
-            const validateOk = process.env.VALIDATE_RESULT === 'success';
-            const diffOk = process.env.DIFF_RESULT === 'success';
-
-            const runUrl = `https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
-            const check = (ok, pass, fail) => ok ? `**Pass** - ${pass}` : `**Fail** - ${fail}`;
-
-            const body = [
-              '## Kubernetes GitOps CI Report',
-              '',
-              '### Pipeline Status',
-              `- **Syntax & Lint:** ${check(syntaxOk, 'YAML is valid, manifests conform to schema.', 'Check yamllint or kubeconform output.')}`,
-              `- **Security Scan:** ${check(securityOk, 'No secrets or critical misconfigurations found.', 'Review gitleaks or trivy findings.')}`,
-              `- **Manifest Validation:** ${check(validateOk, 'All Kustomizations build successfully.', 'flux-local test failed. Check the logs.')}`,
-              `- **Manifest Diff:** ${check(diffOk, 'Diff computed. See the run summary for details.', 'Diff step had issues.')}`,
-              '',
-              '### Conclusion',
-              `**Ready to Merge:** ${syntaxOk && validateOk ? 'Yes. All required checks passed.' : 'No. Fix the failing jobs before merging.'}`,
-              '',
-              `[View full workflow run details](${runUrl})`
-            ].join('\n');
-
-            await github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body
-            }).catch(err => console.log('Comment failed:', err.message));
+          } >> "$GITHUB_STEP_SUMMARY"

@@ -60,7 +60,7 @@ produce the Kustomize/Helm output Flux expects" — there is no compiled artifac
 | Media stack | Jellyfin, Sonarr/Radarr/Lidarr/Prowlarr/Bazarr/Recyclarr, SABnzbd, slskd, Navidrome, Seerr, Beets, Immich | `apps/media/*` (13 apps) |
 | Node-system add-ons | kube-vip, descheduler, Reloader, Intel GPU device plugin + operator | `apps/kube-system/*` |
 | Dependency automation | Renovate (shared org config + local overrides), scheduled hourly via a reusable workflow | [`.renovaterc.json`](.renovaterc.json), [`.github/workflows/renovate.yaml`](.github/workflows/renovate.yaml) |
-| CI | GitHub Actions (`ci-pr.yml`): yamllint, gitleaks, Trivy config scan, `flux-local test`, `flux-local diff` | [`.github/workflows/ci-pr.yml`](.github/workflows/ci-pr.yml) |
+| CI | GitHub Actions (`ci-pr.yml`): yamllint, `flux-local test`, `flux-local diff`, on pull requests | [`.github/workflows/ci-pr.yml`](.github/workflows/ci-pr.yml) |
 
 ### Entry points
 
@@ -86,27 +86,18 @@ There is no application process to "start." The operative entry points are:
 
 | Command | Purpose | Evidence |
 |---|---|---|
-| `yamllint --strict -c .yamllint.yaml apps/ bootstrap/` | Strict YAML lint across the whole manifest tree | [`.github/workflows/ci-pr.yml` `syntax` job](.github/workflows/ci-pr.yml#L26-L40), [`.github/copilot-instructions.md`](.github/copilot-instructions.md) |
+| `yamllint --strict -c .yamllint.yaml apps/ bootstrap/` | Strict YAML lint across the whole manifest tree | [`.github/workflows/ci-pr.yml` `lint` job](.github/workflows/ci-pr.yml), [`.github/copilot-instructions.md`](.github/copilot-instructions.md) |
 | `yamllint --strict -c .yamllint.yaml <single file>` | Focused lint of one file | [`.github/copilot-instructions.md`](.github/copilot-instructions.md) |
-| `docker run ghcr.io/allenporter/flux-local:v8.4.0 test --all-namespaces --path .github/flux-local --skip-secrets --kustomize-build-flags=--load-restrictor=LoadRestrictionsNone -v` | Builds and validates the assembled Flux tree (Kustomizations + HelmReleases) end to end | [`.github/workflows/ci-pr.yml` `validate` job](.github/workflows/ci-pr.yml#L69-L89) |
+| `docker run ghcr.io/allenporter/flux-local:v8.4.0 test --all-namespaces --path .github/flux-local --skip-secrets --kustomize-build-flags=--load-restrictor=LoadRestrictionsNone -v` | Builds and validates the assembled Flux tree (Kustomizations + HelmReleases) end to end | [`.github/workflows/ci-pr.yml` `validate` job](.github/workflows/ci-pr.yml) |
 | `kustomize build apps/media/immich/config` | Render a single Kustomize base directly (no Flux `dependsOn`/substitutions applied) | [`.github/copilot-instructions.md`](.github/copilot-instructions.md) |
-| `flux-local diff helmrelease\|kustomization` (matrix) | Posts a diff of rendered HelmReleases/Kustomizations between PR head and default branch to the job summary | [`.github/workflows/ci-pr.yml` `diff` job](.github/workflows/ci-pr.yml#L91-L140) |
-| `gitleaks` (GitHub Action) | Secret-leak scan; `continue-on-error: true` | [`.github/workflows/ci-pr.yml` `security` job](.github/workflows/ci-pr.yml#L42-L67) |
-| `trivy config` scan | IaC misconfiguration scan, severities CRITICAL/HIGH; `exit-code: 0` (non-blocking) | same job |
 | Renovate (scheduled, hourly cron + manual dispatch) | Dependency/chart/container/Flux-manifest version bumps via a reusable org workflow | [`.github/workflows/renovate.yaml`](.github/workflows/renovate.yaml) |
 
-**CI trigger surface:** `ci-pr.yml` runs on `pull_request` targeting `main` and
-on `push` to `renovate/**` branches, scoped to `apps/**`, `bootstrap/**`,
-`.github/flux-local/**`, `.github/workflows/**` path changes
-([`.github/workflows/ci-pr.yml#L5-L16`](.github/workflows/ci-pr.yml)).
-
-**Enforcement status `[UNVERIFIED]`:** the `summary` job fails its own step if
-`syntax` or `validate` didn't succeed, and posts a "Ready to Merge" comment, but
-whether `syntax`/`validate`/`summary` are configured as **required status
-checks** in GitHub branch protection (the setting that actually blocks merging)
-cannot be determined from the local checkout — this is a human-configured,
-platform-side setting. Treat CI today as "runs and reports" rather than
-confirmed "blocks merge" unless a repo admin confirms branch protection rules.
+**CI trigger surface:** `ci-pr.yml` runs only on `pull_request` targeting
+`main`, scoped to `apps/**`, `bootstrap/**`, `.github/flux-local/**`,
+`.github/workflows/**` path changes. It runs `yamllint`, `flux-local test`, and
+`flux-local diff` (rendered HelmRelease/Kustomization changes in the run
+summary). Renovate merges minor/patch/digest/pin updates into `main` without a
+PR or CI; major updates open a PR and so get these checks.
 
 ### Directory layout
 
@@ -123,7 +114,7 @@ confirmed "blocks merge" unless a repo admin confirms branch protection rules.
 | `bootstrap/` | `helmfile`-driven, one-time cluster bootstrap (CoreDNS, Flux Operator, FluxInstance) plus a separate CRD-extraction helmfile. |
 | `components/cnpg/` | A reusable Kustomize `Component` (CloudNativePG `Cluster` + `Database`) parameterized via `postBuild.substitute` variables, consumed by any app needing its own Postgres instance. |
 | `.github/flux-local/` | CI-only mirror of the FluxInstance-generated root Kustomization; not deployed. |
-| `.github/workflows/` | `ci-pr.yml` (lint/security/validate/diff/summary) and `renovate.yaml` (scheduled dependency bot). |
+| `.github/workflows/` | `ci-pr.yml` (lint/validate/diff) and `renovate.yaml` (scheduled dependency bot). |
 | `.github/instructions/` | `applyTo`-scoped Copilot instruction file for manifest conventions. |
 | `docs/` | **Out of scope** — gitignored local clones of two other engineers' unrelated home-ops repos (`mirceanton/home-ops`, `chr1sd/home-ops`), kept as reference material only; not tracked by this repo's Git history (confirmed via `.gitignore` and `git ls-files docs/` returning nothing). |
 
@@ -407,7 +398,7 @@ sequenceDiagram
 | Logging/metrics/tracing | Alloy (collector) → Mimir (metrics) + Grafana (viz) + Alertmanager (alerting), `kube-state-metrics`/`blackbox-exporter` as metric sources, `GrafanaFolder` CRs grouping dashboards per area | `apps/observability-system/*`, `apps/*/grafana-folder.yaml` |
 | Feature flags | None found `[UNVERIFIED]` |
 | Error handling / health | Flux `wait: true` + `health checks` implicit in `kustomize.toolkit.fluxcd.io` Kustomizations (`wait: true` on every `*.ks.yaml`); `CancelHealthCheckOnNewRevision` feature gate enabled on kustomize-controller | `apps/flux-system/flux-instance/app/helm-release.yaml#L138-L143` |
-| Dependency updates | Renovate, org-shared base + local manager/grouping overrides in one file; minor/patch/digest automerge straight to `main`, majors need dashboard approval | `.renovaterc.json` |
+| Dependency updates | Renovate, org-shared base + local manager/grouping overrides in one file; minor/patch/digest/pin updates automerge into `main` without a PR; majors open a PR | `.renovaterc.json` |
 
 ### Inferred Architectural Decision Records
 
@@ -456,11 +447,8 @@ sequenceDiagram
 
 ### Governance & enforcement mechanisms
 
-- **CI gates** (`ci-pr.yml`): yamllint (blocking per `summary` job's exit-1
-  logic), `flux-local test` (blocking), gitleaks/Trivy (non-blocking,
-  `continue-on-error`/`exit-code: 0`), diff reporting (informational).
-  **Whether these are enforced as GitHub required status checks is
-  `[UNVERIFIED]`** from the local checkout — see the Commands inventory note.
+- **CI gates** (`ci-pr.yml`): yamllint, `flux-local test` and `flux-local diff`
+  on pull requests.
 - **Schema validation at edit time**: nearly every manifest carries a
   `# yaml-language-server: $schema=...` comment pointing at
   `kubernetes-schemas.pages.dev` or `json.schemastore.org`, giving editor-time
@@ -631,7 +619,7 @@ reserving it for the single unavoidable case.
 - [`README.md`](README.md) — one-paragraph repo description.
 - [`.github/copilot-instructions.md`](.github/copilot-instructions.md) — canonical repo conventions and validation commands.
 - [`.github/instructions/kubernetes-manifests.instructions.md`](.github/instructions/kubernetes-manifests.instructions.md) — scoped manifest-editing rules (`applyTo` glob).
-- [`.github/workflows/ci-pr.yml`](.github/workflows/ci-pr.yml) — full CI gate definition (syntax, security, validate, diff, summary jobs).
+- [`.github/workflows/ci-pr.yml`](.github/workflows/ci-pr.yml) — CI gate definition (lint, validate, diff jobs).
 - [`.github/workflows/renovate.yaml`](.github/workflows/renovate.yaml) — scheduled dependency-update workflow, calls a reusable org workflow.
 - [`.github/flux-local/kustomizations.yaml`](.github/flux-local/kustomizations.yaml) — CI-only stand-in for the FluxInstance-generated root Kustomization.
 - [`bootstrap/helmfile.yaml`](bootstrap/helmfile.yaml) — bootstrap install order (CoreDNS → Flux Operator → FluxInstance).
