@@ -48,3 +48,4 @@ A single-base Kustomize render does not apply Flux dependencies or substitutions
 - Follow `.yamllint.yaml`; CI runs yamllint in strict mode over `apps/` and `bootstrap/`.
 - Record lasting architectural/operational decisions in [`decisions/`](../docs/decisions/README.md); check it before changing something that looks wrong — it may be intentional (e.g. a version pin).
 - Operational recovery procedures (rollback, etc.) live in [`runbooks/`](../docs/runbooks/).
+- Step-by-step guides for recurring build-time tasks (e.g. deploying a new app) live in [`playbooks/`](../docs/playbooks/README.md); follow the relevant one instead of improvising the file layout.

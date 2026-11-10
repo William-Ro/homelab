@@ -21,6 +21,9 @@ Code, Codex, Cursor, etc.), not just one tool.
   Check here before "fixing" something that looks wrong; it may be
   intentional (e.g. a version pin).
 - [runbooks/](docs/runbooks/) — operational recovery procedures.
+- [playbooks/](docs/playbooks/README.md) — step-by-step guides for recurring
+  build-time tasks (e.g. deploying a new app). Read the relevant playbook
+  before starting that kind of task.
 
 ## Verification
 
