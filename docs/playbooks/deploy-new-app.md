@@ -25,15 +25,15 @@ once you've decided the app is worth keeping and committing to Git.
 hostnames, resource limits, and security context are production-observable —
 don't guess them.
 
-| Question | Notes |
-| --- | --- |
-| Container image | Full reference, e.g. `ghcr.io/foo/bar:1.2.3`. Check the upstream repo's `Dockerfile`/`ghcr.io` packages page if unclear. |
-| Area / namespace | One of the existing `apps/<area>/` directories. A new area is a bigger decision — ask before creating one. |
-| App name | Kebab-case, used as the directory and resource name. |
-| Exposed port | The port the container listens on. |
-| HTTP route needed? | Only `envoy-internal` (network-system, LAN-only) exists in this cluster right now — there is no public/external gateway. Confirm before assuming one is wanted. |
-| Persistent data? | If yes: ad-hoc scratch data → `emptyDir`; app config/state → `persistentVolumeClaim` (defaults to the `truenas-iscsi` StorageClass); large shared media libraries → `nfs` type pointed at `truenas.reli.cc` (see existing media apps). There is **no backup solution** (no Velero/VolSync/Kopia) for any of this yet — say so if the user asks about backups. |
-| Secrets needed? | If yes, ask which Bitwarden item/field to pull from (`ClusterSecretStore: bitwarden`). |
+| Question           | Notes                                                                                                                                                                                                                                                                                                                                                         |
+| ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Container image    | Full reference, e.g. `ghcr.io/foo/bar:1.2.3`. Check the upstream repo's `Dockerfile`/`ghcr.io` packages page if unclear.                                                                                                                                                                                                                                      |
+| Area / namespace   | One of the existing `apps/<area>/` directories. A new area is a bigger decision — ask before creating one.                                                                                                                                                                                                                                                    |
+| App name           | Kebab-case, used as the directory and resource name.                                                                                                                                                                                                                                                                                                          |
+| Exposed port       | The port the container listens on.                                                                                                                                                                                                                                                                                                                            |
+| HTTP route needed? | Only `envoy-internal` (network-system, LAN-only) exists in this cluster right now — there is no public/external gateway. Confirm before assuming one is wanted.                                                                                                                                                                                               |
+| Persistent data?   | If yes: ad-hoc scratch data → `emptyDir`; app config/state → `persistentVolumeClaim` (defaults to the `truenas-iscsi` StorageClass); large shared media libraries → `nfs` type pointed at `truenas.reli.cc` (see existing media apps). There is **no backup solution** (no Velero/VolSync/Kopia) for any of this yet — say so if the user asks about backups. |
+| Secrets needed?    | If yes, ask which Bitwarden item/field to pull from (`ClusterSecretStore: bitwarden`).                                                                                                                                                                                                                                                                        |
 
 ### Optional: check for prior art
 
@@ -234,35 +234,35 @@ spec:
 anything the app writes to at runtime:
 
 ```yaml
-    persistence:
-      tmp:
-        type: emptyDir
-        globalMounts:
-          - path: /tmp
+persistence:
+  tmp:
+    type: emptyDir
+    globalMounts:
+      - path: /tmp
 ```
 
 **Persistent config/state** (no backup solution exists yet — say so if asked):
 
 ```yaml
-    persistence:
-      config:
-        type: persistentVolumeClaim
-        accessMode: ReadWriteOnce
-        size: 2Gi
-        globalMounts:
-          - path: /config
+persistence:
+  config:
+    type: persistentVolumeClaim
+    accessMode: ReadWriteOnce
+    size: 2Gi
+    globalMounts:
+      - path: /config
 ```
 
 **Shared media/library NFS mount** (matches the existing media-stack apps):
 
 ```yaml
-    persistence:
-      data:
-        type: nfs
-        server: truenas.reli.cc
-        path: /mnt/media/<share>
-        globalMounts:
-          - path: /data
+persistence:
+  data:
+    type: nfs
+    server: truenas.reli.cc
+    path: /mnt/media/<share>
+    globalMounts:
+      - path: /data
 ```
 
 **HTTP route** (only `envoy-internal` exists — confirm before adding any other
@@ -328,12 +328,12 @@ spec:
 Then reference it from the HelmRelease:
 
 ```yaml
-            env:
-              <ENV_VAR_NAME>:
-                valueFrom:
-                  secretKeyRef:
-                    name: <app-name>-secret
-                    key: <ENV_VAR_NAME>
+env:
+  <ENV_VAR_NAME>:
+    valueFrom:
+      secretKeyRef:
+        name: <app-name>-secret
+        key: <ENV_VAR_NAME>
 ```
 
 **Dedicated Postgres** — add `components: [../../../../components/cnpg/]` and
