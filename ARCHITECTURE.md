@@ -60,7 +60,7 @@ produce the Kustomize/Helm output Flux expects" — there is no compiled artifac
 | Media stack                    | Jellyfin, Sonarr/Radarr/Lidarr/Prowlarr/Bazarr/Recyclarr, SABnzbd, slskd, Navidrome, Seerr, Beets, Immich                                            | `apps/media/*` (13 apps)                                                                                                                                                                                               |
 | Node-system add-ons            | kube-vip, descheduler, Reloader, Intel GPU device plugin + operator                                                                                  | `apps/kube-system/*`                                                                                                                                                                                                   |
 | Dependency automation          | Renovate (shared org config + local overrides), scheduled hourly via a reusable workflow                                                             | [`.renovaterc.json`](.renovaterc.json), [`.github/workflows/renovate.yaml`](.github/workflows/renovate.yaml)                                                                                                           |
-| CI                             | GitHub Actions (`ci-pr.yml`): yamllint, `flux-local test`, `flux-local diff`, on pull requests                                                       | [`.github/workflows/ci-pr.yml`](.github/workflows/ci-pr.yml)                                                                                                                                                           |
+| CI                             | GitHub Actions (`ci-pr.yml`): yamllint, `flate test`, `flate diff`, on pull requests                                                                 | [`.github/workflows/ci-pr.yml`](.github/workflows/ci-pr.yml)                                                                                                                                                           |
 
 ### Entry points
 
@@ -79,18 +79,18 @@ There is no application process to "start." The operative entry points are:
    ([`apps/flux-system/flux-instance/app/helm-release.yaml#L32-L37`](apps/flux-system/flux-instance/app/helm-release.yaml)).
    This is the live entry point for every subsequent manifest in the repo.
    `.github/flux-local/kustomizations.yaml` is a **CI-only stand-in** for that
-   same root Kustomization, used so `flux-local test` has something to build
+   same root Kustomization, used so `flate test` has something to build
    from without a live FluxInstance — it is explicitly marked "NOT deployed."
 
 ### Commands & Verification Inventory
 
-| Command                                                                                                                                                                             | Purpose                                                                                 | Evidence                                                                                                                                      |
-| ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
-| `yamllint --strict -c .yamllint.yaml apps/ bootstrap/`                                                                                                                              | Strict YAML lint across the whole manifest tree                                         | [`.github/workflows/ci-pr.yml` `lint` job](.github/workflows/ci-pr.yml), [`.github/copilot-instructions.md`](.github/copilot-instructions.md) |
-| `yamllint --strict -c .yamllint.yaml <single file>`                                                                                                                                 | Focused lint of one file                                                                | [`.github/copilot-instructions.md`](.github/copilot-instructions.md)                                                                          |
-| `docker run ghcr.io/allenporter/flux-local:v8.4.0 test --all-namespaces --path .github/flux-local --skip-secrets --kustomize-build-flags=--load-restrictor=LoadRestrictionsNone -v` | Builds and validates the assembled Flux tree (Kustomizations + HelmReleases) end to end | [`.github/workflows/ci-pr.yml` `validate` job](.github/workflows/ci-pr.yml)                                                                   |
-| `kustomize build apps/media/immich/config`                                                                                                                                          | Render a single Kustomize base directly (no Flux `dependsOn`/substitutions applied)     | [`.github/copilot-instructions.md`](.github/copilot-instructions.md)                                                                          |
-| Renovate (scheduled, hourly cron + manual dispatch)                                                                                                                                 | Dependency/chart/container/Flux-manifest version bumps via a reusable org workflow      | [`.github/workflows/renovate.yaml`](.github/workflows/renovate.yaml)                                                                          |
+| Command                                                                         | Purpose                                                                                 | Evidence                                                                                                                                      |
+| ------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| `yamllint --strict -c .yamllint.yaml apps/ bootstrap/`                          | Strict YAML lint across the whole manifest tree                                         | [`.github/workflows/ci-pr.yml` `lint` job](.github/workflows/ci-pr.yml), [`.github/copilot-instructions.md`](.github/copilot-instructions.md) |
+| `yamllint --strict -c .yamllint.yaml <single file>`                             | Focused lint of one file                                                                | [`.github/copilot-instructions.md`](.github/copilot-instructions.md)                                                                          |
+| `docker run ghcr.io/home-operations/flate:0.7.3 test --path .github/flux-local` | Builds and validates the assembled Flux tree (Kustomizations + HelmReleases) end to end | [`.github/workflows/ci-pr.yml` `validate` job](.github/workflows/ci-pr.yml)                                                                   |
+| `kustomize build apps/media/immich/config`                                      | Render a single Kustomize base directly (no Flux `dependsOn`/substitutions applied)     | [`.github/copilot-instructions.md`](.github/copilot-instructions.md)                                                                          |
+| Renovate (scheduled, hourly cron + manual dispatch)                             | Dependency/chart/container/Flux-manifest version bumps via a reusable org workflow      | [`.github/workflows/renovate.yaml`](.github/workflows/renovate.yaml)                                                                          |
 
 **CI trigger surface:** `ci-pr.yml` runs on every `pull_request` targeting
 `main`, regardless of which files changed — the earlier path filter (`apps/**`,
@@ -102,7 +102,7 @@ ruleset and would be stuck forever. It also runs on `push` to Renovate's
 `renovate/**` automerge branches, restored in
 [decision 0002](docs/decisions/0002-accept-renovate-automerge-without-ci-gate.md)
 after those branches got stuck waiting on status checks that never ran. It
-runs `yamllint`, `flux-local test`, and `flux-local diff` (rendered
+runs `yamllint`, `flate test`, and `flate diff` (rendered
 HelmRelease/Kustomization changes in the run summary). Renovate merges
 minor/patch/digest/pin updates into `main` via branch automerge, now gated by
 the same `Lint`/`Validate` checks; major updates open a PR instead.
@@ -137,7 +137,7 @@ the same `Lint`/`Validate` checks; major updates open a PR instead.
 | CloudNativePG Postgres image (default)                    | `ghcr.io/cloudnative-pg/postgresql:17`                                                                                                | [`components/cnpg/cnpg.yaml#L8`](components/cnpg/cnpg.yaml)                                                                                                                                                                      |
 | CloudNativePG Postgres image (Immich override)            | `ghcr.io/cloudnative-pg/postgresql:18.6-system-bookworm`                                                                              | [`apps/media/immich/config.ks.yaml#L25`](apps/media/immich/config.ks.yaml) — **a per-app major-version drift from the component default (17 vs 18), by design via `postBuild.substitute`.**                                      |
 | CI runner image                                           | `ubuntu-latest` (GitHub-hosted)                                                                                                       | [`.github/workflows/ci-pr.yml`](.github/workflows/ci-pr.yml) throughout                                                                                                                                                          |
-| `flux-local` validation image                             | `ghcr.io/allenporter/flux-local:v8.4.0`                                                                                               | same file, `validate`/`diff` jobs                                                                                                                                                                                                |
+| `flate` validation image                                  | `ghcr.io/home-operations/flate:0.7.3` (the `:latest` tag resolves to a stale, CLI-incompatible `v0.6.5` — must pin explicitly)        | same file, `validate`/`diff` jobs                                                                                                                                                                                                |
 | envoy-gateway CRD chart                                   | `v1.9.2`                                                                                                                              | [`bootstrap/crds/helmfile.yaml#L17`](bootstrap/crds/helmfile.yaml)                                                                                                                                                               |
 | grafana-operator CRD chart                                | `5.25.0`                                                                                                                              | same file                                                                                                                                                                                                                        |
 | prometheus-operator-crds chart                            | `32.0.1`                                                                                                                              | same file                                                                                                                                                                                                                        |
@@ -191,7 +191,7 @@ which is a deliberate, documented tracking of an unreleased Flux feature.
   step in CI — deployment is pull-based (Flux polling Git), so "CD" here means
   "Flux reconciling `main`," not a pipeline job.
 - **Testing:** no unit/integration test suite exists or is applicable; the
-  closest analog is `flux-local test` (structural/build validation of the
+  closest analog is `flate test` (structural/build validation of the
   manifest tree) and the PR-diff job (change visibility, not pass/fail
   correctness).
 
@@ -238,7 +238,7 @@ No `CONTRIBUTING.md` or `CODEOWNERS` file was found in the repo root or
   because the `main` ruleset requires `Lint`/`Validate` to merge; a path-filtered
   trigger meant docs-only PRs could never satisfy a required check that never ran
   ([`.github/workflows/ci-pr.yml`](.github/workflows/ci-pr.yml)).
-- **Flux-local's CI root Kustomization is a hand-maintained stand-in** —
+- **This CI-only root Kustomization is a hand-maintained stand-in** —
   `.github/flux-local/kustomizations.yaml` must be kept consistent with
   whatever FluxInstance actually generates at runtime (`path: apps/`), or CI
   could pass while the real cluster's root Kustomization has drifted
@@ -460,7 +460,7 @@ sequenceDiagram
 
 ### Governance & enforcement mechanisms
 
-- **CI gates** (`ci-pr.yml`): yamllint, `flux-local test` and `flux-local diff`
+- **CI gates** (`ci-pr.yml`): yamllint, `flate test` and `flate diff`
   on pull requests.
 - **Schema validation at edit time**: nearly every manifest carries a
   `# yaml-language-server: $schema=...` comment pointing at
@@ -487,7 +487,7 @@ sequenceDiagram
 4. Add `kustomization.yaml` at the app root including both `*.ks.yaml` files.
 5. Add `./<new-app>` to `apps/<area>/kustomization.yaml`'s `resources:`.
 6. Validate locally: `yamllint --strict -c .yamllint.yaml apps/<area>/<new-app>`
-   and the full `flux-local test` before opening a PR.
+   and the full `flate test` before opening a PR.
 
 **Common pitfalls:** forgetting to add the new app directory to the area's
 `kustomization.yaml` (Flux will never see it); using `${VAR}` substitution

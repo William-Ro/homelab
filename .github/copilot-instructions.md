@@ -24,9 +24,7 @@ nix shell nixpkgs#yamllint --command yamllint --strict -c .yamllint.yaml apps/ b
 
 nix shell nixpkgs#docker --command docker run --rm \
   -v "$PWD:/github/workspace" -w /github/workspace \
-  ghcr.io/allenporter/flux-local:v8.4.0 test \
-  --all-namespaces --path .github/flux-local --skip-secrets \
-  --kustomize-build-flags=--load-restrictor=LoadRestrictionsNone -v
+  ghcr.io/home-operations/flate:0.7.3 test --path .github/flux-local
 ```
 
 For a focused check, lint one YAML file or render one Kustomize base:
@@ -36,7 +34,7 @@ nix shell nixpkgs#yamllint --command yamllint --strict -c .yamllint.yaml apps/me
 nix shell nixpkgs#kustomize --command kustomize build apps/media/immich/config
 ```
 
-A single-base Kustomize render does not apply Flux dependencies or substitutions; use the full `flux-local test` to validate the configured tree.
+A single-base Kustomize render does not apply Flux dependencies or substitutions; use the full `flate test` to validate the configured tree.
 
 ## Repository conventions
 

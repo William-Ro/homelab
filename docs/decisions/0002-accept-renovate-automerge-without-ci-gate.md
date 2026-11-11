@@ -4,7 +4,10 @@ Date: 2026-11-08 (revised 2026-11-10)
 
 ## Status
 
-Accepted.
+Accepted. `flux-local`, the tool run by the `Lint`/`Validate` checks described
+below, was later replaced by `flate` — see
+[decision 0001](0001-reject-policy-as-code-ci-tooling.md). That swap doesn't
+change the trigger/gating decision recorded here.
 
 ## Context
 
@@ -28,7 +31,7 @@ constraints (`allowedVersions`/`enabled: false` in `.renovaterc.json`) and
 if one broke something.
 
 That tradeoff broke in practice. On 2026-11-10, the `main` branch ruleset was
-tightened to require the `Lint`/`Validate` status checks on *every* update to
+tightened to require the `Lint`/`Validate` status checks on _every_ update to
 `main` — PR or direct merge — with no bypass for the repo owner (see
 [0003](0003-enforce-pr-required-workflow-for-owner.md)). Renovate's own
 automerge logic always waits for whatever checks the branch's protection
@@ -90,4 +93,3 @@ Tradeoffs:
   caught.
 - Consider alerting on Flux `Stalled`/`Ready: False` conditions for faster
   detection.
-
