@@ -4,11 +4,6 @@ name: CI
 on:
   pull_request:
     branches: [main]
-    paths:
-      - apps/**
-      - bootstrap/**
-      - .github/flux-local/**
-      - .github/workflows/**
 
 concurrency:
   group: ci-${{ github.ref }}

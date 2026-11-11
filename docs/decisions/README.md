@@ -13,6 +13,7 @@ replacement instead.
 | --- | --- | --- |
 | [0001](0001-reject-policy-as-code-ci-tooling.md) | Reject policy-as-code CI tooling (conftest/kubeconform/flate) | Accepted |
 | [0002](0002-accept-renovate-automerge-without-ci-gate.md) | Accept Renovate automerge without a CI gate | Accepted |
+| [0003](0003-enforce-pr-required-workflow-for-owner.md) | Enforce PR-required workflow for the repo owner | Accepted |
 
 Not every change needs a record — only choices that trade something off, that
 aren't obvious from the code/manifests alone, or that someone could plausibly

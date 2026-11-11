@@ -92,9 +92,13 @@ There is no application process to "start." The operative entry points are:
 | `kustomize build apps/media/immich/config`                                                                                                                                          | Render a single Kustomize base directly (no Flux `dependsOn`/substitutions applied)     | [`.github/copilot-instructions.md`](.github/copilot-instructions.md)                                                                          |
 | Renovate (scheduled, hourly cron + manual dispatch)                                                                                                                                 | Dependency/chart/container/Flux-manifest version bumps via a reusable org workflow      | [`.github/workflows/renovate.yaml`](.github/workflows/renovate.yaml)                                                                          |
 
-**CI trigger surface:** `ci-pr.yml` runs only on `pull_request` targeting
-`main`, scoped to `apps/**`, `bootstrap/**`, `.github/flux-local/**`,
-`.github/workflows/**` path changes. It runs `yamllint`, `flux-local test`, and
+**CI trigger surface:** `ci-pr.yml` runs on every `pull_request` targeting
+`main`, regardless of which files changed — the earlier path filter (`apps/**`,
+`bootstrap/**`, `.github/flux-local/**`, `.github/workflows/**`) was removed
+because the `main` branch ruleset requires the `Lint`/`Validate` checks to
+merge ([decision 0003](docs/decisions/0003-enforce-pr-required-workflow-for-owner.md));
+a docs-only PR that never triggered those checks could never satisfy the
+ruleset and would be stuck forever. It runs `yamllint`, `flux-local test`, and
 `flux-local diff` (rendered HelmRelease/Kustomization changes in the run
 summary). Renovate merges minor/patch/digest/pin updates into `main` without a
 PR or CI; major updates open a PR and so get these checks.
@@ -225,9 +229,11 @@ No `CONTRIBUTING.md` or `CODEOWNERS` file was found in the repo root or
   (`bitwarden-access-token.secret.sops.yaml`); most "secrets" in this repo are
   actually `ExternalSecret` objects (no sensitive data at rest in Git at all),
   making the SOPS path the exception rather than the norm.
-- **CI is scoped by path filters**, not "every push/PR." A change confined to,
-  say, `.renovate/` or `README.md` will not trigger `ci-pr.yml`
-  ([`.github/workflows/ci-pr.yml#L5-L16`](.github/workflows/ci-pr.yml)).
+- **CI runs on every PR to `main`, no path filter** — this was deliberately
+  dropped (see [decision 0003](docs/decisions/0003-enforce-pr-required-workflow-for-owner.md))
+  because the `main` ruleset requires `Lint`/`Validate` to merge; a path-filtered
+  trigger meant docs-only PRs could never satisfy a required check that never ran
+  ([`.github/workflows/ci-pr.yml`](.github/workflows/ci-pr.yml)).
 - **Flux-local's CI root Kustomization is a hand-maintained stand-in** —
   `.github/flux-local/kustomizations.yaml` must be kept consistent with
   whatever FluxInstance actually generates at runtime (`path: apps/`), or CI
