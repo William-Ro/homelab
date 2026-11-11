@@ -26,8 +26,12 @@ direct pushes to `main` are rejected.
 3. Commit it yourself using the Conventional Commits format below — don't
    just print the message and wait.
 4. Push the branch: `git push -u origin <branch>`.
-5. Open the PR: `gh pr create --fill` (or an explicit title/body matching the
-   commit message). Report the PR URL back to the user.
+5. Open the PR with an explicit `--title`/`--body` containing real Markdown
+   (backticks around file paths/commands, `##` section headers, linked
+   `docs/decisions/` entries). **Don't use `gh pr create --fill`** — it
+   copies the raw commit message verbatim into the PR body, which renders as
+   unformatted prose even if the commit message itself used Markdown syntax
+   inconsistently. Report the PR URL back to the user.
 6. Stop there. **Never merge the PR yourself** — the user reviews and merges
    it in GitHub. Don't approve, don't use `gh pr merge`.
 
