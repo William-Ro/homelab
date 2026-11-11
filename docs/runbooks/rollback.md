@@ -16,7 +16,7 @@ architecture; this is the short operational path.
   branch merge, gated by the same `Lint`/`Validate` checks as a PR — see
   [decisions/0002](../decisions/0002-accept-renovate-automerge-without-ci-gate.md).
   A bad automerge that still passes CI (e.g. a chart upgrade with a breaking
-  runtime change `flux-local` can't catch) is the most likely source of an
+  runtime change `flate` can't catch) is the most likely source of an
   unexpected breakage.
 
 ## Diagnose first
@@ -63,7 +63,7 @@ Before acting on anything stateful:
    (`mcp_flux-operator_suspend_flux_reconciliation`, or
    `flux suspend kustomization <name>`) so Flux can't prune/apply while you
    investigate.
-2. Confirm what the revert would actually delete (`flux-local diff` locally,
+2. Confirm what the revert would actually delete (`flate diff` locally,
    or `mcp_flux-operator_diff_kubernetes_manifest` against the cluster) before
    pushing it.
 3. Resume reconciliation (`mcp_flux-operator_resume_flux_reconciliation` /

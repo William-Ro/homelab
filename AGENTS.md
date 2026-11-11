@@ -34,9 +34,7 @@ nix shell nixpkgs#yamllint --command yamllint --strict -c .yamllint.yaml apps/ b
 
 nix shell nixpkgs#docker --command docker run --rm \
   -v "$PWD:/github/workspace" -w /github/workspace \
-  ghcr.io/allenporter/flux-local:v8.4.0 test \
-  --all-namespaces --path .github/flux-local --skip-secrets \
-  --kustomize-build-flags=--load-restrictor=LoadRestrictionsNone -v
+  ghcr.io/home-operations/flate:0.7.3 test --path .github/flux-local
 ```
 
 Both run in CI on pull requests targeting `main`, and also on push to
@@ -69,7 +67,7 @@ instead of inventing one.
 
 ## Definition of done
 
-A change is done when `flux-local test` and `yamllint --strict` both pass
+A change is done when `flate test` and `yamllint --strict` both pass
 locally — not when the YAML looks right. If the change is risky per the rules
 above, state what evidence (e.g. `flux reconcile` output, HelmRelease/
 Kustomization `status.conditions`, pod status) would confirm it actually
