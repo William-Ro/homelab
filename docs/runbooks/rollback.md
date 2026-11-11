@@ -12,9 +12,12 @@ architecture; this is the short operational path.
   with `prune: true` and `wait: true`: removing a manifest from Git **deletes**
   the corresponding live resource, and a Kustomization won't report healthy
   until its resources are actually Ready.
-- Renovate's minor/patch/digest/pin automerges reach `main` without a PR or CI
-  run — see [decisions/0002](../decisions/0002-accept-renovate-automerge-without-ci-gate.md).
-  A bad automerge is the most likely source of an unexpected breakage.
+- Renovate's minor/patch/digest/pin automerges reach `main` via a direct
+  branch merge, gated by the same `Lint`/`Validate` checks as a PR — see
+  [decisions/0004](../decisions/0004-restore-ci-push-trigger-for-renovate-branches.md).
+  A bad automerge that still passes CI (e.g. a chart upgrade with a breaking
+  runtime change `flux-local` can't catch) is the most likely source of an
+  unexpected breakage.
 
 ## Diagnose first
 

@@ -4,7 +4,7 @@ Date: 2026-11-08
 
 ## Status
 
-Accepted.
+Superseded by [0004](0004-restore-ci-push-trigger-for-renovate-branches.md).
 
 ## Context
 

@@ -39,9 +39,9 @@ nix shell nixpkgs#docker --command docker run --rm \
   --kustomize-build-flags=--load-restrictor=LoadRestrictionsNone -v
 ```
 
-Both run in CI on pull requests targeting `main`. They do **not** run on
-Renovate's direct minor/patch/digest automerges — that's a known, accepted gap,
-see [decisions/0002](docs/decisions/0002-accept-renovate-automerge-without-ci-gate.md).
+Both run in CI on pull requests targeting `main`, and also on push to
+Renovate's `renovate/**` automerge branches (see
+[decisions/0004](docs/decisions/0004-restore-ci-push-trigger-for-renovate-branches.md)).
 A plain `kustomize build <base>` is not full validation — it skips Flux
 `dependsOn` ordering and `postBuild.substitute`.
 
