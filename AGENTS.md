@@ -17,6 +17,8 @@ Code, Codex, Cursor, etc.), not just one tool.
   `apps/`, `bootstrap/`, or `components/`.
 - [.github/instructions/kubernetes-manifests.instructions.md](.github/instructions/kubernetes-manifests.instructions.md) —
   scoped conventions for manifest files specifically.
+- [.github/instructions/pr-workflow.instructions.md](.github/instructions/pr-workflow.instructions.md) —
+  branching model (GitHub Flow) and how to carry a change through to an open PR.
 - [decisions/](docs/decisions/README.md) — lasting decisions and their rationale.
   Check here before "fixing" something that looks wrong; it may be
   intentional (e.g. a version pin).
