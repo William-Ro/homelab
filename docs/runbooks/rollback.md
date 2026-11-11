@@ -12,9 +12,12 @@ architecture; this is the short operational path.
   with `prune: true` and `wait: true`: removing a manifest from Git **deletes**
   the corresponding live resource, and a Kustomization won't report healthy
   until its resources are actually Ready.
-- Renovate's minor/patch/digest/pin automerges reach `main` without a PR or CI
-  run — see [decisions/0002](../decisions/0002-accept-renovate-automerge-without-ci-gate.md).
-  A bad automerge is the most likely source of an unexpected breakage.
+- Renovate's minor/patch/digest/pin automerges reach `main` via a direct
+  branch merge, gated by the same `Lint`/`Validate` checks as a PR — see
+  [decisions/0002](../decisions/0002-accept-renovate-automerge-without-ci-gate.md).
+  A bad automerge that still passes CI (e.g. a chart upgrade with a breaking
+  runtime change `flux-local` can't catch) is the most likely source of an
+  unexpected breakage.
 
 ## Diagnose first
 
@@ -50,8 +53,8 @@ Then either wait for the next 5-minute poll, or force it immediately:
 
 **Do not blindly revert** a commit that added, resized, or removed a PVC, a
 CloudNativePG `Cluster`/`Database`, or anything else with persistent state.
-Because of `prune: true`, reverting a commit that *added* a stateful resource
-tells Flux to *delete* it — which can mean real data loss, not just a config
+Because of `prune: true`, reverting a commit that _added_ a stateful resource
+tells Flux to _delete_ it — which can mean real data loss, not just a config
 rollback.
 
 Before acting on anything stateful:

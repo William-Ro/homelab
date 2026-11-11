@@ -98,10 +98,14 @@ There is no application process to "start." The operative entry points are:
 because the `main` branch ruleset requires the `Lint`/`Validate` checks to
 merge ([decision 0003](docs/decisions/0003-enforce-pr-required-workflow-for-owner.md));
 a docs-only PR that never triggered those checks could never satisfy the
-ruleset and would be stuck forever. It runs `yamllint`, `flux-local test`, and
-`flux-local diff` (rendered HelmRelease/Kustomization changes in the run
-summary). Renovate merges minor/patch/digest/pin updates into `main` without a
-PR or CI; major updates open a PR and so get these checks.
+ruleset and would be stuck forever. It also runs on `push` to Renovate's
+`renovate/**` automerge branches, restored in
+[decision 0002](docs/decisions/0002-accept-renovate-automerge-without-ci-gate.md)
+after those branches got stuck waiting on status checks that never ran. It
+runs `yamllint`, `flux-local test`, and `flux-local diff` (rendered
+HelmRelease/Kustomization changes in the run summary). Renovate merges
+minor/patch/digest/pin updates into `main` via branch automerge, now gated by
+the same `Lint`/`Validate` checks; major updates open a PR instead.
 
 ### Directory layout
 
