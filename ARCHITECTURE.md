@@ -100,7 +100,7 @@ merge ([decision 0003](docs/decisions/0003-enforce-pr-required-workflow-for-owne
 a docs-only PR that never triggered those checks could never satisfy the
 ruleset and would be stuck forever. It also runs on `push` to Renovate's
 `renovate/**` automerge branches, restored in
-[decision 0004](docs/decisions/0004-restore-ci-push-trigger-for-renovate-branches.md)
+[decision 0002](docs/decisions/0002-accept-renovate-automerge-without-ci-gate.md)
 after those branches got stuck waiting on status checks that never ran. It
 runs `yamllint`, `flux-local test`, and `flux-local diff` (rendered
 HelmRelease/Kustomization changes in the run summary). Renovate merges

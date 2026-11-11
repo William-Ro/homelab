@@ -14,7 +14,7 @@ architecture; this is the short operational path.
   until its resources are actually Ready.
 - Renovate's minor/patch/digest/pin automerges reach `main` via a direct
   branch merge, gated by the same `Lint`/`Validate` checks as a PR — see
-  [decisions/0004](../decisions/0004-restore-ci-push-trigger-for-renovate-branches.md).
+  [decisions/0002](../decisions/0002-accept-renovate-automerge-without-ci-gate.md).
   A bad automerge that still passes CI (e.g. a chart upgrade with a breaking
   runtime change `flux-local` can't catch) is the most likely source of an
   unexpected breakage.
@@ -53,8 +53,8 @@ Then either wait for the next 5-minute poll, or force it immediately:
 
 **Do not blindly revert** a commit that added, resized, or removed a PVC, a
 CloudNativePG `Cluster`/`Database`, or anything else with persistent state.
-Because of `prune: true`, reverting a commit that *added* a stateful resource
-tells Flux to *delete* it — which can mean real data loss, not just a config
+Because of `prune: true`, reverting a commit that _added_ a stateful resource
+tells Flux to _delete_ it — which can mean real data loss, not just a config
 rollback.
 
 Before acting on anything stateful:

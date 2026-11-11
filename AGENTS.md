@@ -41,7 +41,7 @@ nix shell nixpkgs#docker --command docker run --rm \
 
 Both run in CI on pull requests targeting `main`, and also on push to
 Renovate's `renovate/**` automerge branches (see
-[decisions/0004](docs/decisions/0004-restore-ci-push-trigger-for-renovate-branches.md)).
+[decisions/0002](docs/decisions/0002-accept-renovate-automerge-without-ci-gate.md)).
 A plain `kustomize build <base>` is not full validation — it skips Flux
 `dependsOn` ordering and `postBuild.substitute`.
 
