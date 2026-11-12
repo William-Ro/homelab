@@ -35,11 +35,16 @@ spec:
             env:
               GRAFANA_URL: http://grafana-service:3000
               GRAFANA_ORG_ID: "1"
-              GRAFANA_AUTH:
+              GRAFANA_SERVICE_ACCOUNT_TOKEN:
                 valueFrom:
                   secretKeyRef:
                     name: grafana-mcp-secret
-                    key: GRAFANA_AUTH
+                    key: GRAFANA_SERVICE_ACCOUNT_TOKEN
+              MCP_GRAFANA_SERVER_TOKEN:
+                valueFrom:
+                  secretKeyRef:
+                    name: grafana-mcp-secret
+                    key: MCP_GRAFANA_SERVER_TOKEN
               MY_POD_IP:
                 valueFrom:
                   fieldRef:

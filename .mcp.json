@@ -8,6 +8,9 @@
     "grafana": {
       "type": "http",
       "url": "https://grafana-mcp.internal.reli.cc/mcp",
+      "headers": {
+        "Authorization": "Bearer ${GRAFANA_MCP_TOKEN}"
+      },
       "tools": ["*"]
     }
   }
