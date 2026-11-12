@@ -56,7 +56,7 @@ produce the Kustomize/Helm output Flux expects" — there is no compiled artifac
 | Database                       | CloudNativePG (Postgres operator), shared via a Kustomize `Component`                                                                                | [`components/cnpg/cnpg.yaml`](components/cnpg/cnpg.yaml), [`apps/database-system/cloudnative-pg`](apps/database-system/cloudnative-pg)                                                                                 |
 | Storage/CSI                    | `democratic-csi` (TrueNAS iSCSI backend, `truenas-iscsi` StorageClass)                                                                               | `apps/storage-system/democratic-csi`, `components/cnpg/cnpg.yaml#L16,20`                                                                                                                                               |
 | Observability                  | Grafana (+ Grafana Operator CRDs), Mimir, Alertmanager, Alloy, `kube-state-metrics`, `blackbox-exporter`, Prometheus Operator CRDs                   | `apps/observability-system/**`, [`bootstrap/crds/helmfile.yaml`](bootstrap/crds/helmfile.yaml)                                                                                                                         |
-| In-cluster AI/MCP tooling      | `flux-mcp` and `grafana-mcp` HelmReleases exposing MCP servers over HTTPRoute                                                                        | `apps/flux-system/flux-mcp`, `apps/observability-system/grafana-mcp`                                                                                                                                                   |
+| In-cluster AI/MCP tooling      | ToolHive operator + one `VirtualMCPServer` gateway (`mcp.internal.reli.cc`) aggregating read-only `grafana` and `flux` `MCPServer`s; Envoy `SecurityPolicy` API-key auth per client ([decision 0004](docs/decisions/0004-aggregate-mcp-servers-behind-toolhive-gateway.md)) | `apps/ai-system/toolhive-crds`, `apps/ai-system/toolhive`                                                                                                                                                               |
 | Media stack                    | Jellyfin, Sonarr/Radarr/Lidarr/Prowlarr/Bazarr/Recyclarr, SABnzbd, slskd, Navidrome, Seerr, Beets, Immich                                            | `apps/media/*` (13 apps)                                                                                                                                                                                               |
 | Node-system add-ons            | kube-vip, descheduler, Reloader, Intel GPU device plugin + operator                                                                                  | `apps/kube-system/*`                                                                                                                                                                                                   |
 | Dependency automation          | Renovate (shared org config + local overrides), scheduled hourly via a reusable workflow                                                             | [`.renovaterc.json`](.renovaterc.json), [`.github/workflows/renovate.yaml`](.github/workflows/renovate.yaml)                                                                                                           |
@@ -70,7 +70,8 @@ There is no application process to "start." The operative entry points are:
    Flux Operator → FluxInstance, in that dependency order (`needs:`), onto a
    bare cluster. `bootstrap/crds/helmfile.yaml` is a separate, explicitly
    non-`sync` helmfile used only to extract and `kubectl apply --server-side`
-   the CRDs of envoy-gateway, grafana-operator, and prometheus-operator-crds
+   the CRDs of envoy-gateway, grafana-operator, prometheus-operator-crds, and
+   toolhive-operator-crds
    ([comment at top of file](bootstrap/crds/helmfile.yaml#L1-L6)) — these CRDs
    must exist before the corresponding `HelmRelease`s in `apps/` can reconcile.
 2. **GitOps sync root** — once FluxInstance is installed, it creates a root
@@ -138,9 +139,10 @@ the same `Lint`/`Validate` checks; major updates open a PR instead.
 | CloudNativePG Postgres image (Immich override)            | `ghcr.io/cloudnative-pg/postgresql:18.6-system-bookworm`                                                                              | [`apps/media/immich/config.ks.yaml#L25`](apps/media/immich/config.ks.yaml) — **a per-app major-version drift from the component default (17 vs 18), by design via `postBuild.substitute`.**                                      |
 | CI runner image                                           | `ubuntu-latest` (GitHub-hosted)                                                                                                       | [`.github/workflows/ci-pr.yml`](.github/workflows/ci-pr.yml) throughout                                                                                                                                                          |
 | `flate` validation image                                  | `ghcr.io/home-operations/flate:0.7.3` (the `:latest` tag resolves to a stale, CLI-incompatible `v0.6.5` — must pin explicitly)        | same file, `validate`/`diff` jobs                                                                                                                                                                                                |
-| envoy-gateway CRD chart                                   | `v1.9.2`                                                                                                                              | [`bootstrap/crds/helmfile.yaml#L17`](bootstrap/crds/helmfile.yaml)                                                                                                                                                               |
+| envoy-gateway CRD chart                                   | `v1.10.0`                                                                                                                              | [`bootstrap/crds/helmfile.yaml#L20`](bootstrap/crds/helmfile.yaml)                                                                                                                                                               |
 | grafana-operator CRD chart                                | `5.25.0`                                                                                                                              | same file                                                                                                                                                                                                                        |
-| prometheus-operator-crds chart                            | `32.0.1`                                                                                                                              | same file                                                                                                                                                                                                                        |
+| prometheus-operator-crds chart                            | `33.0.2`                                                                                                                              | same file                                                                                                                                                                                                                        |
+| toolhive-operator-crds chart                              | `0.64.0`                                                                                                                              | same file                                                                                                                                                                                                                        |
 | Target Kubernetes version                                 | `v1.36` (per badge) `[UNVERIFIED]`                                                                                                    | [`docs/mirceanton/home-ops/README.md`](docs/mirceanton/home-ops/README.md) is a _different, unrelated repo_ — no Kubernetes version badge or pin was found for **this** repo; node OS/CNI are provisioned outside this Git tree. |
 
 There is no application container build (no `Dockerfile` in the repo) — every
@@ -302,7 +304,9 @@ C4Container
 
     System_Boundary(flux_system, "flux-system") {
         Container(flux_op, "Flux Operator + FluxInstance", "controllers", "source/kustomize/helm/notification-controller")
-        Container(flux_mcp, "flux-mcp", "HelmRelease", "MCP server over Flux")
+    }
+    System_Boundary(ai, "ai-system") {
+        Container(toolhive, "ToolHive + mcp-gateway", "operator + VirtualMCPServer", "Read-only grafana and flux MCP servers behind one endpoint")
     }
     System_Boundary(net, "network-system") {
         Container(envoy, "Envoy Gateway", "Gateway API impl.", "Admin + internal Gateways, HTTPRoutes")
@@ -337,6 +341,9 @@ C4Container
     Rel(flux_op, storage, "reconciles")
     Rel(flux_op, obs, "reconciles")
     Rel(flux_op, media, "reconciles")
+    Rel(flux_op, ai, "reconciles")
+    Rel(ai, envoy, "HTTPRoute + API-key SecurityPolicy")
+    Rel(ai, eso, "ExternalSecret")
     Rel(media, cnpg, "DB via Secret ref (e.g. immich-postgres-app)")
     Rel(media, envoy, "HTTPRoute")
     Rel(media, eso, "ExternalSecret")

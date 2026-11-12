@@ -17,6 +17,7 @@ documents that argue with each other.
 | [0001](0001-reject-policy-as-code-ci-tooling.md)          | Keep CI validation minimal: reject the policy-as-code bundle, adopt flate | Accepted |
 | [0002](0002-accept-renovate-automerge-without-ci-gate.md) | Gate Renovate branch automerge with CI                        | Accepted |
 | [0003](0003-enforce-pr-required-workflow-for-owner.md)    | Enforce PR-required workflow for the repo owner               | Accepted |
+| [0004](0004-aggregate-mcp-servers-behind-toolhive-gateway.md) | Aggregate MCP servers behind a ToolHive gateway           | Accepted |
 
 Not every change needs a record — only choices that trade something off, that
 aren't obvious from the code/manifests alone, or that someone could plausibly

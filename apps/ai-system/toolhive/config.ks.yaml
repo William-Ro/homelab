@@ -3,19 +3,24 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: grafana-mcp
-  namespace: observability-system
+  name: toolhive-config
+  namespace: ai-system
 spec:
   interval: 10m
   prune: true
   wait: true
-  targetNamespace: observability-system
+  targetNamespace: ai-system
 
-  path: ./apps/observability-system/grafana-mcp/app
+  path: ./apps/ai-system/toolhive/config
   sourceRef:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
 
+  # Reversed vs other apps: these resources are ToolHive CRs, so the operator (app) must be ready first.
   dependsOn:
+    - name: toolhive
+    - name: bitwarden-sdk-server-config
+      namespace: security-system
     - name: grafana
+      namespace: observability-system

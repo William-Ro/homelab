@@ -1,0 +1,81 @@
+---
+# One MCP endpoint for every client. Each backend's tools are exposed with a "<workload>_" prefix.
+# Clients authenticate at the Envoy route (security-policy.yaml), so incoming auth here is anonymous.
+apiVersion: toolhive.stacklok.dev/v1beta1
+kind: VirtualMCPServer
+metadata:
+  name: mcp-gateway
+  labels:
+    app.kubernetes.io/name: toolhive
+    app.kubernetes.io/component: virtualmcpserver
+    app.kubernetes.io/part-of: toolhive
+    app.kubernetes.io/managed-by: flux
+spec:
+  groupRef:
+    name: mcp-tools
+
+  config:
+    aggregation:
+      conflictResolution: prefix
+      conflictResolutionConfig:
+        prefixFormat: "{workload}_"
+      # A new backend (or a new upstream tool) exposes nothing until it is listed here.
+      # Filters are the original, unprefixed tool names.
+      defaultToolVisibility: deny
+      tools:
+        # Grafana is read-only (Viewer service account). Left out on purpose: grafana_api_request
+        # (arbitrary API calls), write tools, and Loki/Tempo/Pyroscope/OnCall/Incident tools,
+        # because none of those backends are deployed. Add them when they are.
+        - workload: grafana
+          filter:
+            - user_info
+            - search_dashboards
+            - search_folders
+            - get_dashboard_by_uid
+            - get_dashboard_summary
+            - get_dashboard_property
+            - get_dashboard_panel_queries
+            - list_dashboard_versions
+            - list_datasources
+            - get_datasource
+            - check_datasources_health
+            - query_prometheus
+            - query_prometheus_histogram
+            - list_prometheus_label_names
+            - list_prometheus_label_values
+            - list_prometheus_metric_names
+            - list_prometheus_metric_metadata
+            - alerting_rules_read
+            - alerting_silences_read
+            - get_annotations
+            - get_annotation_tags
+            - generate_deeplink
+        # Flux is read-only (view role + --read-only). Left out on purpose: apply, patch, delete,
+        # install, reconcile, suspend, resume, and diff_kubernetes_manifest.
+        - workload: flux
+          filter:
+            - get_flux_instance
+            - get_kubernetes_api_versions
+            - get_kubernetes_events
+            - get_kubernetes_logs
+            - get_kubernetes_metrics
+            - get_kubernetes_resources
+            - trace_kubernetes_resource
+            - search_flux_docs
+            - read_flux_doc
+
+  incomingAuth:
+    type: anonymous
+  outgoingAuth:
+    source: discovered
+
+  podTemplateSpec:
+    spec:
+      containers:
+        - name: vmcp
+          resources:
+            requests:
+              cpu: 25m
+              memory: 128Mi
+            limits:
+              memory: 512Mi

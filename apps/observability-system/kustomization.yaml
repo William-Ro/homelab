@@ -12,6 +12,5 @@ resources:
   - ./alertmanager
   - ./blackbox-exporter
   - ./grafana
-  - ./grafana-mcp
   - ./kube-state-metrics
   - ./mimir
