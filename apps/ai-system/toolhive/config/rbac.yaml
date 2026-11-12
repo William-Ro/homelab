@@ -10,6 +10,40 @@ metadata:
     app.kubernetes.io/part-of: toolhive
     app.kubernetes.io/managed-by: flux
 ---
+# The built-in view role only aggregates resourcesets and resourcesetinputproviders from fluxcd.controlplane.io;
+# get_flux_instance also needs fluxinstances and fluxreports.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: flux-mcp-flux-view
+  labels:
+    app.kubernetes.io/name: flux-mcp
+    app.kubernetes.io/component: rbac
+    app.kubernetes.io/part-of: toolhive
+    app.kubernetes.io/managed-by: flux
+rules:
+  - apiGroups: ["fluxcd.controlplane.io"]
+    resources: ["fluxinstances", "fluxreports"]
+    verbs: ["get", "list", "watch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: flux-mcp-flux-view
+  labels:
+    app.kubernetes.io/name: flux-mcp
+    app.kubernetes.io/component: rbac
+    app.kubernetes.io/part-of: toolhive
+    app.kubernetes.io/managed-by: flux
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: flux-mcp-flux-view
+subjects:
+  - kind: ServiceAccount
+    name: flux-mcp
+    namespace: ai-system
+---
 # Read-only: the built-in view role aggregates the Flux CRD view roles. Write tools are also hidden by --read-only.
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
