@@ -44,7 +44,57 @@ subjects:
     name: flux-mcp
     namespace: ai-system
 ---
-# Read-only: the built-in view role aggregates the Flux CRD view roles. Write tools are also hidden by --read-only.
+# Write access is limited to patching Flux resources: reconcile sets the reconcile.fluxcd.io/requestedAt annotation
+# (on the resource and, with with_source, its source) and suspend/resume patch spec.suspend. No create, update or delete.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: flux-mcp-flux-reconcile
+  labels:
+    app.kubernetes.io/name: flux-mcp
+    app.kubernetes.io/component: rbac
+    app.kubernetes.io/part-of: toolhive
+    app.kubernetes.io/managed-by: flux
+rules:
+  - apiGroups: ["source.toolkit.fluxcd.io"]
+    resources:
+      ["gitrepositories", "ocirepositories", "helmrepositories", "helmcharts", "buckets", "externalartifacts"]
+    verbs: ["patch"]
+  - apiGroups: ["kustomize.toolkit.fluxcd.io"]
+    resources: ["kustomizations"]
+    verbs: ["patch"]
+  - apiGroups: ["helm.toolkit.fluxcd.io"]
+    resources: ["helmreleases"]
+    verbs: ["patch"]
+  - apiGroups: ["image.toolkit.fluxcd.io"]
+    resources: ["imagerepositories", "imagepolicies", "imageupdateautomations"]
+    verbs: ["patch"]
+  - apiGroups: ["notification.toolkit.fluxcd.io"]
+    resources: ["receivers"]
+    verbs: ["patch"]
+  - apiGroups: ["fluxcd.controlplane.io"]
+    resources: ["resourcesets", "resourcesetinputproviders", "fluxinstances"]
+    verbs: ["patch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: flux-mcp-flux-reconcile
+  labels:
+    app.kubernetes.io/name: flux-mcp
+    app.kubernetes.io/component: rbac
+    app.kubernetes.io/part-of: toolhive
+    app.kubernetes.io/managed-by: flux
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: flux-mcp-flux-reconcile
+subjects:
+  - kind: ServiceAccount
+    name: flux-mcp
+    namespace: ai-system
+---
+# The built-in view role aggregates the Flux CRD view roles (read access).
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
