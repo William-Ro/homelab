@@ -30,6 +30,7 @@ spec:
               repository: grafana/mcp-grafana
               tag: 2.2.0
             args:
+              - -t=streamable-http
               - --allowed-hosts=$(MY_POD_IP):8000,localhost:8000,127.0.0.1:8000,grafana-mcp.internal.reli.cc
             env:
               GRAFANA_URL: http://grafana-service:3000
