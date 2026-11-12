@@ -50,8 +50,8 @@ spec:
             - get_annotations
             - get_annotation_tags
             - generate_deeplink
-        # Flux is read-only (view role + --read-only). Left out on purpose: apply, patch, delete,
-        # install, reconcile, suspend, resume, and diff_kubernetes_manifest.
+        # Flux can read, and reconcile/suspend/resume Flux resources (patch-only RBAC, see rbac.yaml). Left out on
+        # purpose: apply, patch, delete, install and diff_kubernetes_manifest.
         - workload: flux
           filter:
             - get_flux_instance
@@ -63,6 +63,9 @@ spec:
             - trace_kubernetes_resource
             - search_flux_docs
             - read_flux_doc
+            - reconcile_flux_resource
+            - suspend_flux_reconciliation
+            - resume_flux_reconciliation
 
   incomingAuth:
     type: anonymous

@@ -79,7 +79,9 @@ spec:
     - serve
     - --transport=http
     - --port=8000
-    - --read-only
+
+  # Without --read-only the server registers its write tools, but only reconcile, suspend and resume are exposed
+  # by the gateway allowlist, and the service account can only patch Flux resources (see rbac.yaml).
 
   # The Flux runtime lives in flux-system, not in this MCPServer's namespace.
   env:

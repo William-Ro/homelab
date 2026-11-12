@@ -4,7 +4,7 @@ Date: 2026-11-12
 
 ## Status
 
-Accepted.
+Accepted. The Flux read-only stance was amended by [decision 0005](0005-allow-flux-mcp-reconcile-suspend-resume.md).
 
 ## Context
 
