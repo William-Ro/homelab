@@ -64,11 +64,13 @@ Positive:
 
 Tradeoffs:
 
-- One more operator (ToolHive) to run and keep updated. Its CRDs are installed
-  by Flux as a separate `toolhive-crds` app (one chart per app), unlike the
-  repo's other CRD charts, which use `bootstrap/crds/helmfile.yaml`. The
-  `toolhive-config` Kustomization depends on the operator app, the reverse of
-  the usual `app` -> `config` order, because its resources are ToolHive CRs.
+- One more operator (ToolHive) to run and keep updated. Its CRDs follow the
+  repo's convention: the `toolhive-operator-crds` chart is listed in
+  `bootstrap/crds/helmfile.yaml` and applied manually with
+  `kubectl apply --server-side`, so they must be applied (and re-applied on
+  version bumps) before the `toolhive` and `toolhive-config` Kustomizations can
+  reconcile. `toolhive-config` depends on the operator app, the reverse of the
+  usual `app` -> `config` order, because its resources are ToolHive CRs.
 - Keys do not expire and every key sees the same tool set. A leaked key is only
   contained by rotating it.
 - Clients no longer reach `grafana-mcp.internal.reli.cc` or

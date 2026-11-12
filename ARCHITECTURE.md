@@ -70,7 +70,8 @@ There is no application process to "start." The operative entry points are:
    Flux Operator → FluxInstance, in that dependency order (`needs:`), onto a
    bare cluster. `bootstrap/crds/helmfile.yaml` is a separate, explicitly
    non-`sync` helmfile used only to extract and `kubectl apply --server-side`
-   the CRDs of envoy-gateway, grafana-operator, and prometheus-operator-crds
+   the CRDs of envoy-gateway, grafana-operator, prometheus-operator-crds, and
+   toolhive-operator-crds
    ([comment at top of file](bootstrap/crds/helmfile.yaml#L1-L6)) — these CRDs
    must exist before the corresponding `HelmRelease`s in `apps/` can reconcile.
 2. **GitOps sync root** — once FluxInstance is installed, it creates a root
@@ -141,6 +142,7 @@ the same `Lint`/`Validate` checks; major updates open a PR instead.
 | envoy-gateway CRD chart                                   | `v1.9.2`                                                                                                                              | [`bootstrap/crds/helmfile.yaml#L17`](bootstrap/crds/helmfile.yaml)                                                                                                                                                               |
 | grafana-operator CRD chart                                | `5.25.0`                                                                                                                              | same file                                                                                                                                                                                                                        |
 | prometheus-operator-crds chart                            | `32.0.1`                                                                                                                              | same file                                                                                                                                                                                                                        |
+| toolhive-operator-crds chart                              | `0.64.0`                                                                                                                              | same file                                                                                                                                                                                                                        |
 | Target Kubernetes version                                 | `v1.36` (per badge) `[UNVERIFIED]`                                                                                                    | [`docs/mirceanton/home-ops/README.md`](docs/mirceanton/home-ops/README.md) is a _different, unrelated repo_ — no Kubernetes version badge or pin was found for **this** repo; node OS/CNI are provisioned outside this Git tree. |
 
 There is no application container build (no `Dockerfile` in the repo) — every

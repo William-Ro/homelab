@@ -28,3 +28,8 @@ releases:
     namespace: observability-system
     chart: oci://ghcr.io/prometheus-community/charts/prometheus-operator-crds
     version: 33.0.2
+
+  - name: toolhive-crds
+    namespace: ai-system
+    chart: oci://ghcr.io/stacklok/toolhive/toolhive-operator-crds
+    version: 0.64.0

@@ -388,6 +388,9 @@ sanity check, not full validation.
 
 ## Common pitfalls
 
+- **CRDs from a chart** — if the app's chart ships CRDs (or a separate CRD chart),
+  add that chart to `bootstrap/crds/helmfile.yaml` and apply the CRDs first
+  (see its header comment). Don't install CRDs from an `apps/` HelmRelease.
 - **Forgetting Step 4** — the app directory exists but Flux never builds it.
 - **Wrong UID** — some images run as a non-1000 UID; verify with `kubectl exec`
   or the image's docs rather than assuming.
