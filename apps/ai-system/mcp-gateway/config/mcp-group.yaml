@@ -1,0 +1,12 @@
+---
+apiVersion: toolhive.stacklok.dev/v1beta1
+kind: MCPGroup
+metadata:
+  name: mcp-tools
+  labels:
+    app.kubernetes.io/name: mcp-gateway
+    app.kubernetes.io/component: mcp-group
+    app.kubernetes.io/part-of: toolhive
+    app.kubernetes.io/managed-by: flux
+spec:
+  description: MCP servers aggregated behind the mcp-gateway VirtualMCPServer

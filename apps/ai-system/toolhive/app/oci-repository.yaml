@@ -3,14 +3,12 @@
 apiVersion: source.toolkit.fluxcd.io/v1
 kind: OCIRepository
 metadata:
-  name: flux-mcp
-  namespace: flux-system
+  name: toolhive
 spec:
-  interval: 15m
-  url: oci://ghcr.io/controlplaneio-fluxcd/charts/flux-operator-mcp
+  interval: 12h
+  url: oci://ghcr.io/stacklok/toolhive/toolhive-operator
   ref:
-    tag: 0.62.1
-
+    tag: 0.64.0
   layerSelector:
     mediaType: application/vnd.cncf.helm.chart.content.v1.tar+gzip
     operation: copy

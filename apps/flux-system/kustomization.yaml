@@ -10,4 +10,3 @@ resources:
   - ./grafana-folder.yaml
   - ./flux-operator
   - ./flux-instance
-  - ./flux-mcp

@@ -3,24 +3,23 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: flux-mcp
-  namespace: flux-system
+  name: mcp-gateway-config
+  namespace: ai-system
 spec:
   interval: 10m
   prune: true
   wait: true
-  timeout: 5m
-  targetNamespace: flux-system
+  targetNamespace: ai-system
 
-  path: ./apps/flux-system/flux-mcp/app
+  path: ./apps/ai-system/mcp-gateway/config
   sourceRef:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
 
   dependsOn:
-    - name: flux-operator
-
-  commonMetadata:
-    labels:
-      app.kubernetes.io/name: flux-mcp
+    - name: toolhive
+    - name: bitwarden-sdk-server-config
+      namespace: security-system
+    - name: grafana
+      namespace: observability-system

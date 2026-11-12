@@ -160,7 +160,7 @@ spec:
 ### 3e. `apps/<area>/<app-name>/app/helm-release.yaml`
 
 Start minimal and secure, expand only as needed. This mirrors every existing
-app-template app in the repo (e.g. `apps/observability-system/grafana-mcp/app/helm-release.yaml`):
+app-template app in the repo (e.g. `apps/media/navidrome/app/helm-release.yaml`):
 
 ```yaml
 ---

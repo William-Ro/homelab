@@ -56,7 +56,7 @@ produce the Kustomize/Helm output Flux expects" — there is no compiled artifac
 | Database                       | CloudNativePG (Postgres operator), shared via a Kustomize `Component`                                                                                | [`components/cnpg/cnpg.yaml`](components/cnpg/cnpg.yaml), [`apps/database-system/cloudnative-pg`](apps/database-system/cloudnative-pg)                                                                                 |
 | Storage/CSI                    | `democratic-csi` (TrueNAS iSCSI backend, `truenas-iscsi` StorageClass)                                                                               | `apps/storage-system/democratic-csi`, `components/cnpg/cnpg.yaml#L16,20`                                                                                                                                               |
 | Observability                  | Grafana (+ Grafana Operator CRDs), Mimir, Alertmanager, Alloy, `kube-state-metrics`, `blackbox-exporter`, Prometheus Operator CRDs                   | `apps/observability-system/**`, [`bootstrap/crds/helmfile.yaml`](bootstrap/crds/helmfile.yaml)                                                                                                                         |
-| In-cluster AI/MCP tooling      | `flux-mcp` and `grafana-mcp` HelmReleases exposing MCP servers over HTTPRoute                                                                        | `apps/flux-system/flux-mcp`, `apps/observability-system/grafana-mcp`                                                                                                                                                   |
+| In-cluster AI/MCP tooling      | ToolHive operator + one `VirtualMCPServer` gateway (`mcp.internal.reli.cc`) aggregating read-only `grafana` and `flux` `MCPServer`s; Envoy `SecurityPolicy` API-key auth per client ([decision 0004](docs/decisions/0004-aggregate-mcp-servers-behind-toolhive-gateway.md)) | `apps/ai-system/toolhive`, `apps/ai-system/mcp-gateway`                                                                                                                                                                |
 | Media stack                    | Jellyfin, Sonarr/Radarr/Lidarr/Prowlarr/Bazarr/Recyclarr, SABnzbd, slskd, Navidrome, Seerr, Beets, Immich                                            | `apps/media/*` (13 apps)                                                                                                                                                                                               |
 | Node-system add-ons            | kube-vip, descheduler, Reloader, Intel GPU device plugin + operator                                                                                  | `apps/kube-system/*`                                                                                                                                                                                                   |
 | Dependency automation          | Renovate (shared org config + local overrides), scheduled hourly via a reusable workflow                                                             | [`.renovaterc.json`](.renovaterc.json), [`.github/workflows/renovate.yaml`](.github/workflows/renovate.yaml)                                                                                                           |
@@ -302,7 +302,9 @@ C4Container
 
     System_Boundary(flux_system, "flux-system") {
         Container(flux_op, "Flux Operator + FluxInstance", "controllers", "source/kustomize/helm/notification-controller")
-        Container(flux_mcp, "flux-mcp", "HelmRelease", "MCP server over Flux")
+    }
+    System_Boundary(ai, "ai-system") {
+        Container(toolhive, "ToolHive + mcp-gateway", "operator + VirtualMCPServer", "Read-only grafana and flux MCP servers behind one endpoint")
     }
     System_Boundary(net, "network-system") {
         Container(envoy, "Envoy Gateway", "Gateway API impl.", "Admin + internal Gateways, HTTPRoutes")
@@ -337,6 +339,9 @@ C4Container
     Rel(flux_op, storage, "reconciles")
     Rel(flux_op, obs, "reconciles")
     Rel(flux_op, media, "reconciles")
+    Rel(flux_op, ai, "reconciles")
+    Rel(ai, envoy, "HTTPRoute + API-key SecurityPolicy")
+    Rel(ai, eso, "ExternalSecret")
     Rel(media, cnpg, "DB via Secret ref (e.g. immich-postgres-app)")
     Rel(media, envoy, "HTTPRoute")
     Rel(media, eso, "ExternalSecret")

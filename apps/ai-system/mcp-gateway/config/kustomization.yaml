@@ -1,0 +1,15 @@
+---
+# yaml-language-server: $schema=https://json.schemastore.org/kustomization.json
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - ./mcp-group.yaml
+  - ./grafana-external-secret.yaml
+  - ./grafana-mcp-server.yaml
+  - ./flux-mcp-rbac.yaml
+  - ./flux-mcp-server.yaml
+  - ./virtual-mcp-server.yaml
+  - ./api-keys-external-secret.yaml
+  - ./http-route.yaml
+  - ./security-policy.yaml
