@@ -3,9 +3,9 @@
 apiVersion: gateway.envoyproxy.io/v1alpha1
 kind: SecurityPolicy
 metadata:
-  name: mcp-gateway
+  name: toolhive
   labels:
-    app.kubernetes.io/name: mcp-gateway
+    app.kubernetes.io/name: toolhive
     app.kubernetes.io/component: securitypolicy
     app.kubernetes.io/part-of: toolhive
     app.kubernetes.io/managed-by: flux
@@ -13,13 +13,13 @@ spec:
   targetRefs:
     - group: gateway.networking.k8s.io
       kind: HTTPRoute
-      name: mcp-gateway
+      name: toolhive
   # Clients send `x-api-key: <key>`; each key in the Secret is one client. The header is stripped before the backend.
   apiKeyAuth:
     credentialRefs:
       - group: ""
         kind: Secret
-        name: mcp-gateway-api-keys
+        name: toolhive-api-keys
     extractFrom:
       - headers:
           - x-api-key

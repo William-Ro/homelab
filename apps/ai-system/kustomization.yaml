@@ -7,5 +7,5 @@ namespace: ai-system
 
 resources:
   - ./namespace.yaml
+  - ./toolhive-crds
   - ./toolhive
-  - ./mcp-gateway

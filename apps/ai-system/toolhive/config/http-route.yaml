@@ -3,9 +3,9 @@
 apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
 metadata:
-  name: mcp-gateway
+  name: toolhive
   labels:
-    app.kubernetes.io/name: mcp-gateway
+    app.kubernetes.io/name: toolhive
     app.kubernetes.io/component: httproute
     app.kubernetes.io/part-of: toolhive
     app.kubernetes.io/managed-by: flux

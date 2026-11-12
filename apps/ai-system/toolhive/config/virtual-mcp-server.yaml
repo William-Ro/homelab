@@ -6,8 +6,8 @@ kind: VirtualMCPServer
 metadata:
   name: mcp-gateway
   labels:
-    app.kubernetes.io/name: mcp-gateway
-    app.kubernetes.io/component: virtual-mcp-server
+    app.kubernetes.io/name: toolhive
+    app.kubernetes.io/component: virtualmcpserver
     app.kubernetes.io/part-of: toolhive
     app.kubernetes.io/managed-by: flux
 spec:

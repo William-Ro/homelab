@@ -15,9 +15,6 @@ spec:
     kind: OCIRepository
     name: toolhive
 
-  dependsOn:
-    - name: toolhive-crds
-
   values:
     operator:
       replicaCount: 1
