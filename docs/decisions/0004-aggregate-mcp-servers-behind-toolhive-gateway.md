@@ -37,7 +37,10 @@ server through one `VirtualMCPServer` (`mcp-gateway`) at
   (`laptop`, `desktop`), stored as Bitwarden items and synced by External
   Secrets. Revoking a client means removing its entry. The VirtualMCPServer
   itself uses anonymous incoming auth because Envoy has already authenticated
-  the request.
+  the request. ToolHive's own incoming auth is only `anonymous` or `oidc`;
+  its docs treat anonymous as acceptable behind a trusted network boundary,
+  and OIDC needs an identity provider, so the Envoy API key is a stopgap
+  outside ToolHive's documented auth model.
 - Backend credentials (the Grafana service-account token) stay in the cluster
   and never reach clients.
 - The old `grafana-mcp` and `flux-mcp` apps, their routes and the per-server

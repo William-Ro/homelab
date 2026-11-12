@@ -11,6 +11,8 @@ metadata:
 spec:
   description: MCP servers aggregated behind the mcp-gateway VirtualMCPServer
 ---
+# The operator already runs MCP pods as non-root (uid 1000) with a read-only root filesystem,
+# no privilege escalation, all capabilities dropped and the RuntimeDefault seccomp profile.
 apiVersion: toolhive.stacklok.dev/v1beta1
 kind: MCPServer
 metadata:
@@ -24,9 +26,14 @@ spec:
   image: grafana/mcp-grafana:2.2.0@sha256:697336440e34878f8e0b26a69675db8d7e97b4d0daec25ec5441c85ac6c60e81
   transport: streamable-http
   mcpPort: 8000
-  proxyPort: 8080
   groupRef:
     name: mcp-tools
+
+  # The image entrypoint defaults to SSE; a later -t wins. The ToolHive proxy calls the backend
+  # as mcp-<name>:<mcpPort>, which is the only Host the server needs to accept.
+  args:
+    - -t=streamable-http
+    - --allowed-hosts=mcp-grafana:8000
 
   env:
     - name: GRAFANA_URL
@@ -45,39 +52,11 @@ spec:
     limits:
       memory: 128Mi
 
+  # No Kubernetes API access needed by the Grafana server.
   podTemplateSpec:
     spec:
       automountServiceAccountToken: false
       enableServiceLinks: false
-      securityContext:
-        runAsNonRoot: true
-        runAsUser: 1000
-        runAsGroup: 1000
-        seccompProfile:
-          type: RuntimeDefault
-      containers:
-        - name: mcp
-          # The image entrypoint already sets --transport sse and --address 0.0.0.0:8000; a later --transport wins.
-          args:
-            - -t=streamable-http
-            - --allowed-hosts=$(MY_POD_IP):8000,mcp-grafana:8000,mcp-grafana.ai-system:8000,mcp-grafana.ai-system.svc:8000,mcp-grafana.ai-system.svc.cluster.local:8000,localhost:8000,127.0.0.1:8000
-          env:
-            - name: MY_POD_IP
-              valueFrom:
-                fieldRef:
-                  fieldPath: status.podIP
-          securityContext:
-            allowPrivilegeEscalation: false
-            readOnlyRootFilesystem: true
-            capabilities:
-              drop:
-                - ALL
-          volumeMounts:
-            - name: tmp
-              mountPath: /tmp
-      volumes:
-        - name: tmp
-          emptyDir: {}
 ---
 apiVersion: toolhive.stacklok.dev/v1beta1
 kind: MCPServer
@@ -92,10 +71,20 @@ spec:
   image: ghcr.io/controlplaneio-fluxcd/flux-operator-mcp:v0.62.1@sha256:0b4181bc9ada80eedf3e9df3355153abc9c3e6d8b913bddebe0b12908309bff6
   transport: streamable-http
   mcpPort: 8000
-  proxyPort: 8080
   serviceAccount: flux-mcp
   groupRef:
     name: mcp-tools
+
+  args:
+    - serve
+    - --transport=http
+    - --port=8000
+    - --read-only
+
+  # The Flux runtime lives in flux-system, not in this MCPServer's namespace.
+  env:
+    - name: RUNTIME_NAMESPACE
+      value: flux-system
 
   resources:
     requests:
@@ -103,31 +92,3 @@ spec:
       memory: 64Mi
     limits:
       memory: 256Mi
-
-  podTemplateSpec:
-    spec:
-      enableServiceLinks: false
-      securityContext:
-        runAsNonRoot: true
-        runAsUser: 65532
-        runAsGroup: 65532
-        seccompProfile:
-          type: RuntimeDefault
-      containers:
-        - name: mcp
-          args:
-            - serve
-            - --transport=http
-            - --port=8000
-            - --read-only
-          env:
-            - name: RUNTIME_NAMESPACE
-              valueFrom:
-                fieldRef:
-                  fieldPath: metadata.namespace
-          securityContext:
-            allowPrivilegeEscalation: false
-            readOnlyRootFilesystem: true
-            capabilities:
-              drop:
-                - ALL
