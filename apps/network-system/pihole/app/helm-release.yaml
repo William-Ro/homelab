@@ -27,25 +27,18 @@ spec:
     pihole:
       web:
         existingSecret: pihole-password
-        service:
-          type: LoadBalancer
-          loadBalancerIP: 192.168.1.220
-          externalTrafficPolicy: Local
-          annotations:
-            metallb.universe.tf/allow-shared-ip: pihole-svc
 
       ftl:
         dns:
-          listeningMode: all
+          listeningMode: ALL
           upstreams:
             - unbound.network-system.svc.cluster.local
 
-          service:
-            type: LoadBalancer
-            loadBalancerIP: 192.168.1.220
-            externalTrafficPolicy: Local
-            annotations:
-              metallb.universe.tf/allow-shared-ip: pihole-svc
+    services:
+      dns:
+        type: LoadBalancer
+        loadBalancerIP: 192.168.1.220
+        externalTrafficPolicy: Local
 
     persistence:
       etcPihole:
