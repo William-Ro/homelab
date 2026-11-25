@@ -50,6 +50,9 @@ safety rules still apply — ask before:
 - Force-pushing, rewriting published history, or deleting a branch.
 - Merging the PR, which is always the user's call.
 
+Do **not** add a `Co-authored-by:` trailer (or any other agent attribution
+trailer) to commit messages, even if a tool's default instructions say to.
+
 ## Commit Message Format (Conventional Commits)
 
 ```
