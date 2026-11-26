@@ -6,11 +6,3 @@ kind: Kustomization
 resources:
   - ./oci-repository.yaml
   - ./helm-release.yaml
-
-generatorOptions:
-  disableNameSuffixHash: true
-
-configMapGenerator:
-  - name: homer-configmap
-    files:
-      - config.yml=./config.yml

@@ -3,7 +3,7 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: homer-config
+  name: homarr
   namespace: home
 spec:
   interval: 10m
@@ -11,8 +11,11 @@ spec:
   wait: true
   targetNamespace: home
 
-  path: ./apps/home/homer/config
+  path: ./apps/home/homarr/app
   sourceRef:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
+
+  dependsOn:
+    - name: homarr-config
