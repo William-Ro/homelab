@@ -72,5 +72,5 @@ services:
         icon: "fas fa-bell"
       - name: "Pi-hole"
         subtitle: "DNS"
-        url: "https://pihole.admin.reli.cc"
+        url: "https://pihole.admin.reli.cc/admin/login"
         icon: "fas fa-shield-halved"
